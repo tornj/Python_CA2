@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="bfe6e252-5a36-4d67-bd03-175bceac4f07" name="Changes" comment="biblioteket">
-      <change afterPath="$PROJECT_DIR$/test/test_cardlib.py" afterDir="false" />
+    <list default="true" id="bfe6e252-5a36-4d67-bd03-175bceac4f07" name="Changes" comment="Cardlib och test">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cardlib.py" beforeDir="false" afterPath="$PROJECT_DIR$/cardlib.py" afterDir="false" />
     </list>
@@ -92,7 +91,13 @@
       <option name="presentableId" value="LOCAL−00002" />
       <updated>1644245504651</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL−00003" summary="Cardlib och test">
+      <created>1644409683078</created>
+      <option name="number" value="LOCAL−00003" />
+      <option name="presentableId" value="LOCAL−00003" />
+      <updated>1644409683078</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -109,6 +114,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="print" />
     <MESSAGE value="biblioteket" />
-    <option name="LAST_COMMIT_MESSAGE" value="biblioteket" />
+    <MESSAGE value="Cardlib och test" />
+    <option name="LAST_COMMIT_MESSAGE" value="Cardlib och test" />
   </component>
 </project>
