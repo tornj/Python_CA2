@@ -1,7 +1,7 @@
 from enum import Enum
-from functools import total_ordering
 import abc
 from random import shuffle
+from collections import Counter  # Counter is convenient for counting objects (a specialized dictionary)
 
 
 class PlayingCard(abc.ABC):
@@ -110,19 +110,70 @@ class Suit(Enum):
 
 
 class Hand(object):
+    """
+    A class used to represent a players hand
+
+    Attributes
+    ----------
+    None
+
+    Methods
+    -------
+    add_card(card)
+        Adds a card to the players hand
+    drop_card(discards)
+        Drop the desired cards from the players hand
+    show_hand
+        Prints the hand to the terminal
+    sort
+        Sorts the cards in the players hand by ?value?
+    best_poker_hand
+        Checks what combination of the cards on hand that produces the most value
+    """
+
     def __init__(self):
+        """
+        Parameters
+        ----------
+        None?  is cards a parameter
+        """
+
         self.cards = []
 
     # def __repr__(self):
-    #     s = ''
-    #     for i in self.cards:
-    #         s = s + str(self.cards[i]) + '\n'
-    #         return s
+    #     s = ""
+    #     for c in self.cards:
+    #         s += str(c) + '\n'
+    #     s.split('\n')
+    #     return "Hand(" + ','.join(s) + ")"
+
+    def __str__(self):
+        s = ""
+        for c in self.cards:
+            s = s + str(c) + '\n'  # c.__str__() + "\n"
+        return s
 
     def add_card(self, card):
+        """Adds a card to the players hand
+
+        Parameters
+        ----------
+        card(tuple)
+            A playing card
+        """
+
         self.cards.append(card)
 
     def drop_cards(self, discards):
+        """ Drop the desired cards from the players hand
+
+        Parametes
+        ---------
+
+
+        :param discards:
+        :return:
+        """
         discards.sort(reverse=True)
         for n in discards:
             self.cards.pop(n)
@@ -133,6 +184,11 @@ class Hand(object):
 
     def sort(self):
         self.cards.sort()
+
+    def best_poker_hand(self, table_cards=[]):
+        for tc in table_cards:
+            self.cards.append(tc)
+        return self.cards
 
 
 class StandardDeck(object):
@@ -156,11 +212,11 @@ class StandardDeck(object):
         for c in self.deck:
             print(c)
 
-    # def __repr__(self):
-    #     s = str()
-    #     for i in range(len(self.deck)):
-    #         s += str(self.deck[i])# + "\n"
-    #         return s
+    def __repr__(self):
+        s = str()
+        for i in range(len(self.deck)):
+            s += str(self.deck[i]) + "\n"
+            return s
 
     def shuffle(self):
         return shuffle(self.deck)
@@ -168,40 +224,100 @@ class StandardDeck(object):
     def draw(self):
         return self.deck.pop()
 
+
+class PokerHand(object):
+    def __init__(self, cards):
+        #super().__init__(cards)
+        self.cards = cards
+
+    def give_value(self):
+        pass
+
+    def __lt__(self, other):
+        pass
+
+    @staticmethod
+    def check_straight_flush(cards):
+        """
+        Checks for the best straight flush in a list of cards (may be more than just 5)
+        :param cards: A list of playing cards.
+        :return: None if no straight flush is found, else the value of the top card.
+        """
+        vals = [(c.give_value(), c.suit) for c in cards] \
+               + [(1, c.suit) for c in cards if c.give_value() == 14]  # Add the aces!
+        for c in reversed(cards):  # Starting point (high card)
+            # Check if we have the value - k in the set of cards:
+            found_straight = True
+            for k in range(1, 5):
+                if (c.give_value() - k, c.suit) not in vals:
+                    found_straight = False
+                    break
+
+            if found_straight:
+                return c.give_value()
+
+    def check_four_of_a_kind(self):
+        pass
+
+    def check_full_house(self, cards):
+        """
+        Checks for the best full house in a list of cards (may be more than just 5)
+        :param cards: A list of playing cards
+        :return: None if no full house is found, else a tuple of the values of the triple and pair.
+        """
+        value_count = Counter()
+        for c in cards:
+            value_count[c.give_value()] += 1
+        # Find the card ranks that have at least three of a kind
+        threes = [v[0] for v in value_count.items() if v[1] >= 3]
+        threes.sort()
+        # Find the card ranks that have at least a pair
+        twos = [v[0] for v in value_count.items() if v[1] >= 2]
+        twos.sort()
+        # Threes are dominant in full house, lets check that value first:
+        for three in reversed(threes):
+            for two in reversed(twos):
+                if two != three:
+                    return three, two
+
+    def check_flush(self):
+        pass
+
+    def check_straight(self):
+        pass
+
+    def check_three_of_a_kind(self):
+        pass
+
+    def check_two_pair(self):
+        pass
+
+    def check_pair(self, cards):
+        pass
+
+    def check_high_card(self):
+        pass
+
+
 d = StandardDeck()
-#d.show_deck()
-sh = Suit.Hearts
-print(sh.value)
-print(Suit.Hearts.value)
-print(Suit.Hearts > Suit.Spades)
-#print(repr(d))
-# d.shuffle()
-# H1 = Hand()
-# H1.add_card(d.draw())
-# H1.add_card(d.draw())
-# H1.add_card(d.draw())
-# H1.add_card(d.draw())
-# H1.add_card(d.draw())
-# H1.sort()
-# H1.show_hand()
+# d.show_deck()
+sh = JackCard(Suit.Hearts)
+# print(sh.get_value())
+# print(Suit.Hearts.value)
+# print(Suit.Hearts > Suit.Spades)
+h = Hand()
 
-# for i in range(4):
-#     print('new', H1.cards[i])
-#     print(H1.cards[i+1])
-#     assert H1.cards[i] < H1.cards[i + 1] or H1.cards[i] == H1.cards[i + 1]
-
-
-#print(len(H1.cards))
-# H1.drop_cards([1, 0, 4])
-# H1.show_hand()
-# sj = JackCard(Suit.Spades)
-# print(type(sj))
+h.add_card(d.draw())
+h.add_card(d.draw())
+T_cards = [JackCard(Suit.Hearts), QueenCard(Suit.Hearts), KingCard(Suit.Hearts), AceCard(Suit.Hearts), NumberedCard(10, Suit.Hearts)]
+#ph1 = h.best_poker_hand(cl)
+print(h.best_poker_hand(T_cards))
+print(isinstance(h, Hand))
+print(type(h), type(Hand))
+#print(check_straight_flush(T_cards))
+# card = KingCard(Suit.Hearts)
+# print(card.give_value())
+# h.show_hand()
+#print(h)
 
 
-# print(d.show_deck())
-
-# a = AceCard(Suit.Spades)
-# print(a)
-#
-# h5 = NumberedCard(4, Suit.Hearts)
-# print(JackCard(Suit.Spades) > NumberedCard(4, Suit.Hearts))

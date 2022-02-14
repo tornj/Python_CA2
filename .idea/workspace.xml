@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="bfe6e252-5a36-4d67-bd03-175bceac4f07" name="Changes" comment="Cardlib och test">
+    <list default="true" id="bfe6e252-5a36-4d67-bd03-175bceac4f07" name="Changes" comment="YES">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cardlib.py" beforeDir="false" afterPath="$PROJECT_DIR$/cardlib.py" afterDir="false" />
     </list>
@@ -20,6 +20,14 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
+  </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
@@ -33,7 +41,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
-  <component name="RunManager" selected="Python tests.Python tests in test_cardlib.py">
+  <component name="RunManager" selected="Python.cardlib">
     <configuration name="cardlib" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="Python_CA2" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -97,7 +105,13 @@
       <option name="presentableId" value="LOCAL−00003" />
       <updated>1644409683078</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL−00004" summary="YES">
+      <created>1644588514705</created>
+      <option name="number" value="LOCAL−00004" />
+      <option name="presentableId" value="LOCAL−00004" />
+      <updated>1644588514706</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -115,6 +129,7 @@
     <MESSAGE value="print" />
     <MESSAGE value="biblioteket" />
     <MESSAGE value="Cardlib och test" />
-    <option name="LAST_COMMIT_MESSAGE" value="Cardlib och test" />
+    <MESSAGE value="YES" />
+    <option name="LAST_COMMIT_MESSAGE" value="YES" />
   </component>
 </project>
