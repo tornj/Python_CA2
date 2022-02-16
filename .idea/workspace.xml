@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="bfe6e252-5a36-4d67-bd03-175bceac4f07" name="Changes" comment="YES">
+    <list default="true" id="bfe6e252-5a36-4d67-bd03-175bceac4f07" name="Changes" comment="Lite check">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cardlib.py" beforeDir="false" afterPath="$PROJECT_DIR$/cardlib.py" afterDir="false" />
     </list>
@@ -117,7 +117,13 @@
       <option name="presentableId" value="LOCAL−00005" />
       <updated>1644849283418</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL−00006" summary="Lite check">
+      <created>1645004166377</created>
+      <option name="number" value="LOCAL−00006" />
+      <option name="presentableId" value="LOCAL−00006" />
+      <updated>1645004166377</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -136,6 +142,7 @@
     <MESSAGE value="biblioteket" />
     <MESSAGE value="Cardlib och test" />
     <MESSAGE value="YES" />
-    <option name="LAST_COMMIT_MESSAGE" value="YES" />
+    <MESSAGE value="Lite check" />
+    <option name="LAST_COMMIT_MESSAGE" value="Lite check" />
   </component>
 </project>

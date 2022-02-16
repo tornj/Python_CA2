@@ -349,7 +349,7 @@ class PokerHand(object):
         if potential_pair[1] == 2:
             pair = potential_pair[0]
             # plockar fram det sista kortet som är högst
-            count_vals -= potential_pair
+            count_vals.subtract(pair*2)
         #
         #     if vals[0] != potential_four[0]:
         #         one = vals[0]
@@ -382,13 +382,14 @@ T_cards = [JackCard(Suit.Hearts), QueenCard(Suit.Hearts), KingCard(Suit.Hearts),
 vals = [c.get_value() for c in T_cards]
 vals.sort(reverse=True)
 count_vals = Counter(vals)
+print(count_vals)
 potential_pair = count_vals.most_common(1)
 print(potential_pair)
 if potential_pair[0][1] == 2:
     pair = potential_pair[0][0]
     print(pair)
     # plockar fram det sista kortet som är högst
-    count_vals -= potential_pair
+    count_vals.subtract(pair*2)
     print(count_vals)
 
 
