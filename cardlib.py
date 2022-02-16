@@ -190,12 +190,14 @@ class Hand(object):
         for tc in table_cards:
             all_cards.append(tc)
         ph = PokerHand(all_cards)
+        #ph = PokerHand()
         return ph
 
 
 class StandardDeck(object):
     """Initializes and creates a deck of all 52 playing cards. Method create_deck: creates the deck,
      draw: draws the top card in the deck, shuffle: shuffles the deck, show_deck: shows the deck in the current order"""
+
     def __init__(self):
         self.deck = []
         self.create_deck()
@@ -228,8 +230,14 @@ class StandardDeck(object):
 
 
 class PokerHand(object):
-    def __init__(self, cards):
-        self.cards = cards
+    # def __init__(self, cards):
+    #     self.cards = cards
+    #     #self.check_straight_flush()
+
+    # def __init__(self):
+    #     self.check_pair()
+    #     self.check_flush()
+
 
     def __lt__(self, other):
         pass
@@ -241,8 +249,9 @@ class PokerHand(object):
         :param cards: A list of playing cards.
         :return: None if no straight flush is found, else the value of the top card.
         """
-        vals = [(c.get_value(), c.suit) for c in cards] \
-               + [(1, c.suit) for c in cards if c.get_value() == 14]  # Add the aces!
+        cards.sort()
+        vals = [(c.get_value(), c.suit.name) for c in cards] \
+               + [(1, c.suit.name) for c in cards if c.get_value() == 14]  # Add the aces!
         for c in reversed(cards):  # Starting point (high card)
             # Check if we have the value - k in the set of cards:
             found_straight = True
@@ -252,7 +261,7 @@ class PokerHand(object):
                     break
 
             if found_straight:
-                return c.get_value()
+                return 9, c.get_value()
 
     @staticmethod
     def check_four_of_a_kind(cards):
@@ -270,19 +279,7 @@ class PokerHand(object):
                 return four, one
             else:
                 one = vals[1]
-                return four, one
-
-
-        # # Checks if first four or last four cards are the same (out of 5)
-        # #cards.sort()
-        # if cards[0] == cards[3]:
-        #     four = cards[0].get_value()
-        #     one = cards[4]
-        # elif cards[1] == cards[4]:
-        #     four = cards[1].get_value()
-        #     one = cards[0]
-        #
-        # return four, one
+                return 8, four, one
 
     @staticmethod
     def check_full_house(cards):
@@ -304,66 +301,101 @@ class PokerHand(object):
         for three in reversed(threes):
             for two in reversed(twos):
                 if two != three:
-                    return three, two
+                    return 7, three, two
 
     @staticmethod
     def check_flush(cards):
-        """Behöver get_value() för flush ska peta ut det högsta kortet i 'flushen'"""
-        suits = [(c.get_value, c.suit) for c in cards]
-        #suits.sort(reverse=True)
-        suits = sorted(suits, key=lambda x: x[1], reverse=True)  # Sorts by suit then value, highest val suits(end)
-        # Detta funkar ej då de kan bli s h h h h h c....
-        suit_count = Counter([suits[s][1] for s in range(cards)])  # Creates a counter of suits from list suits, bild ex
-        potential_flush = suit_count.most_common(1)
-        if potential_flush[1] == 5:
-            flush = suits[-1]
-            #flush = suits[0][0] # just nu endast det hösta kortet, behöver plocka från countern
+        cards = [(c.get_value(), c.suit.name) for c in cards]
+        # suit=[c.suit.name for c in cards]
+        # card=[c.get_value() for c in cards]
+        suit = []
+        card = []
+        for element in cards:
+            suit.append(element[1])
+            card.append(element[0])
+        suitt, count = zip(*Counter(suit).most_common(1))
+        caaard = []
+        for index in card:
+            if suitt[0] in index:
+                caaard.append(index[0])
+
+        if count[0] >= 5:
+            caaard.sort(reverse=True)
+            return caaard[0:5]
+
+    @staticmethod
+    def check_straight(cards):
+        """
+                Checks for the best straight flush in a list of cards (may be more than just 5)
+                :param cards: A list of playing cards.
+                :return: None if no straight flush is found, else the value of the top card.
+                """
+        cards.sort()
+        vals = [c.get_value() for c in cards] \
+               + [1 for c in cards if c.get_value() == 14]  # Add the aces!
+        for c in reversed(cards):  # Starting point (high card)
+            # Check if we have the value - k in the set of cards:
+            found_straight = True
+            for k in range(1, 5):
+                if c.get_value() - k not in vals:
+                    found_straight = False
+                    break
+
+            if found_straight:
+                return 5, c.get_value()
+
+    @staticmethod
+    def check_three_of_a_kind(cards):
+        vals = [c.get_value() for c in cards]
+        counted_cards = Counter(vals)
+        two_most_common, count = zip(*counted_cards.most_common(1))
+        if count[0] == 3:
+            three = two_most_common[0]
+            del counted_cards[three]
+            cards = counted_cards.elements()
+            return 4, three, cards[0:2]
 
 
-
-        check = True
-        #cards.sort(reversed)
-        for c in cards:
-            if c.Suit != suits[0]:
-                check = False
-        if check:
-            return cards[4].get_value()
-
-
-    def check_straight(self):
-        pass
-
-    def check_three_of_a_kind(self):
-        pass
-
-    def check_two_pair(self):
-        pass
-
-    def check_pair(self, cards):
-        """Fungerar då 7 kort är max inte mer!"""
+    @staticmethod
+    def check_two_pair(cards):
         vals = [c.get_value() for c in cards]
         vals.sort(reverse=True)
         count_vals = Counter(vals)
+        potential_pairs = count_vals.most_common(2)
+        # Kollar om det finns två lika av samma kort, potential pair = [(val, antal)]
+        if potential_pairs[0][1] == 2 and potential_pairs[1][1] == 2:
+            pairs = [potential_pairs[0][0], potential_pairs[1][0]]
+            del count_vals[pairs[0]]
+            del count_vals[pairs[1]]
+            count_vals = sorted(count_vals.elements(), reverse=True)
+            one = count_vals[0]
+            return 3, pairs, one
+
+    @staticmethod
+    def check_pair(cards):
+        #vals = [c.get_value() for c in cards]
+        vals = [c.get_value() for c in cards]
+        count_vals = Counter(vals)
         potential_pair = count_vals.most_common(1)
         #Kollar om det finns två lika av samma kort, potential pair = [(val, antal)]
-        if potential_pair[1] == 2:
-            pair = potential_pair[0]
-            # plockar fram det sista kortet som är högst
-            count_vals.subtract(pair*2)
-        #
-        #     if vals[0] != potential_four[0]:
-        #         one = vals[0]
-        #         return four, one
-        #     else:
-        #         one = vals[1]
-        #         return four, one
-        # pass
+        if potential_pair[0][1] == 2:
+            pair = potential_pair[0][0]
+            del count_vals[pair]
+            count_vals = sorted(count_vals.elements(), reverse=True)
+            ones = count_vals[0:3]
+            return 2, pair, ones
 
-    def check_high_card(self):
-        pass
+    @staticmethod
+    def check_high_card(cards):
+        vals = [c.get_value() for c in cards]
+        vals.sort(reverse=True)
+        high_card = vals[0]
+        return 1, high_card, vals[1:5]
 
 
 d = StandardDeck()
+#print(d)
+#d.show_deck()
 # d.show_deck()
 sh = JackCard(Suit.Hearts)
 # print(sh.get_value())
@@ -377,20 +409,40 @@ h.add_card(d.draw())
 h.add_card(d.draw())
 h.add_card(d.draw())
 
-T_cards = [JackCard(Suit.Hearts), QueenCard(Suit.Hearts), KingCard(Suit.Hearts), AceCard(Suit.Hearts), NumberedCard(10, Suit.Hearts), NumberedCard(10, Suit.Clubs)]
+T_cards = [NumberedCard(10, Suit.Spades), NumberedCard(10, Suit.Diamonds), NumberedCard(10, Suit.Spades), QueenCard(Suit.Hearts), NumberedCard(2, Suit.Hearts), NumberedCard(3, Suit.Spades), NumberedCard(4, Suit.Diamonds), NumberedCard(5, Suit.Diamonds), KingCard(Suit.Spades), KingCard(Suit.Hearts), AceCard(Suit.Hearts), NumberedCard(7, Suit.Clubs)]
+K_cards = [NumberedCard(10, Suit.Spades), NumberedCard(10, Suit.Diamonds), NumberedCard(10, Suit.Spades), QueenCard(Suit.Hearts), NumberedCard(2, Suit.Hearts), QueenCard(Suit.Hearts)]
 
-vals = [c.get_value() for c in T_cards]
-vals.sort(reverse=True)
-count_vals = Counter(vals)
-print(count_vals)
-potential_pair = count_vals.most_common(1)
-print(potential_pair)
-if potential_pair[0][1] == 2:
-    pair = potential_pair[0][0]
-    print(pair)
-    # plockar fram det sista kortet som är högst
-    count_vals.subtract(pair*2)
-    print(count_vals)
+ph3 = PokerHand()
+t = ph3.check_three_of_a_kind(T_cards)
+print(t)
+
+ph = PokerHand()
+full_house= ph.check_full_house(T_cards)
+print(full_house)
+
+ph2 = PokerHand()
+full_house2 = ph2.check_full_house(K_cards)
+print(full_house2)
+
+print(full_house<full_house2)
+#print(T_cards)
+# vals = [(c.get_value(), c.suit.name) for c in T_cards]
+# print vals
+# print(vals[s][1] for s in range(T_cards))
+# potential_flush = Counter(vals[1][s] for s in range(len(T_cards)))
+# potential_flush = Counter(vals)
+#print(potential_flush)
+#suit_count = Counter([suits[s][1] for s in range(cards)])  # Creates a counter of suits from list suits, bild ex
+
+#potential_flush = suits.most_common(1)
+# if potential_flush[1] == 5:
+#     flush = suits[-1]
+    #flush = suits[0][0] # just nu endast det hösta kortet, behöver plocka från countern
 
 
+#
+# ph = PokerHand(T_cards)
+# print(ph)
+# Pair, Ones = ph.check_pair()
+# print(Pair, Ones)
 
