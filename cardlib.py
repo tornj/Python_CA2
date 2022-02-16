@@ -186,9 +186,11 @@ class Hand(object):
         self.cards.sort()
 
     def best_poker_hand(self, table_cards=[]):
+        all_cards = self.cards
         for tc in table_cards:
-            self.cards.append(tc)
-        return self.cards
+            all_cards.append(tc)
+        ph = PokerHand(all_cards)
+        return ph
 
 
 class StandardDeck(object):
@@ -227,11 +229,7 @@ class StandardDeck(object):
 
 class PokerHand(object):
     def __init__(self, cards):
-        #super().__init__(cards)
         self.cards = cards
-
-    def give_value(self):
-        pass
 
     def __lt__(self, other):
         pass
@@ -243,23 +241,51 @@ class PokerHand(object):
         :param cards: A list of playing cards.
         :return: None if no straight flush is found, else the value of the top card.
         """
-        vals = [(c.give_value(), c.suit) for c in cards] \
-               + [(1, c.suit) for c in cards if c.give_value() == 14]  # Add the aces!
+        vals = [(c.get_value(), c.suit) for c in cards] \
+               + [(1, c.suit) for c in cards if c.get_value() == 14]  # Add the aces!
         for c in reversed(cards):  # Starting point (high card)
             # Check if we have the value - k in the set of cards:
             found_straight = True
             for k in range(1, 5):
-                if (c.give_value() - k, c.suit) not in vals:
+                if (c.get_value() - k, c.suit) not in vals:
                     found_straight = False
                     break
 
             if found_straight:
-                return c.give_value()
+                return c.get_value()
 
-    def check_four_of_a_kind(self):
-        pass
+    @staticmethod
+    def check_four_of_a_kind(cards):
+        """Fungerar då 7 kort är max inte mer!"""
+        vals = [c.get_value() for c in cards]
+        vals.sort(reverse=True)
+        count_vals = Counter(vals)
+        potential_four = count_vals.most_common(1)
+        # Kollar om det finns fyra lika av samma kort, potential four = [(val, antal)]
+        if potential_four[0][1] == 4:
+            four = potential_four[0][0]
+            # plockar fram det sista kortet som är högst
+            if vals[0] != potential_four[0][0]:
+                one = vals[0]
+                return four, one
+            else:
+                one = vals[1]
+                return four, one
 
-    def check_full_house(self, cards):
+
+        # # Checks if first four or last four cards are the same (out of 5)
+        # #cards.sort()
+        # if cards[0] == cards[3]:
+        #     four = cards[0].get_value()
+        #     one = cards[4]
+        # elif cards[1] == cards[4]:
+        #     four = cards[1].get_value()
+        #     one = cards[0]
+        #
+        # return four, one
+
+    @staticmethod
+    def check_full_house(cards):
         """
         Checks for the best full house in a list of cards (may be more than just 5)
         :param cards: A list of playing cards
@@ -267,7 +293,7 @@ class PokerHand(object):
         """
         value_count = Counter()
         for c in cards:
-            value_count[c.give_value()] += 1
+            value_count[c.get_value()] += 1
         # Find the card ranks that have at least three of a kind
         threes = [v[0] for v in value_count.items() if v[1] >= 3]
         threes.sort()
@@ -280,8 +306,29 @@ class PokerHand(object):
                 if two != three:
                     return three, two
 
-    def check_flush(self):
-        pass
+    @staticmethod
+    def check_flush(cards):
+        """Behöver get_value() för flush ska peta ut det högsta kortet i 'flushen'"""
+        suits = [(c.get_value, c.suit) for c in cards]
+        #suits.sort(reverse=True)
+        suits = sorted(suits, key=lambda x: x[1], reverse=True)  # Sorts by suit then value, highest val suits(end)
+        # Detta funkar ej då de kan bli s h h h h h c....
+        suit_count = Counter([suits[s][1] for s in range(cards)])  # Creates a counter of suits from list suits, bild ex
+        potential_flush = suit_count.most_common(1)
+        if potential_flush[1] == 5:
+            flush = suits[-1]
+            #flush = suits[0][0] # just nu endast det hösta kortet, behöver plocka från countern
+
+
+
+        check = True
+        #cards.sort(reversed)
+        for c in cards:
+            if c.Suit != suits[0]:
+                check = False
+        if check:
+            return cards[4].get_value()
+
 
     def check_straight(self):
         pass
@@ -293,7 +340,24 @@ class PokerHand(object):
         pass
 
     def check_pair(self, cards):
-        pass
+        """Fungerar då 7 kort är max inte mer!"""
+        vals = [c.get_value() for c in cards]
+        vals.sort(reverse=True)
+        count_vals = Counter(vals)
+        potential_pair = count_vals.most_common(1)
+        #Kollar om det finns två lika av samma kort, potential pair = [(val, antal)]
+        if potential_pair[1] == 2:
+            pair = potential_pair[0]
+            # plockar fram det sista kortet som är högst
+            count_vals -= potential_pair
+        #
+        #     if vals[0] != potential_four[0]:
+        #         one = vals[0]
+        #         return four, one
+        #     else:
+        #         one = vals[1]
+        #         return four, one
+        # pass
 
     def check_high_card(self):
         pass
@@ -309,15 +373,23 @@ h = Hand()
 
 h.add_card(d.draw())
 h.add_card(d.draw())
-T_cards = [JackCard(Suit.Hearts), QueenCard(Suit.Hearts), KingCard(Suit.Hearts), AceCard(Suit.Hearts), NumberedCard(10, Suit.Hearts)]
-#ph1 = h.best_poker_hand(cl)
-print(h.best_poker_hand(T_cards))
-print(isinstance(h, Hand))
-print(type(h), type(Hand))
-#print(check_straight_flush(T_cards))
-# card = KingCard(Suit.Hearts)
-# print(card.give_value())
-# h.show_hand()
-#print(h)
+h.add_card(d.draw())
+h.add_card(d.draw())
+h.add_card(d.draw())
+
+T_cards = [JackCard(Suit.Hearts), QueenCard(Suit.Hearts), KingCard(Suit.Hearts), AceCard(Suit.Hearts), NumberedCard(10, Suit.Hearts), NumberedCard(10, Suit.Clubs)]
+
+vals = [c.get_value() for c in T_cards]
+vals.sort(reverse=True)
+count_vals = Counter(vals)
+potential_pair = count_vals.most_common(1)
+print(potential_pair)
+if potential_pair[0][1] == 2:
+    pair = potential_pair[0][0]
+    print(pair)
+    # plockar fram det sista kortet som är högst
+    count_vals -= potential_pair
+    print(count_vals)
+
 
 
