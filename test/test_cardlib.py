@@ -1,7 +1,8 @@
-from enum import Enum
+#from enum import Enum
 import pytest
 from cardlib import *
 # This test assumes you call your suit class "Suit" and the suits "Hearts and  "Spades"
+
 def test_cards():
     h5 = NumberedCard(4, Suit.Hearts)
     assert isinstance(h5.suit, Enum)
@@ -11,6 +12,12 @@ def test_cards():
     assert h5 < sk
     with pytest.raises(TypeError):
         pc = PlayingCard(Suit.Clubs)
+    cj = JackCard(Suit.Clubs)
+    da = AceCard(Suit.Diamonds)
+    hq = QueenCard(Suit.Hearts)
+    assert da > hq
+    assert hq > cj
+    assert hq.get_value() == 12
 # This test assumes you call your shuffle method "shuffle" and the method to draw a card "draw"
 def test_deck():
     d = StandardDeck()
@@ -22,6 +29,14 @@ def test_deck():
     c3 = d2.draw()
     c4 = d2.draw()
     assert not ((c3, c4) == (c1, c2))
+    d3 = StandardDeck()
+    card = []
+    for c in range(52):  # Checks if all 52 cards in deck are unique
+        new_card = d3.draw()
+        assert new_card not in card
+        card.append(new_card)
+
+
 # This test builds on the assumptions above and assumes you store the cards in the hand in the list "cards",
 # and that your sorting method is called "sort" and sorts in increasing order
 def test_hand():
@@ -43,6 +58,17 @@ def test_hand():
     assert len(h.cards) == 2
     assert h.cards[0] == cards[2]
     assert h.cards[1] == cards[4]
+    h2 = Hand()
+    h2.add_card(d.draw())
+    h2.add_card(d.draw())
+    h2.add_card(d.draw())
+    h2.add_card(d.draw())
+    h2.add_card(d.draw())
+    cards = h2.cards.copy()
+    h2.drop_cards([2, 1, 4])
+    assert h2.cards[0] == cards[0]
+    assert h2.cards[1] == cards[3]
+
 # This test builds on the assumptions above. Add your type and data for the commented out tests
 # and uncomment them!
 def test_pokerhands():
@@ -58,6 +84,9 @@ def test_pokerhands():
     assert isinstance(ph1, PokerHand)
     ph2 = h2.best_poker_hand(cl)
     # assert # Check ph1 handtype class and data here>
+    h1.drop_cards([0, 1])
+    h1.add_card(NumberedCard(10, Suit.Hearts))
+    h1.add_card(NumberedCard(10, Suit.Diamonds))
     # assert # Check ph2 handtype class and data here>
     assert ph1 < ph2
     cl.pop(0)

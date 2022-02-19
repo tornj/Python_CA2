@@ -237,6 +237,12 @@ class StandardDeck(object):
 
 
 class PokerHand(object):
+    """ A class used to represent a players hand
+    Methods
+    -------
+    checks_checks
+
+       """
     def __init__(self, cards):
         self.cards = cards
         self.type = 0
