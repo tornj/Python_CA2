@@ -115,7 +115,7 @@ class Hand(object):
 
     Attributes
     ----------
-    None
+
 
     Methods
     -------
@@ -185,12 +185,11 @@ class Hand(object):
     def sort(self):
         self.cards.sort()
 
-    def best_poker_hand(self, table_cards=[]):
+    def best_poker_hand(self, table_cards):
         all_cards = self.cards
         for tc in table_cards:
             all_cards.append(tc)
         ph = PokerHand(all_cards)
-        #ph = PokerHand()
         return ph
 
 
@@ -230,17 +229,41 @@ class StandardDeck(object):
 
 
 class PokerHand(object):
-    # def __init__(self, cards):
-    #     self.cards = cards
-    #     #self.check_straight_flush()
+    def __init__(self, cards):
+        self.cards = cards
+        self.type = 0
+        self.check_checks(self.cards)
 
-    # def __init__(self):
-    #     self.check_pair()
-    #     self.check_flush()
+    def check_checks(self, cards):
+        tests = [self.check_straight_flush, self.check_four_of_a_kind, self.check_full_house, self.check_flush,
+                 self.check_straight, self.check_three_of_a_kind, self.check_two_pair, self.check_pair, self.check_high_card]
+        self.type = 10
+        for t in tests:
+            self.cards = t(cards)
+            self.type -= 1
+            if self.cards is None:
+                continue
+            else:
+                break
+        return self.type, self.cards
 
+    def show_poker_hand(self):
+        for c in self.cards:
+            print(c)
 
     def __lt__(self, other):
-        pass
+        if self.type == other.type:
+            return self.cards < other.cards
+        else:
+            return self.type < other.type
+
+    def __str__(self):
+        s = ""
+        for c in self.cards:
+            s = s + str(c) + '\n'  # c.__str__() + "\n"
+        return s
+
+
 
     @staticmethod
     def check_straight_flush(cards):
@@ -261,11 +284,13 @@ class PokerHand(object):
                     break
 
             if found_straight:
-                return 9, c.get_value()
+                return c.get_value()
 
     @staticmethod
     def check_four_of_a_kind(cards):
-        """Fungerar då 7 kort är max inte mer!"""
+        """Check for the best four of a kind and highest single card and returns them
+        :param cards: A list of playing cards.
+        :return: None if no four of a kind is found, else the value of the four of a kind and the highest remaining card"""
         vals = [c.get_value() for c in cards]
         vals.sort(reverse=True)
         count_vals = Counter(vals)
@@ -279,7 +304,7 @@ class PokerHand(object):
                 return four, one
             else:
                 one = vals[1]
-                return 8, four, one
+                return four, one
 
     @staticmethod
     def check_full_house(cards):
@@ -301,34 +326,38 @@ class PokerHand(object):
         for three in reversed(threes):
             for two in reversed(twos):
                 if two != three:
-                    return 7, three, two
+                    return three, two
 
     @staticmethod
     def check_flush(cards):
-        cards = [(c.get_value(), c.suit.name) for c in cards]
-        # suit=[c.suit.name for c in cards]
-        # card=[c.get_value() for c in cards]
-        suit = []
-        card = []
-        for element in cards:
-            suit.append(element[1])
-            card.append(element[0])
-        suitt, count = zip(*Counter(suit).most_common(1))
-        caaard = []
-        for index in card:
-            if suitt[0] in index:
-                caaard.append(index[0])
-
-        if count[0] >= 5:
-            caaard.sort(reverse=True)
-            return caaard[0:5]
+        pass
+    #     """Check for the best flush out of the given list
+    #     :param cards: A list of playing cards.
+    #     :return: None if no flush is found, else the highest card in the flush"""
+    #     cards = [(c.get_value(), c.suit.name) for c in cards]
+    #     # suit=[c.suit.name for c in cards]
+    #     # card=[c.get_value() for c in cards]
+    #     suit = []
+    #     card = []
+    #     for element in cards:
+    #         suit.append(element[1])
+    #         card.append(element[0])
+    #     suitt, count = zip(*Counter(suit).most_common(1))
+    #     caaard = []
+    #     for index in card:
+    #         if suitt[0] in index:
+    #             caaard.append(index[0])
+    #
+    #     if count[0] >= 5:
+    #         caaard.sort(reverse=True)
+    #         return caaard[0:5]
 
     @staticmethod
     def check_straight(cards):
         """
                 Checks for the best straight flush in a list of cards (may be more than just 5)
                 :param cards: A list of playing cards.
-                :return: None if no straight flush is found, else the value of the top card.
+                :return: None if no straight is found, else the value of the top card.
                 """
         cards.sort()
         vals = [c.get_value() for c in cards] \
@@ -342,22 +371,27 @@ class PokerHand(object):
                     break
 
             if found_straight:
-                return 5, c.get_value()
+                return c.get_value()
 
     @staticmethod
     def check_three_of_a_kind(cards):
+        """Check for the best three of a kind of the given list
+        :param cards: A list of playing cards.
+        :return: None if no three of a kind is found, else the highest flush"""
         vals = [c.get_value() for c in cards]
         counted_cards = Counter(vals)
-        two_most_common, count = zip(*counted_cards.most_common(1))
+        most_common, count = zip(*counted_cards.most_common(1))
         if count[0] == 3:
-            three = two_most_common[0]
-            del counted_cards[three]
+            three = most_common[0]
             cards = counted_cards.elements()
-            return 4, three, cards[0:2]
+            return three, cards[1:3]
 
 
     @staticmethod
     def check_two_pair(cards):
+        """Check for the best flush out of the given list
+        :param cards: A list of playing cards.
+        :return: None if no two pair is found, else the value of the cards in each pair and the highest remaining card"""
         vals = [c.get_value() for c in cards]
         vals.sort(reverse=True)
         count_vals = Counter(vals)
@@ -369,11 +403,14 @@ class PokerHand(object):
             del count_vals[pairs[1]]
             count_vals = sorted(count_vals.elements(), reverse=True)
             one = count_vals[0]
-            return 3, pairs, one
+            return pairs, one
 
     @staticmethod
     def check_pair(cards):
-        #vals = [c.get_value() for c in cards]
+        """Check for the best pair out of the given list
+        :param cards: A list of playing cards.
+        :return: None of no pair is found, else the value of the highest pair and value of the highest three remaining
+        cards. """
         vals = [c.get_value() for c in cards]
         count_vals = Counter(vals)
         potential_pair = count_vals.most_common(1)
@@ -383,14 +420,17 @@ class PokerHand(object):
             del count_vals[pair]
             count_vals = sorted(count_vals.elements(), reverse=True)
             ones = count_vals[0:3]
-            return 2, pair, ones
+            return pair, ones
 
     @staticmethod
     def check_high_card(cards):
+        """Check for the highest card out of the given list
+        :param cards: A list of playing cards.
+        :return: The 5 best cards out of the list in descending order. """
         vals = [c.get_value() for c in cards]
         vals.sort(reverse=True)
         high_card = vals[0]
-        return 1, high_card, vals[1:5]
+        return high_card, vals[1:5]
 
 
 d = StandardDeck()
@@ -405,26 +445,47 @@ h = Hand()
 
 h.add_card(d.draw())
 h.add_card(d.draw())
-h.add_card(d.draw())
-h.add_card(d.draw())
-h.add_card(d.draw())
+
 
 T_cards = [NumberedCard(10, Suit.Spades), NumberedCard(10, Suit.Diamonds), NumberedCard(10, Suit.Spades), QueenCard(Suit.Hearts), NumberedCard(2, Suit.Hearts), NumberedCard(3, Suit.Spades), NumberedCard(4, Suit.Diamonds), NumberedCard(5, Suit.Diamonds), KingCard(Suit.Spades), KingCard(Suit.Hearts), AceCard(Suit.Hearts), NumberedCard(7, Suit.Clubs)]
-K_cards = [NumberedCard(10, Suit.Spades), NumberedCard(10, Suit.Diamonds), NumberedCard(10, Suit.Spades), QueenCard(Suit.Hearts), NumberedCard(2, Suit.Hearts), QueenCard(Suit.Hearts)]
+K_cards = [NumberedCard(10, Suit.Spades), NumberedCard(10, Suit.Clubs), NumberedCard(10, Suit.Hearts), QueenCard(Suit.Hearts), QueenCard(Suit.Hearts)]
 
-ph3 = PokerHand()
-t = ph3.check_three_of_a_kind(T_cards)
-print(t)
+# pok = h.best_poker_hand(K_cards)
+# # pok.show_poker_hand()
+# print(pok)
 
-ph = PokerHand()
-full_house= ph.check_full_house(T_cards)
-print(full_house)
 
-ph2 = PokerHand()
-full_house2 = ph2.check_full_house(K_cards)
-print(full_house2)
 
-print(full_house<full_house2)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# ph3 = PokerHand()
+# t = ph3.check_three_of_a_kind(T_cards)
+# print(t)
+#
+# ph = PokerHand(T_cards)
+# ph.show_poker_hand()
+
+
+# full_house= ph.check_full_house(T_cards)
+# print(full_house)
+#
+# ph2 = PokerHand()
+# full_house2 = ph2.check_full_house(K_cards)
+# print(full_house2)
+#
+# print(full_house<full_house2)
 #print(T_cards)
 # vals = [(c.get_value(), c.suit.name) for c in T_cards]
 # print vals
