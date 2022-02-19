@@ -268,7 +268,7 @@ class PokerHand(object):
     def __str__(self):
         s = ""
         for c in self.cards:
-            s = s + str(c) + '\n'  # c.__str__() + "\n"
+            s = s + str(c) + '\n'
         return s
 
     @staticmethod
