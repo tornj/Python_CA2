@@ -249,9 +249,7 @@ class PokerHand(object):
         for t in tests:
             self.cards = t(cards)
             self.type -= 1
-            if self.cards is None:
-                continue
-            else:
+            if self.cards is not None:
                 break
         return self.type, self.cards
 
@@ -337,26 +335,26 @@ class PokerHand(object):
     @staticmethod
     def check_flush(cards):
         pass
-        """Check for the best flush out of the given list
-        :param cards: A list of playing cards.
-        :return: None if no flush is found, else the highest card in the flush"""
-        cards = [(c.get_value(), c.suit.name) for c in cards]
-        # suit=[c.suit.name for c in cards]
-        # card=[c.get_value() for c in cards]
-        suit = []
-        card = []
-        for element in cards:
-            suit.append(element[1])
-            card.append(element[0])
-        suitt, count = zip(*Counter(suit).most_common(1))
-        caaard = []
-        for index in card:
-            if suitt[0] in index:
-                caaard.append(index[0])
-
-        if count[0] >= 5:
-            caaard.sort(reverse=True)
-            return caaard[0:5]
+    #     """Check for the best flush out of the given list
+    #     :param cards: A list of playing cards.
+    #     :return: None if no flush is found, else the highest card in the flush"""
+    #     cards = [(c.get_value(), c.suit.name) for c in cards]
+    #     # suit=[c.suit.name for c in cards]
+    #     # card=[c.get_value() for c in cards]
+    #     suit = []
+    #     card = []
+    #     for element in cards:
+    #         suit.append(element[1])
+    #         card.append(element[0])
+    #     suitt, count = zip(*Counter(suit).most_common(1))
+    #     caaard = []
+    #     for index in card:
+    #         if suitt[0] in index:
+    #             caaard.append(index[0])
+    #
+    #     if count[0] >= 5:
+    #         caaard.sort(reverse=True)
+    #         return caaard[0:5]
 
     @staticmethod
     def check_straight(cards):
