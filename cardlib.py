@@ -244,7 +244,8 @@ class PokerHand(object):
 
     def check_checks(self, cards):
         tests = [self.check_straight_flush, self.check_four_of_a_kind, self.check_full_house, self.check_flush,
-                 self.check_straight, self.check_three_of_a_kind, self.check_two_pair, self.check_pair, self.check_high_card]
+                 self.check_straight, self.check_three_of_a_kind, self.check_two_pair, self.check_pair,
+                 self.check_high_card]
         self.type = 10
         for t in tests:
             self.cards = t(cards)
