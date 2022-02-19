@@ -341,7 +341,6 @@ class PokerHand(object):
 
     @staticmethod
     def check_flush(cards):
-        # pass
         """Check for the best flush out of the given list
         :param cards: A list of playing cards.
         :return: None if no flush is found, else the highest card in the flush"""
@@ -355,7 +354,7 @@ class PokerHand(object):
             card.append(element[0])
         suitt, count = zip(*Counter(suit).most_common(1))
         caaard = []
-        for index in card:
+        for index in cards:
             if suitt[0] in index:
                 caaard.append(index[0])
 

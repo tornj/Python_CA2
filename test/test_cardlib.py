@@ -84,9 +84,9 @@ def test_pokerhands():
     assert isinstance(ph1, PokerHand)
     ph2 = h2.best_poker_hand(cl)
     # assert # Check ph1 handtype class and data here>
-    h1.drop_cards([0, 1])
-    h1.add_card(NumberedCard(10, Suit.Hearts))
-    h1.add_card(NumberedCard(10, Suit.Diamonds))
+    # h1.drop_cards([0, 1])
+    # h1.add_card(NumberedCard(10, Suit.Hearts))
+    # h1.add_card(NumberedCard(10, Suit.Diamonds))
     # assert # Check ph2 handtype class and data here>
     assert ph1 < ph2
     cl.pop(0)

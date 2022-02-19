@@ -166,7 +166,19 @@
       <option name="presentableId" value="LOCAL−00013" />
       <updated>1645284004105</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL−00014" summary="Lite check">
+      <created>1645287377641</created>
+      <option name="number" value="LOCAL−00014" />
+      <option name="presentableId" value="LOCAL−00014" />
+      <updated>1645287377642</updated>
+    </task>
+    <task id="LOCAL−00015" summary="Lite check">
+      <created>1645287745327</created>
+      <option name="number" value="LOCAL−00015" />
+      <option name="presentableId" value="LOCAL−00015" />
+      <updated>1645287745327</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
