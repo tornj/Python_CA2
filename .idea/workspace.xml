@@ -41,7 +41,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
-  <component name="RunManager" selected="Python tests.Python tests in test_cardlib.py">
+  <component name="RunManager" selected="Python.cardlib">
     <configuration name="cardlib" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="Python_CA2" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -135,7 +135,13 @@
       <option name="presentableId" value="LOCAL−00008" />
       <updated>1645025519905</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL−00009" summary="Lite check">
+      <created>1645268673882</created>
+      <option name="number" value="LOCAL−00009" />
+      <option name="presentableId" value="LOCAL−00009" />
+      <updated>1645268673882</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

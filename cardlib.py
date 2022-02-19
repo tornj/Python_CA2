@@ -1,10 +1,17 @@
 from enum import Enum
 import abc
 from random import shuffle
-from collections import Counter  # Counter is convenient for counting objects (a specialized dictionary)
+from collections import Counter
 
 
 class PlayingCard(abc.ABC):
+    """Parent class for all the different playing cards
+
+    methods
+    -------
+    get_value
+        Abstract method that gives the value of playing card"""
+
     def __init__(self, suit):
         self.suit = suit
 
@@ -23,6 +30,7 @@ class PlayingCard(abc.ABC):
 
 
 class NumberedCard(PlayingCard):
+    """ A class that creates Numbered playing cards"""
     def __init__(self, value, suit):
         super().__init__(suit)
         self.value = value
@@ -38,6 +46,7 @@ class NumberedCard(PlayingCard):
 
 
 class JackCard(PlayingCard):
+    """ A class that creates Jack playing cards"""
     def __init__(self, suit):
         super().__init__(suit)
 
@@ -52,6 +61,7 @@ class JackCard(PlayingCard):
 
 
 class QueenCard(PlayingCard):
+    """ A class that creates Queen playing cards"""
     def __init__(self, suit):
         super().__init__(suit)
 
@@ -66,6 +76,7 @@ class QueenCard(PlayingCard):
 
 
 class KingCard(PlayingCard):
+    """ A class that creates King playing cards"""
     def __init__(self, suit):
         super().__init__(suit)
 
@@ -80,6 +91,7 @@ class KingCard(PlayingCard):
 
 
 class AceCard(PlayingCard):
+    """ A class that creates Ace playing cards"""
     def __init__(self, suit):
         super().__init__(suit)
 
@@ -94,6 +106,7 @@ class AceCard(PlayingCard):
 
 
 class Suit(Enum):
+    """Enum class that represents the suits of each playing card"""
     Hearts = 1
     Spades = 2
     Clubs = 3
@@ -113,10 +126,6 @@ class Hand(object):
     """
     A class used to represent a players hand
 
-    Attributes
-    ----------
-
-
     Methods
     -------
     add_card(card)
@@ -132,12 +141,6 @@ class Hand(object):
     """
 
     def __init__(self):
-        """
-        Parameters
-        ----------
-        None?  is cards a parameter
-        """
-
         self.cards = []
 
     # def __repr__(self):
@@ -155,37 +158,32 @@ class Hand(object):
 
     def add_card(self, card):
         """Adds a card to the players hand
-
-        Parameters
-        ----------
-        card(tuple)
-            A playing card
+        :param card: A playing card
         """
 
         self.cards.append(card)
 
     def drop_cards(self, discards):
         """ Drop the desired cards from the players hand
-
-        Parametes
-        ---------
-
-
-        :param discards:
-        :return:
+        :param discards: A list of desired discards
         """
         discards.sort(reverse=True)
         for n in discards:
             self.cards.pop(n)
 
     def show_hand(self):
+        """Method that displays the hand in the command window"""
         for c in self.cards:
             print(c)
 
     def sort(self):
+        """Sorts the hand from the lowest to the highest card"""
         self.cards.sort()
 
     def best_poker_hand(self, table_cards):
+        """A method that creates a poker hand object and returns the combination of the 5 best playing cards.
+        :param table_cards: A list of the cards on the table.
+        :return: A poker hand of the 5 best cards out of the cards on hand and card on the table."""
         all_cards = self.cards
         for tc in table_cards:
             all_cards.append(tc)
@@ -194,8 +192,18 @@ class Hand(object):
 
 
 class StandardDeck(object):
-    """Initializes and creates a deck of all 52 playing cards. Method create_deck: creates the deck,
-     draw: draws the top card in the deck, shuffle: shuffles the deck, show_deck: shows the deck in the current order"""
+    """Initializes and creates a deck of all 52 playing cards.
+    methods
+    -------
+    create_deck
+       Creates a deck containing all 52 playing cards
+    show_deck
+      Prints the deck in the command window in the current order
+    shuffle
+        shuffles the deck
+    draw
+        draws the top cards of the deck
+    """
 
     def __init__(self):
         self.deck = []
@@ -263,8 +271,6 @@ class PokerHand(object):
             s = s + str(c) + '\n'  # c.__str__() + "\n"
         return s
 
-
-
     @staticmethod
     def check_straight_flush(cards):
         """
@@ -331,34 +337,33 @@ class PokerHand(object):
     @staticmethod
     def check_flush(cards):
         pass
-    #     """Check for the best flush out of the given list
-    #     :param cards: A list of playing cards.
-    #     :return: None if no flush is found, else the highest card in the flush"""
-    #     cards = [(c.get_value(), c.suit.name) for c in cards]
-    #     # suit=[c.suit.name for c in cards]
-    #     # card=[c.get_value() for c in cards]
-    #     suit = []
-    #     card = []
-    #     for element in cards:
-    #         suit.append(element[1])
-    #         card.append(element[0])
-    #     suitt, count = zip(*Counter(suit).most_common(1))
-    #     caaard = []
-    #     for index in card:
-    #         if suitt[0] in index:
-    #             caaard.append(index[0])
-    #
-    #     if count[0] >= 5:
-    #         caaard.sort(reverse=True)
-    #         return caaard[0:5]
+        """Check for the best flush out of the given list
+        :param cards: A list of playing cards.
+        :return: None if no flush is found, else the highest card in the flush"""
+        cards = [(c.get_value(), c.suit.name) for c in cards]
+        # suit=[c.suit.name for c in cards]
+        # card=[c.get_value() for c in cards]
+        suit = []
+        card = []
+        for element in cards:
+            suit.append(element[1])
+            card.append(element[0])
+        suitt, count = zip(*Counter(suit).most_common(1))
+        caaard = []
+        for index in card:
+            if suitt[0] in index:
+                caaard.append(index[0])
+
+        if count[0] >= 5:
+            caaard.sort(reverse=True)
+            return caaard[0:5]
 
     @staticmethod
     def check_straight(cards):
+        """Checks for the best straight flush in a list of cards (may be more than just 5)
+        :param cards: A list of playing cards.
+        :return: None if no straight is found, else the value of the top card.
         """
-                Checks for the best straight flush in a list of cards (may be more than just 5)
-                :param cards: A list of playing cards.
-                :return: None if no straight is found, else the value of the top card.
-                """
         cards.sort()
         vals = [c.get_value() for c in cards] \
                + [1 for c in cards if c.get_value() == 14]  # Add the aces!
@@ -385,7 +390,6 @@ class PokerHand(object):
             three = most_common[0]
             cards = counted_cards.elements()
             return three, cards[1:3]
-
 
     @staticmethod
     def check_two_pair(cards):
@@ -453,57 +457,3 @@ K_cards = [NumberedCard(10, Suit.Spades), NumberedCard(10, Suit.Clubs), Numbered
 # pok = h.best_poker_hand(K_cards)
 # # pok.show_poker_hand()
 # print(pok)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# ph3 = PokerHand()
-# t = ph3.check_three_of_a_kind(T_cards)
-# print(t)
-#
-# ph = PokerHand(T_cards)
-# ph.show_poker_hand()
-
-
-# full_house= ph.check_full_house(T_cards)
-# print(full_house)
-#
-# ph2 = PokerHand()
-# full_house2 = ph2.check_full_house(K_cards)
-# print(full_house2)
-#
-# print(full_house<full_house2)
-#print(T_cards)
-# vals = [(c.get_value(), c.suit.name) for c in T_cards]
-# print vals
-# print(vals[s][1] for s in range(T_cards))
-# potential_flush = Counter(vals[1][s] for s in range(len(T_cards)))
-# potential_flush = Counter(vals)
-#print(potential_flush)
-#suit_count = Counter([suits[s][1] for s in range(cards)])  # Creates a counter of suits from list suits, bild ex
-
-#potential_flush = suits.most_common(1)
-# if potential_flush[1] == 5:
-#     flush = suits[-1]
-    #flush = suits[0][0] # just nu endast det hösta kortet, behöver plocka från countern
-
-
-#
-# ph = PokerHand(T_cards)
-# print(ph)
-# Pair, Ones = ph.check_pair()
-# print(Pair, Ones)
-
