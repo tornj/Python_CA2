@@ -303,16 +303,47 @@ class PokerHand(object):
         else:
             return self.type < other.type
 
-    def __str__(self):
-        s = ""
-        for c in self.cards:
-            s = s + str(c) + '\n'
-        return s
 
-    def __repr__(self):
-        Name = self.type.name
-        Name = ' '.join(Name.split('_'))
-        
+
+
+    def __str__(self):
+        if self.type.name == 'straight_flush':
+            handtype=''.join(self.type.name.split('_'))
+            rep= f'({handtype} high {self.cards})'
+            return rep
+        elif self.type.name == 'four_of_a_kind':
+            handtype=''.join(self.type.name.split('_'))
+            rep= f'{handtype} of {self.cards[0]}, kicker: {self.cards[1]}'
+            return rep
+        elif self.type.name == 'full_house':
+            rep= f"full house {self.cards[0]}'s over {self.cards[1]}'s"
+            return rep
+        elif self.type.name == 'flush':
+            handtype = ''.join(self.type.name.split('_'))
+            rep= f'{handtype} with {self.cards}'
+            return rep
+        elif self.type.name == 'straight':
+            handtype = ''.join(self.type.name.split('_'))
+            rep= f'{self.cards} high {handtype}'
+            return rep
+        elif self.type.name == 'three_of_a_kind':
+            handtype = ''.join(self.type.name.split('_'))
+            rep= f'{handtype} of {self.cards[0]}, kickers: {self.cards[1:]}'
+            return rep
+        elif self.type.name == 'two_pair':
+            handtype = ''.join(self.type.name.split('_'))
+            rep= f'{handtype} of {self.cards[0]}, kickers: {self.cards[1:]}'
+            return rep
+        elif self.type.name == 'pair':
+            handtype = ''.join(self.type.name.split('_'))
+            rep= f'{handtype} of {self.cards[0]}, kickers: {self.cards[1:]}'
+            return rep
+        elif self.type.name == 'high_card':
+            handtype = ''.join(self.type.name.split('_'))
+            rep= f'{handtype} of {self.cards[0]}, kickers: {self.cards[1:]}'
+            return rep
+
+
 
     @staticmethod
     def check_straight_flush(cards):
@@ -331,7 +362,6 @@ class PokerHand(object):
                 if (c.get_value() - k, c.suit.name) not in vals:
                     found_straight = False
                     break
-
             if found_straight:
                 return c.get_value()
 
@@ -479,38 +509,5 @@ class PokerHand(object):
         return high_card, vals[1:5]
 
 
-d = StandardDeck()
-#print(d)
-#d.show_deck()
-# d.show_deck()
-sh = JackCard(Suit.Hearts)
-# print(sh.get_value())
-# print(Suit.Hearts.value)
-# print(Suit.Hearts > Suit.Spades)
-h = Hand()
-
-h.add_card(d.draw())
-h.add_card(d.draw())
 
 
-T_cards = [NumberedCard(10, Suit.Spades), NumberedCard(10, Suit.Diamonds), NumberedCard(10, Suit.Spades), QueenCard(Suit.Hearts), NumberedCard(2, Suit.Hearts), NumberedCard(3, Suit.Spades), NumberedCard(4, Suit.Diamonds), NumberedCard(5, Suit.Diamonds), KingCard(Suit.Spades), KingCard(Suit.Hearts), AceCard(Suit.Hearts), NumberedCard(7, Suit.Clubs)]
-K_cards = [NumberedCard(10, Suit.Spades), NumberedCard(10, Suit.Clubs), NumberedCard(10, Suit.Hearts), QueenCard(Suit.Hearts), QueenCard(Suit.Hearts)]
-cl2=[KingCard(Suit.Hearts), QueenCard(Suit.Hearts), JackCard(Suit.Hearts), NumberedCard(10,Suit.Hearts), NumberedCard(9,Suit.Hearts), NumberedCard(2,Suit.Spades)]
-
-
-PokerHand.check_three_of_a_kind(T_cards)
-
-# pok = h.best_poker_hand(K_cards)
-# # pok.show_poker_hand()
-# print(pok)
-vals = [c.get_value() for c in T_cards]
-counted_cards = Counter(vals)
-most_common, count = zip(*counted_cards.most_common(1))
-if count[0] == 3:
-    three = most_common[0]
-    cards = sorted(counted_cards.keys())
-print(cards)
-
-
-# FK=[JackCard(Suit.Hearts), JackCard(Suit.Clubs), JackCard(Suit.Spades), JackCard(Suit.Diamonds), NumberedCard(5,Suit.Hearts), NumberedCard(3, Suit.Diamonds)]
-# assert PokerHand.check_straight_flush(cl2) is not None
