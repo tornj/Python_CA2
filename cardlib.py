@@ -1,7 +1,7 @@
 from enum import Enum
 import abc
 from random import shuffle
-from collections import Counter
+from collections import Counter, OrderedDict
 
 
 class PlayingCard(abc.ABC):
@@ -275,7 +275,7 @@ class PokerHand(object):
 
     def __init__(self, cards):
         self.cards = cards
-        self.type = 0
+        self.type = None
         self.check_checks(self.cards)
 
     def check_checks(self, cards):
@@ -307,7 +307,13 @@ class PokerHand(object):
         s = ""
         for c in self.cards:
             s = s + str(c) + '\n'
-        return s
+
+    # def __repr__(self):
+    #     handtype= self.type.name
+    #     handtype=' '.join(handtype.split('_'))
+    #     rep='bestpokerhand('handtype+,
+    #     return rep
+
 
     def __repr__(self):
         Name = self.type.name
@@ -426,12 +432,14 @@ class PokerHand(object):
         :param cards: A list of playing cards.
         :return: None if no three of a kind is found, else the highest flush"""
         vals = [c.get_value() for c in cards]
+        vals.sort(reverse=True)
         counted_cards = Counter(vals)
         most_common, count = zip(*counted_cards.most_common(1))
         if count[0] == 3:
             three = most_common[0]
-            cards = sorted(counted_cards.keys())
-            return three, cards[1:3]
+            del counted_cards[three]
+            cards = sorted(counted_cards.elements(), reverse=True)
+            return three, cards[0:2]
 
     @staticmethod
     def check_two_pair(cards):
@@ -494,23 +502,16 @@ h.add_card(d.draw())
 
 
 T_cards = [NumberedCard(10, Suit.Spades), NumberedCard(10, Suit.Diamonds), NumberedCard(10, Suit.Spades), QueenCard(Suit.Hearts), NumberedCard(2, Suit.Hearts), NumberedCard(3, Suit.Spades), NumberedCard(4, Suit.Diamonds), NumberedCard(5, Suit.Diamonds), KingCard(Suit.Spades), KingCard(Suit.Hearts), AceCard(Suit.Hearts), NumberedCard(7, Suit.Clubs)]
-K_cards = [NumberedCard(10, Suit.Spades), NumberedCard(10, Suit.Clubs), NumberedCard(10, Suit.Hearts), QueenCard(Suit.Hearts), QueenCard(Suit.Hearts)]
+K_cards = [JackCard(Suit.Spades),JackCard(Suit.Clubs), NumberedCard(10, Suit.Hearts), QueenCard(Suit.Hearts), JackCard(Suit.Hearts),QueenCard(Suit.Spades), QueenCard(Suit.Diamonds)]
 cl2=[KingCard(Suit.Hearts), QueenCard(Suit.Hearts), JackCard(Suit.Hearts), NumberedCard(10,Suit.Hearts), NumberedCard(9,Suit.Hearts), NumberedCard(2,Suit.Spades)]
 
 
-PokerHand.check_three_of_a_kind(T_cards)
-
 # pok = h.best_poker_hand(K_cards)
 # # pok.show_poker_hand()
-# print(pok)
-vals = [c.get_value() for c in T_cards]
-counted_cards = Counter(vals)
-most_common, count = zip(*counted_cards.most_common(1))
-if count[0] == 3:
-    three = most_common[0]
-    cards = sorted(counted_cards.keys())
-print(cards)
 
 
-# FK=[JackCard(Suit.Hearts), JackCard(Suit.Clubs), JackCard(Suit.Spades), JackCard(Suit.Diamonds), NumberedCard(5,Suit.Hearts), NumberedCard(3, Suit.Diamonds)]
-# assert PokerHand.check_straight_flush(cl2) is not None
+klas= 'four_of_a_kind'
+klas2=klas.split('_')
+
+klas2=' '.join(klas2)
+print(klas2)
