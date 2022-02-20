@@ -1,7 +1,7 @@
 from enum import Enum
 import abc
 from random import shuffle
-from collections import Counter, OrderedDict
+from collections import Counter
 
 
 class PlayingCard(abc.ABC):
@@ -275,7 +275,7 @@ class PokerHand(object):
 
     def __init__(self, cards):
         self.cards = cards
-        self.type = None
+        self.type = 0
         self.check_checks(self.cards)
 
     def check_checks(self, cards):
@@ -303,11 +303,8 @@ class PokerHand(object):
         else:
             return self.type < other.type
 
-    # def __str__(self):
-    #     s = ""
-    #     for c in self.cards:
-    #         s = s + str(c) + '\n'
-    #     return s
+
+
 
     def __str__(self):
         if self.type.name == 'straight_flush':
@@ -345,6 +342,7 @@ class PokerHand(object):
             handtype = ''.join(self.type.name.split('_'))
             rep= f'{handtype} of {self.cards[0]}, kickers: {self.cards[1:]}'
             return rep
+
 
 
     @staticmethod
@@ -458,14 +456,12 @@ class PokerHand(object):
         :param cards: A list of playing cards.
         :return: None if no three of a kind is found, else the highest flush"""
         vals = [c.get_value() for c in cards]
-        vals.sort(reverse=True)
         counted_cards = Counter(vals)
         most_common, count = zip(*counted_cards.most_common(1))
         if count[0] == 3:
             three = most_common[0]
-            del counted_cards[three]
-            cards = sorted(counted_cards.elements(), reverse=True)
-            return three, cards[0:2]
+            cards = sorted(counted_cards.keys())
+            return three, cards[1:3]
 
     @staticmethod
     def check_two_pair(cards):
@@ -513,26 +509,5 @@ class PokerHand(object):
         return high_card, vals[1:5]
 
 
-d = StandardDeck()
-#print(d)
-#d.show_deck()
-# d.show_deck()
-sh = JackCard(Suit.Hearts)
-# print(sh.get_value())
-# print(Suit.Hearts.value)
-# print(Suit.Hearts > Suit.Spades)
-h = Hand()
-
-h.add_card(NumberedCard(5, Suit.Hearts))
-h.add_card(NumberedCard(7, Suit.Spades))
 
 
-T_cards = [NumberedCard(10, Suit.Spades), NumberedCard(9, Suit.Diamonds), NumberedCard(8, Suit.Spades), QueenCard(Suit.Hearts), NumberedCard(2, Suit.Hearts), NumberedCard(3, Suit.Spades), NumberedCard(4, Suit.Diamonds), NumberedCard(5, Suit.Diamonds), KingCard(Suit.Spades), KingCard(Suit.Hearts), AceCard(Suit.Hearts), NumberedCard(7, Suit.Clubs)]
-K_cards = [JackCard(Suit.Spades),JackCard(Suit.Clubs), NumberedCard(10, Suit.Hearts), QueenCard(Suit.Hearts), JackCard(Suit.Hearts),QueenCard(Suit.Spades), QueenCard(Suit.Diamonds)]
-cl2=[KingCard(Suit.Hearts), QueenCard(Suit.Hearts), JackCard(Suit.Hearts), NumberedCard(10,Suit.Hearts), NumberedCard(9,Suit.Hearts), NumberedCard(2,Suit.Spades)]
-cl3= [JackCard(Suit.Hearts), JackCard(Suit.Spades), NumberedCard(5, Suit.Diamonds), NumberedCard(5,Suit.Spades), JackCard(Suit.Clubs)]
-cl4 = [JackCard(Suit.Spades),QueenCard(Suit.Clubs), NumberedCard(10, Suit.Hearts), NumberedCard(2,Suit.Hearts), NumberedCard(3,Suit.Hearts)]
-# pok = h.best_poker_hand(K_cards)
-# # pok.show_poker_hand()
-print(h.best_poker_hand(cl4))
-print(PokerHand.check_pair(cl4))
