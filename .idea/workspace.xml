@@ -201,7 +201,13 @@
       <option name="presentableId" value="LOCAL−00015" />
       <updated>1645287745327</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL−00016" summary="Lite check">
+      <created>1645290663305</created>
+      <option name="number" value="LOCAL−00016" />
+      <option name="presentableId" value="LOCAL−00016" />
+      <updated>1645290663305</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -222,5 +228,16 @@
     <MESSAGE value="YES" />
     <MESSAGE value="Lite check" />
     <option name="LAST_COMMIT_MESSAGE" value="Lite check" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/cardlib.py</url>
+          <line>395</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

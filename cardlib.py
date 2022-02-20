@@ -3,6 +3,7 @@ import abc
 from random import shuffle
 from collections import Counter
 
+#"Hej"
 
 class PlayingCard(abc.ABC):
     """Parent class for all the different playing cards
@@ -296,7 +297,6 @@ class PokerHand(object):
         :param cards: A list of playing cards.
         :return: None if no straight flush is found, else the value of the top card.
         """
-
         cards.sort(reverse=True)
         vals = [(c.get_value(), c.suit.name) for c in cards] \
                + [(1, c.suit.name) for c in cards if c.get_value() == 14]  # Add the aces!
@@ -473,6 +473,8 @@ T_cards = [NumberedCard(10, Suit.Spades), NumberedCard(10, Suit.Diamonds), Numbe
 K_cards = [NumberedCard(10, Suit.Spades), NumberedCard(10, Suit.Clubs), NumberedCard(10, Suit.Hearts), QueenCard(Suit.Hearts), QueenCard(Suit.Hearts)]
 cl2=[KingCard(Suit.Hearts), QueenCard(Suit.Hearts), JackCard(Suit.Hearts), NumberedCard(10,Suit.Hearts), NumberedCard(9,Suit.Hearts), NumberedCard(2,Suit.Spades)]
 
+
+PokerHand.check_three_of_a_kind(T_cards)
 
 # pok = h.best_poker_hand(K_cards)
 # # pok.show_poker_hand()
