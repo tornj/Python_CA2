@@ -5,4 +5,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
+  <component name="ReSTService">
+    <option name="DOC_DIR" value="C:\Users\johan\OneDrive - Chalmers University of Technology\Documents\Läsår 3\LP3\Python\Assignments\Python_CA2\doc" />
+  </component>
 </module>
