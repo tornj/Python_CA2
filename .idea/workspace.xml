@@ -3,8 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="bfe6e252-5a36-4d67-bd03-175bceac4f07" name="Changes" comment="biblioteket">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cardlib.py" beforeDir="false" afterPath="$PROJECT_DIR$/cardlib.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/test_cardlib.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_cardlib.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,7 +38,7 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/doc" />
   </component>
   <component name="RunManager" selected="Python.cardlib">
     <configuration name="cardlib" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
@@ -188,7 +186,19 @@
       <option name="presentableId" value="LOCAL−00016" />
       <updated>1645290663305</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL−00017" summary="biblioteket">
+      <created>1645370782406</created>
+      <option name="number" value="LOCAL−00017" />
+      <option name="presentableId" value="LOCAL−00017" />
+      <updated>1645370782406</updated>
+    </task>
+    <task id="LOCAL−00018" summary="biblioteket">
+      <created>1645372618915</created>
+      <option name="number" value="LOCAL−00018" />
+      <option name="presentableId" value="LOCAL−00018" />
+      <updated>1645372618915</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -204,11 +214,11 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="print" />
-    <MESSAGE value="biblioteket" />
     <MESSAGE value="Cardlib och test" />
     <MESSAGE value="YES" />
     <MESSAGE value="Lite check" />
-    <option name="LAST_COMMIT_MESSAGE" value="Lite check" />
+    <MESSAGE value="biblioteket" />
+    <option name="LAST_COMMIT_MESSAGE" value="biblioteket" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
