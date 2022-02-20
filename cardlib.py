@@ -236,6 +236,19 @@ class StandardDeck(object):
     def draw(self):
         return self.deck.pop()
 
+class Pokerhand_types(Enum):
+    straight_flush= 9
+    four_of_a_kind= 8
+    full_house= 7
+    flush=6
+    straight= 5
+    three_of_a_kind=4
+    two_pair=3
+    pair=2
+    high_card=1
+
+    def __lt__(self,other):
+        return self.value<other.value
 
 class PokerHand(object):
     """ A class used to represent a players hand
@@ -250,13 +263,13 @@ class PokerHand(object):
         self.check_checks(self.cards)
 
     def check_checks(self, cards):
-        tests = [self.check_straight_flush, self.check_four_of_a_kind, self.check_full_house, self.check_flush,
+        functions = [self.check_straight_flush, self.check_four_of_a_kind, self.check_full_house, self.check_flush,
                  self.check_straight, self.check_three_of_a_kind, self.check_two_pair, self.check_pair,
                  self.check_high_card]
-        self.type = 10
-        for t in tests:
-            self.cards = t(cards)
-            self.type -= 1
+       # self.type = 10
+        for func, t in zip(functions, Pokerhand_types):
+            self.cards = func(cards)
+            self.type = t
             if self.cards is not None:
                 break
         return self.type, self.cards
@@ -284,14 +297,14 @@ class PokerHand(object):
         :param cards: A list of playing cards.
         :return: None if no straight flush is found, else the value of the top card.
         """
-        #cards.sort()
+        cards.sort(reverse=True)
         vals = [(c.get_value(), c.suit.name) for c in cards] \
                + [(1, c.suit.name) for c in cards if c.get_value() == 14]  # Add the aces!
-        for c in reversed(cards):  # Starting point (high card)
+        for c in cards:  # Starting point (high card)
             # Check if we have the value - k in the set of cards:
             found_straight = True
             for k in range(1, 5):
-                if (c.get_value() - k, c.suit) not in vals:
+                if (c.get_value() - k, c.suit.name) not in vals:
                     found_straight = False
                     break
 
@@ -393,7 +406,7 @@ class PokerHand(object):
         most_common, count = zip(*counted_cards.most_common(1))
         if count[0] == 3:
             three = most_common[0]
-            cards = counted_cards.elements()
+            cards = sorted(counted_cards.keys())
             return three, cards[1:3]
 
     @staticmethod
@@ -458,9 +471,22 @@ h.add_card(d.draw())
 
 T_cards = [NumberedCard(10, Suit.Spades), NumberedCard(10, Suit.Diamonds), NumberedCard(10, Suit.Spades), QueenCard(Suit.Hearts), NumberedCard(2, Suit.Hearts), NumberedCard(3, Suit.Spades), NumberedCard(4, Suit.Diamonds), NumberedCard(5, Suit.Diamonds), KingCard(Suit.Spades), KingCard(Suit.Hearts), AceCard(Suit.Hearts), NumberedCard(7, Suit.Clubs)]
 K_cards = [NumberedCard(10, Suit.Spades), NumberedCard(10, Suit.Clubs), NumberedCard(10, Suit.Hearts), QueenCard(Suit.Hearts), QueenCard(Suit.Hearts)]
+cl2=[KingCard(Suit.Hearts), QueenCard(Suit.Hearts), JackCard(Suit.Hearts), NumberedCard(10,Suit.Hearts), NumberedCard(9,Suit.Hearts), NumberedCard(2,Suit.Spades)]
+
 
 PokerHand.check_three_of_a_kind(T_cards)
 
 # pok = h.best_poker_hand(K_cards)
 # # pok.show_poker_hand()
 # print(pok)
+vals = [c.get_value() for c in T_cards]
+counted_cards = Counter(vals)
+most_common, count = zip(*counted_cards.most_common(1))
+if count[0] == 3:
+    three = most_common[0]
+    cards = sorted(counted_cards.keys())
+print(cards)
+
+
+# FK=[JackCard(Suit.Hearts), JackCard(Suit.Clubs), JackCard(Suit.Spades), JackCard(Suit.Diamonds), NumberedCard(5,Suit.Hearts), NumberedCard(3, Suit.Diamonds)]
+# assert PokerHand.check_straight_flush(cl2) is not None

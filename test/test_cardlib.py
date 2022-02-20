@@ -68,6 +68,21 @@ def test_hand():
     h2.drop_cards([2, 1, 4])
     assert h2.cards[0] == cards[0]
     assert h2.cards[1] == cards[3]
+    '''Testing if a certain cards gives a specific handtype '''
+
+    cl2 = [KingCard(Suit.Hearts), QueenCard(Suit.Hearts), JackCard(Suit.Hearts), NumberedCard(10, Suit.Hearts),
+           NumberedCard(9, Suit.Hearts), NumberedCard(2, Suit.Spades)]
+    assert PokerHand.check_straight_flush(cl2) is not None
+    assert PokerHand.check_straight(cl2) is not None
+    # Check four of a kind, full house, three of a kind, two pair, pair, high card
+    cl3 = [JackCard(Suit.Hearts), JackCard(Suit.Clubs), JackCard(Suit.Spades), JackCard(Suit.Diamonds),
+           NumberedCard(5, Suit.Hearts), NumberedCard(5, Suit.Diamonds)]
+    assert PokerHand.check_four_of_a_kind(cl3) is not None
+    assert PokerHand.check_full_house(cl3) is not None
+    assert PokerHand.check_three_of_a_kind(cl3) is not None
+    assert PokerHand.check_two_pair(cl3) is not None
+    assert PokerHand.check_pair(cl3) is not None
+    assert PokerHand.check_high_card(cl3) is not None
 
 # This test builds on the assumptions above. Add your type and data for the commented out tests
 # and uncomment them!
