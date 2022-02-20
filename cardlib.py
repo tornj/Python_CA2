@@ -3,7 +3,6 @@ import abc
 from random import shuffle
 from collections import Counter
 
-#"Hej"
 
 class PlayingCard(abc.ABC):
     """Parent class for all the different playing cards
@@ -144,17 +143,10 @@ class Hand(object):
     def __init__(self):
         self.cards = []
 
-    # def __repr__(self):
-    #     s = ""
-    #     for c in self.cards:
-    #         s += str(c) + '\n'
-    #     s.split('\n')
-    #     return "Hand(" + ','.join(s) + ")"
-
     def __str__(self):
         s = ""
         for c in self.cards:
-            s = s + str(c) + '\n'  # c.__str__() + "\n"
+            s = s + str(c) + '\n'
         return s
 
     def add_card(self, card):
@@ -236,37 +228,64 @@ class StandardDeck(object):
     def draw(self):
         return self.deck.pop()
 
-class Pokerhand_types(Enum):
-    straight_flush= 9
-    four_of_a_kind= 8
-    full_house= 7
-    flush=6
-    straight= 5
-    three_of_a_kind=4
-    two_pair=3
-    pair=2
-    high_card=1
 
-    def __lt__(self,other):
-        return self.value<other.value
+class Pokerhand_types(Enum):
+    """Enum class that represents the different hand types"""
+    straight_flush = 9
+    four_of_a_kind = 8
+    full_house = 7
+    flush = 6
+    straight = 5
+    three_of_a_kind = 4
+    two_pair = 3
+    pair = 2
+    high_card = 1
+
+    def __lt__(self, other):
+        return self.value < other.value
+
 
 class PokerHand(object):
     """ A class used to represent a players hand
     Methods
     -------
-    checks_checks
+    checks_checks(cards)
+        Loops through the checks and returns a list of the 5 best cards and what hand type they represent.
+    show_poker_hand
+        Prints the poker hand in the command window
+    check_straight_flush(cards)
+        Checks for the best straight flush in a list of cards
+    check_four_of_a_kind(cards)
+        Checks for four of a kind in a list of cards
+    check_full_house(cards)
+        Checks for the best full house in a list of cards
+    check_flush(cards)
+        Checks for the best flush in a list of cards
+    check_straight(cards)
+        Checks for the best straight in a list of cards
+    check_three_of_a_kind(cards
+        Checks for the best three of a kind in a list of cards
+    check_two_pair(cards)
+        Checks for the best two pair in a list of playing cards
+    check_pair(cards)
+        Checks for the best pair in a list of playing cards
+    check_high_card(cards)
+        Checks for the highest cards in a list of playing cards
+    """
 
-       """
     def __init__(self, cards):
         self.cards = cards
         self.type = 0
         self.check_checks(self.cards)
 
     def check_checks(self, cards):
+        """Loops through the checks and returns a tuple of the best cards and what hand type they represent
+        :param cards: A list of playing cards
+        :return: A tuple of the best cards and their corresponding hand type.
+        """
         functions = [self.check_straight_flush, self.check_four_of_a_kind, self.check_full_house, self.check_flush,
-                 self.check_straight, self.check_three_of_a_kind, self.check_two_pair, self.check_pair,
-                 self.check_high_card]
-       # self.type = 10
+                     self.check_straight, self.check_three_of_a_kind, self.check_two_pair, self.check_pair,
+                     self.check_high_card]
         for func, t in zip(functions, Pokerhand_types):
             self.cards = func(cards)
             self.type = t
@@ -289,6 +308,11 @@ class PokerHand(object):
         for c in self.cards:
             s = s + str(c) + '\n'
         return s
+
+    def __repr__(self):
+        Name = self.type.name
+        Name = ' '.join(Name.split('_'))
+        
 
     @staticmethod
     def check_straight_flush(cards):

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="bfe6e252-5a36-4d67-bd03-175bceac4f07" name="Changes" comment="biblioteket">
+    <list default="true" id="bfe6e252-5a36-4d67-bd03-175bceac4f07" name="Changes" comment="Lite check">
+      <change beforePath="$PROJECT_DIR$/.idea/Python_CA2.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Python_CA2.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cardlib.py" beforeDir="false" afterPath="$PROJECT_DIR$/cardlib.py" afterDir="false" />
     </list>
@@ -41,7 +42,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
-  <component name="RunManager" selected="Python.cardlib">
+  <component name="RunManager" selected="Python tests.Python tests in test">
     <configuration name="cardlib" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="Python_CA2" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -61,6 +62,20 @@
       <option name="MODULE_MODE" value="false" />
       <option name="REDIRECT_INPUT" value="false" />
       <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Python tests in test" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+      <module name="Python_CA2" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/test" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;$PROJECT_DIR$/test&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
       <method v="2" />
     </configuration>
     <configuration name="Python tests in test_cardlib.py (1)" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
@@ -95,9 +110,11 @@
       <item itemvalue="Python.cardlib" />
       <item itemvalue="Python tests.Python tests in test_cardlib.py" />
       <item itemvalue="Python tests.Python tests in test_cardlib.py (1)" />
+      <item itemvalue="Python tests.Python tests in test" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python tests.Python tests in test" />
         <item itemvalue="Python tests.Python tests in test_cardlib.py (1)" />
       </list>
     </recent_temporary>
@@ -207,7 +224,13 @@
       <option name="presentableId" value="LOCAL−00016" />
       <updated>1645290663305</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL−00017" summary="Lite check">
+      <created>1645360285706</created>
+      <option name="number" value="LOCAL−00017" />
+      <option name="presentableId" value="LOCAL−00017" />
+      <updated>1645360285707</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -228,16 +251,5 @@
     <MESSAGE value="YES" />
     <MESSAGE value="Lite check" />
     <option name="LAST_COMMIT_MESSAGE" value="Lite check" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/cardlib.py</url>
-          <line>395</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>
