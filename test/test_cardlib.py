@@ -68,6 +68,7 @@ def test_hand():
     h2.drop_cards([2, 1, 4])
     assert h2.cards[0] == cards[0]
     assert h2.cards[1] == cards[3]
+
     '''Testing if a certain cards gives a specific handtype '''
 
     cl2 = [KingCard(Suit.Hearts), QueenCard(Suit.Hearts), JackCard(Suit.Hearts), NumberedCard(10, Suit.Hearts),
@@ -76,10 +77,12 @@ def test_hand():
     assert PokerHand.check_straight(cl2) is not None
     # Check four of a kind, full house, three of a kind, two pair, pair, high card
     cl3 = [JackCard(Suit.Hearts), JackCard(Suit.Clubs), JackCard(Suit.Spades), JackCard(Suit.Diamonds),
-           NumberedCard(5, Suit.Hearts), NumberedCard(5, Suit.Diamonds)]
+           NumberedCard(5, Suit.Hearts), NumberedCard(5, Suit.Diamonds), NumberedCard(3, Suit.Diamonds)]
     assert PokerHand.check_four_of_a_kind(cl3) is not None
     assert PokerHand.check_full_house(cl3) is not None
+    cl3.pop(0)
     assert PokerHand.check_three_of_a_kind(cl3) is not None
+    cl3.pop(0)
     assert PokerHand.check_two_pair(cl3) is not None
     assert PokerHand.check_pair(cl3) is not None
     assert PokerHand.check_high_card(cl3) is not None
@@ -98,20 +101,26 @@ def test_pokerhands():
     ph1 = h1.best_poker_hand(cl)
     assert isinstance(ph1, PokerHand)
     ph2 = h2.best_poker_hand(cl)
-    # assert # Check ph1 handtype class and data here>
-    # h1.drop_cards([0, 1])
-    # h1.add_card(NumberedCard(10, Suit.Hearts))
-    # h1.add_card(NumberedCard(10, Suit.Diamonds))
-    # assert # Check ph2 handtype class and data here>
+    assert isinstance(ph2, PokerHand)
     assert ph1 < ph2
     cl.pop(0)
     cl.append(QueenCard(Suit.Spades))
     ph3 = h1.best_poker_hand(cl)
     ph4 = h2.best_poker_hand(cl)
+    assert isinstance(ph3, PokerHand)
+    assert isinstance(ph4, PokerHand)
     assert ph3 < ph4
     assert ph1 < ph2
-    # assert # Check ph3 handtype class and data here>
-    # assert # Check ph4 handtype class and data here>
-    cl = [QueenCard(Suit.Clubs), QueenCard(Suit.Spades), KingCard(Suit.Clubs), KingCard(Suit.Spades)]
+
+    #Check two hand with same type:
+    cl = [JackCard(Suit.Clubs), AceCard(Suit.Spades), KingCard(Suit.Clubs), NumberedCard(3,Suit.Spades)]
     ph5 = h1.best_poker_hand(cl)
-    # assert # Check ph5 handtype class and data here>
+    assert isinstance(ph5, PokerHand)
+    h3=Hand()
+    h3.add_card(KingCard(Suit.Spades))
+    h3.add_card(NumberedCard(9,Suit.Clubs))
+    ph6=h3.best_poker_hand(cl)
+    assert isinstance(ph6, PokerHand)
+    assert ph5 > ph6
+
+    # assert # Check ph5 handtype class and data here> ??????????????

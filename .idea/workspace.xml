@@ -4,7 +4,6 @@
     <list default="true" id="bfe6e252-5a36-4d67-bd03-175bceac4f07" name="Changes" comment="Lite check">
       <change beforePath="$PROJECT_DIR$/.idea/Python_CA2.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Python_CA2.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cardlib.py" beforeDir="false" afterPath="$PROJECT_DIR$/cardlib.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,7 +39,7 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/doc" />
   </component>
   <component name="RunManager" selected="Python tests.Python tests in test">
     <configuration name="cardlib" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
@@ -64,6 +63,8 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+
+=======
     <configuration name="Python tests in test" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="Python_CA2" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -92,6 +93,7 @@
       <option name="_new_targetType" value="&quot;PATH&quot;" />
       <method v="2" />
     </configuration>
+
     <configuration name="Python tests in test_cardlib.py" type="tests" factoryName="Autodetect" nameIsGenerated="true">
       <module name="Python_CA2" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -109,6 +111,9 @@
     <list>
       <item itemvalue="Python.cardlib" />
       <item itemvalue="Python tests.Python tests in test_cardlib.py" />
+
+    </list>
+=======
       <item itemvalue="Python tests.Python tests in test_cardlib.py (1)" />
       <item itemvalue="Python tests.Python tests in test" />
     </list>
@@ -118,6 +123,7 @@
         <item itemvalue="Python tests.Python tests in test_cardlib.py (1)" />
       </list>
     </recent_temporary>
+
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -224,6 +230,21 @@
       <option name="presentableId" value="LOCAL−00016" />
       <updated>1645290663305</updated>
     </task>
+
+    <task id="LOCAL−00017" summary="biblioteket">
+      <created>1645370782406</created>
+      <option name="number" value="LOCAL−00017" />
+      <option name="presentableId" value="LOCAL−00017" />
+      <updated>1645370782406</updated>
+    </task>
+    <task id="LOCAL−00018" summary="biblioteket">
+      <created>1645372618915</created>
+      <option name="number" value="LOCAL−00018" />
+      <option name="presentableId" value="LOCAL−00018" />
+      <updated>1645372618915</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
+=======
     <task id="LOCAL−00017" summary="Lite check">
       <created>1645360285706</created>
       <option name="number" value="LOCAL−00017" />
@@ -231,6 +252,7 @@
       <updated>1645360285707</updated>
     </task>
     <option name="localTasksCounter" value="18" />
+
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -246,10 +268,24 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="print" />
-    <MESSAGE value="biblioteket" />
     <MESSAGE value="Cardlib och test" />
     <MESSAGE value="YES" />
     <MESSAGE value="Lite check" />
-    <option name="LAST_COMMIT_MESSAGE" value="Lite check" />
+    <MESSAGE value="biblioteket" />
+    <option name="LAST_COMMIT_MESSAGE" value="biblioteket" />
   </component>
+
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/cardlib.py</url>
+          <line>412</line>
+          <option name="timeStamp" value="12" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+=======
+
 </project>

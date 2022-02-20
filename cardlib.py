@@ -39,7 +39,7 @@ class NumberedCard(PlayingCard):
         return self.value
 
     def __str__(self):
-        return f"{self.value}{self.suit}"
+        return f"{self.value} of {self.suit.name}"
 
     def __repr__(self):
         return 'Card(%r, %r)' % (self.get_value(), self.suit.name)
@@ -54,7 +54,7 @@ class JackCard(PlayingCard):
         return 11
 
     def __str__(self):
-        return f"J{self.suit}"
+        return f"Jack of {self.suit.name}"
 
     def __repr__(self):
         return 'Card(%r, %r)' % (self.get_value(), self.suit.name)
@@ -69,7 +69,7 @@ class QueenCard(PlayingCard):
         return 12
 
     def __str__(self):
-        return f"Q{self.suit}"
+        return f"Queen of {self.suit.name}"
 
     def __repr__(self):
         return 'Card(%r, %r)' % (self.get_value(), self.suit.name)
@@ -81,7 +81,7 @@ class KingCard(PlayingCard):
         super().__init__(suit)
 
     def __str__(self):
-        return f"K{self.suit}"
+        return f"King of {self.suit.name}"
 
     def get_value(self):
         return 13
@@ -99,7 +99,7 @@ class AceCard(PlayingCard):
         return 14
 
     def __str__(self):
-        return f"A{self.suit}"
+        return f"Ace of {self.suit.name}"
 
     def __repr__(self):
         return 'Card(%r, %r)' % (self.get_value(), self.suit.name)
@@ -113,16 +113,7 @@ class Suit(Enum):
     Diamonds = 4
 
     def __str__(self):
-        if self.name == 'Hearts':
-            return "\u2665"
-        elif self.name == 'Spades':
-            return "\u2660"
-        elif self.name == 'Clubs':
-            return "\u2663"
-        elif self.name == 'Diamonds':
-            return "\u2666"
-        #return f"{self.name}"
-        #return  f""
+        return f"{self.name}"
 
     def __repr__(self):
         return 'Suit(%r)' % Suit
@@ -318,6 +309,11 @@ class PokerHand(object):
             s = s + str(c) + '\n'
         return s
 
+    def __repr__(self):
+        Name = self.type.name
+        Name = ' '.join(Name.split('_'))
+        
+
     @staticmethod
     def check_straight_flush(cards):
         """
@@ -502,10 +498,19 @@ K_cards = [NumberedCard(10, Suit.Spades), NumberedCard(10, Suit.Clubs), Numbered
 cl2=[KingCard(Suit.Hearts), QueenCard(Suit.Hearts), JackCard(Suit.Hearts), NumberedCard(10,Suit.Hearts), NumberedCard(9,Suit.Hearts), NumberedCard(2,Suit.Spades)]
 
 
+PokerHand.check_three_of_a_kind(T_cards)
 
-print(Suit.Hearts)
-print(Suit.Spades)
-print(JackCard(Suit.Clubs))
+# pok = h.best_poker_hand(K_cards)
+# # pok.show_poker_hand()
+# print(pok)
+vals = [c.get_value() for c in T_cards]
+counted_cards = Counter(vals)
+most_common, count = zip(*counted_cards.most_common(1))
+if count[0] == 3:
+    three = most_common[0]
+    cards = sorted(counted_cards.keys())
+print(cards)
+
 
 # FK=[JackCard(Suit.Hearts), JackCard(Suit.Clubs), JackCard(Suit.Spades), JackCard(Suit.Diamonds), NumberedCard(5,Suit.Hearts), NumberedCard(3, Suit.Diamonds)]
 # assert PokerHand.check_straight_flush(cl2) is not None
