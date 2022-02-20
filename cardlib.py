@@ -303,22 +303,49 @@ class PokerHand(object):
         else:
             return self.type < other.type
 
+    # def __str__(self):
+    #     s = ""
+    #     for c in self.cards:
+    #         s = s + str(c) + '\n'
+    #     return s
+
     def __str__(self):
-        s = ""
-        for c in self.cards:
-            s = s + str(c) + '\n'
+        if self.type.name == 'straight_flush':
+            handtype=''.join(self.type.name.split('_'))
+            rep= f'({handtype} high {self.cards})'
+            return rep
+        elif self.type.name == 'four_of_a_kind':
+            handtype=''.join(self.type.name.split('_'))
+            rep= f'{handtype} of {self.cards[0]}, kicker: {self.cards[1]}'
+            return rep
+        elif self.type.name == 'full_house':
+            rep= f"full house {self.cards[0]}'s over {self.cards[1]}'s"
+            return rep
+        elif self.type.name == 'flush':
+            handtype = ''.join(self.type.name.split('_'))
+            rep= f'{handtype} with {self.cards}'
+            return rep
+        elif self.type.name == 'straight':
+            handtype = ''.join(self.type.name.split('_'))
+            rep= f'{self.cards} high {handtype}'
+            return rep
+        elif self.type.name == 'three_of_a_kind':
+            handtype = ''.join(self.type.name.split('_'))
+            rep= f'{handtype} of {self.cards[0]}, kickers: {self.cards[1:]}'
+            return rep
+        elif self.type.name == 'two_pair':
+            handtype = ''.join(self.type.name.split('_'))
+            rep= f'{handtype} of {self.cards[0]}, kickers: {self.cards[1:]}'
+            return rep
+        elif self.type.name == 'pair':
+            handtype = ''.join(self.type.name.split('_'))
+            rep= f'{handtype} of {self.cards[0]}, kickers: {self.cards[1:]}'
+            return rep
+        elif self.type.name == 'high_card':
+            handtype = ''.join(self.type.name.split('_'))
+            rep= f'{handtype} of {self.cards[0]}, kickers: {self.cards[1:]}'
+            return rep
 
-    # def __repr__(self):
-    #     handtype= self.type.name
-    #     handtype=' '.join(handtype.split('_'))
-    #     rep='bestpokerhand('handtype+,
-    #     return rep
-
-
-    def __repr__(self):
-        Name = self.type.name
-        Name = ' '.join(Name.split('_'))
-        
 
     @staticmethod
     def check_straight_flush(cards):
@@ -337,7 +364,6 @@ class PokerHand(object):
                 if (c.get_value() - k, c.suit.name) not in vals:
                     found_straight = False
                     break
-
             if found_straight:
                 return c.get_value()
 
@@ -497,21 +523,16 @@ sh = JackCard(Suit.Hearts)
 # print(Suit.Hearts > Suit.Spades)
 h = Hand()
 
-h.add_card(d.draw())
-h.add_card(d.draw())
+h.add_card(NumberedCard(5, Suit.Hearts))
+h.add_card(NumberedCard(7, Suit.Spades))
 
 
-T_cards = [NumberedCard(10, Suit.Spades), NumberedCard(10, Suit.Diamonds), NumberedCard(10, Suit.Spades), QueenCard(Suit.Hearts), NumberedCard(2, Suit.Hearts), NumberedCard(3, Suit.Spades), NumberedCard(4, Suit.Diamonds), NumberedCard(5, Suit.Diamonds), KingCard(Suit.Spades), KingCard(Suit.Hearts), AceCard(Suit.Hearts), NumberedCard(7, Suit.Clubs)]
+T_cards = [NumberedCard(10, Suit.Spades), NumberedCard(9, Suit.Diamonds), NumberedCard(8, Suit.Spades), QueenCard(Suit.Hearts), NumberedCard(2, Suit.Hearts), NumberedCard(3, Suit.Spades), NumberedCard(4, Suit.Diamonds), NumberedCard(5, Suit.Diamonds), KingCard(Suit.Spades), KingCard(Suit.Hearts), AceCard(Suit.Hearts), NumberedCard(7, Suit.Clubs)]
 K_cards = [JackCard(Suit.Spades),JackCard(Suit.Clubs), NumberedCard(10, Suit.Hearts), QueenCard(Suit.Hearts), JackCard(Suit.Hearts),QueenCard(Suit.Spades), QueenCard(Suit.Diamonds)]
 cl2=[KingCard(Suit.Hearts), QueenCard(Suit.Hearts), JackCard(Suit.Hearts), NumberedCard(10,Suit.Hearts), NumberedCard(9,Suit.Hearts), NumberedCard(2,Suit.Spades)]
-
-
+cl3= [JackCard(Suit.Hearts), JackCard(Suit.Spades), NumberedCard(5, Suit.Diamonds), NumberedCard(5,Suit.Spades), JackCard(Suit.Clubs)]
+cl4 = [JackCard(Suit.Spades),QueenCard(Suit.Clubs), NumberedCard(10, Suit.Hearts), NumberedCard(2,Suit.Hearts), NumberedCard(3,Suit.Hearts)]
 # pok = h.best_poker_hand(K_cards)
 # # pok.show_poker_hand()
-
-
-klas= 'four_of_a_kind'
-klas2=klas.split('_')
-
-klas2=' '.join(klas2)
-print(klas2)
+print(h.best_poker_hand(cl4))
+print(PokerHand.check_pair(cl4))

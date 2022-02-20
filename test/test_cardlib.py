@@ -15,6 +15,7 @@ def test_cards():
     cj = JackCard(Suit.Clubs)
     da = AceCard(Suit.Diamonds)
     hq = QueenCard(Suit.Hearts)
+    cq=
     assert da > hq
     assert hq > cj
     assert hq.get_value() == 12
