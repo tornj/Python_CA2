@@ -203,6 +203,7 @@ class StandardDeck(object):
         self.create_deck()
 
     def create_deck(self):
+        """A method that creates a deck of 52 unique playingcards. """
         for s in Suit:
             self.deck.append(AceCard(s))
             self.deck.append(KingCard(s))
@@ -303,28 +304,23 @@ class PokerHand(object):
         else:
             return self.type < other.type
 
-
-
-
     def __str__(self):
         if self.type.name == 'straight_flush':
             handtype=''.join(self.type.name.split('_'))
             rep= f'({handtype} high {self.cards})'
             return rep
         elif self.type.name == 'four_of_a_kind':
-            handtype=''.join(self.type.name.split('_'))
+            handtype=' '.join(self.type.name.split('_'))
             rep= f'{handtype} of {self.cards[0]}, kicker: {self.cards[1]}'
             return rep
         elif self.type.name == 'full_house':
             rep= f"full house {self.cards[0]}'s over {self.cards[1]}'s"
             return rep
         elif self.type.name == 'flush':
-            handtype = ''.join(self.type.name.split('_'))
-            rep= f'{handtype} with {self.cards}'
+            rep= f'{self.type.name} with {self.cards}'
             return rep
         elif self.type.name == 'straight':
-            handtype = ''.join(self.type.name.split('_'))
-            rep= f'{self.cards} high {handtype}'
+            rep= f'{self.cards} high {self.type.name}'
             return rep
         elif self.type.name == 'three_of_a_kind':
             handtype = ''.join(self.type.name.split('_'))
@@ -335,8 +331,7 @@ class PokerHand(object):
             rep= f'{handtype} of {self.cards[0]}, kickers: {self.cards[1:]}'
             return rep
         elif self.type.name == 'pair':
-            handtype = ''.join(self.type.name.split('_'))
-            rep= f'{handtype} of {self.cards[0]}, kickers: {self.cards[1:]}'
+            rep= f'{self.type.name} of {self.cards[0]}, kickers: {self.cards[1:]}'
             return rep
         elif self.type.name == 'high_card':
             handtype = ''.join(self.type.name.split('_'))
@@ -507,7 +502,3 @@ class PokerHand(object):
         vals.sort(reverse=True)
         high_card = vals[0]
         return high_card, vals[1:5]
-
-
-
-
