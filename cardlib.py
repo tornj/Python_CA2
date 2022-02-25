@@ -174,8 +174,9 @@ class Hand(object):
         self.cards.sort()
 
     def best_poker_hand(self, table_cards):
-        """A method that creates a poker hand object and returns the combination of the 5 best playing cards.
+        """A method that creates a poker hand object and returns the combination of the 5 best playing cards
         :param table_cards: A list of the cards on the table.
+
         :return: A poker hand of the 5 best cards out of the cards on hand and card on the table."""
         all_cards = self.cards
         for tc in table_cards:
@@ -224,7 +225,7 @@ class StandardDeck(object):
             return s
 
     def shuffle(self):
-        return shuffle(self.deck)
+        shuffle(self.deck)
 
     def draw(self):
         return self.deck.pop()
