@@ -12,6 +12,7 @@ import sys
 # Models
 ###################
 
+
 class CardModel(QObject):
     """ Base class that described what is expected from the CardView widget """
 
@@ -27,22 +28,22 @@ class CardModel(QObject):
 
 
 # A trivial card class (you should use the stuff you made in your library instead!
-class MySimpleCard:
-    def __init__(self, value, suit):
-        self.value = value
-        self.suit = suit
-
-    def get_value(self):
-        return self.value
-
-# You have made a class similar to this (hopefully):
-class Hand:
-    def __init__(self):
-        # Lets use some hardcoded values for most of this to start with
-        self.cards = [MySimpleCard(13, 2), MySimpleCard(7, 0), MySimpleCard(13, 1)]
-
-    def add_card(self, card):
-        self.cards.append(card)
+# class MySimpleCard:
+#     def __init__(self, value, suit):
+#         self.value = value
+#         self.suit = suit
+#
+#     def get_value(self):
+#         return self.value
+#
+# # You have made a class similar to this (hopefully):
+# class Hand:
+#     def __init__(self):
+#         # Lets use some hardcoded values for most of this to start with
+#         self.cards = [MySimpleCard(13, 2), MySimpleCard(7, 0), MySimpleCard(13, 1)]
+#
+#     def add_card(self, card):
+#         self.cards.append(card)
 
 
 # We can extend this class to create a model, which updates the view whenever it has changed.
@@ -76,6 +77,7 @@ class HandModel(Hand, CardModel):
 ###################
 # Card widget code:
 ###################
+
 
 class TableScene(QGraphicsScene):
     """ A scene with a table cloth background """
@@ -198,15 +200,29 @@ class CardView(QGraphicsView):
 
 # Lets test it out
 app = QApplication(sys.argv)
-hand = HandModel()
+window = QWidget()
+window.setStyleSheet("background-color: green;")
+cButton = QPushButton("Call/Check")
+betBtn = QPushButton("bet")
+foldBtn = QPushButton("fold")
 
-card_view = CardView(hand)
+hbox = QHBoxLayout()
+hbox.addStretch(1)
+hbox.addWidget(cButton)
+hbox.addWidget(betBtn)
+hbox.addWidget(foldBtn)
+#hbox.addStretch(1)
+#hbox.setAlignment(Qt.AlignCenter)
 
-# Creating a small demo window to work with, and put the card_view inside:
-box = QVBoxLayout()
-box.addWidget(card_view)
-player_view = QGroupBox("Player 1")
-player_view.setLayout(box)
-player_view.show()
+# hand = HandModel()
+# table = TableScene()
+# card_view = CardView(hand)
+#
+# # Creating a small demo window to work with, and put the card_view inside:
+# box = QVBoxLayout()
+# box.addWidget(card_view)
+# player_view = QGroupBox("Player 1")
+# player_view.setLayout(box)
+# player_view.show()
 
 app.exec_()

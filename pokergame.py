@@ -1,3 +1,4 @@
+
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtSvg import *
@@ -8,15 +9,7 @@ import sys
 
 
 
-class TableScene(QGraphicsScene):
-    """ A scene with a table cloth background """
-    def __init__(self):
-        super().__init__()
-        self.tile = QPixmap('cards/table.png')
-        self.setBackgroundBrush(QBrush(self.tile))
-        self.show()
 
-Table_scene = TableScene()
 
 
 # class Window(QMainWindow):
