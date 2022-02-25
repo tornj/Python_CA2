@@ -1,9 +1,12 @@
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtSvg import *
-from PyQt5.QtWidgets import *
-from abc import abstractmethod
-import sys
+# from PyQt5.QtCore import *
+# from PyQt5.QtGui import *
+# from PyQt5.QtSvg import *
+# from PyQt5.QtWidgets import *
+from PyQt5 import QtWidgets
+# from abc import abstractmethod
+# import sys
+from cardlib import *
+from pokermodel import *
 
 # NOTE: This is just given as an example of how to use CardView.
 # It is expected that you will need to adjust things to make a game out of it.
@@ -12,71 +15,95 @@ import sys
 # Models
 ###################
 
-
-class CardModel(QObject):
-    """ Base class that described what is expected from the CardView widget """
-
-    new_cards = pyqtSignal()  #: Signal should be emited when cards change.
-
-    @abstractmethod
-    def __iter__(self):
-        """Returns an iterator of card objects"""
-
-    @abstractmethod
-    def flipped(self):
-        """Returns true of cards should be drawn face down"""
-
-
-# A trivial card class (you should use the stuff you made in your library instead!
-# class MySimpleCard:
-#     def __init__(self, value, suit):
-#         self.value = value
-#         self.suit = suit
-#
-#     def get_value(self):
-#         return self.value
-#
-# # You have made a class similar to this (hopefully):
-# class Hand:
-#     def __init__(self):
-#         # Lets use some hardcoded values for most of this to start with
-#         self.cards = [MySimpleCard(13, 2), MySimpleCard(7, 0), MySimpleCard(13, 1)]
-#
-#     def add_card(self, card):
-#         self.cards.append(card)
-
-
 # We can extend this class to create a model, which updates the view whenever it has changed.
 # NOTE: You do NOT have to do it this way.
 # You might find it easier to make a Player-model, or a whole GameState-model instead.
 # This is just to make a small demo that you can use. You are free to modify
-class HandModel(Hand, CardModel):
-    def __init__(self):
-        Hand.__init__(self)
-        CardModel.__init__(self)
-        # Additional state needed by the UI
-        self.flipped_cards = False
-
-    def __iter__(self):
-        return iter(self.cards)
-
-    def flip(self):
-        # Flips over the cards (to hide them)
-        self.flipped_cards = not self.flipped_cards
-        self.new_cards.emit()  # something changed, better emit the signal!
-
-    def flipped(self):
-        # This model only flips all or no cards, so we don't care about the index.
-        # Might be different for other games though!
-        return self.flipped_cards
-
-    def add_card(self, card):
-        super().add_card(card)
-        self.new_cards.emit()  # something changed, better emit the signal!
 
 ###################
 # Card widget code:
 ###################
+
+hand = HandModel()
+hand.add_card(NumberedCard(10, Suit.Spades))
+hand.add_card(NumberedCard(10, Suit.Hearts))
+
+class Window(QMainWindow):
+    """ """
+    def __init__(self):
+        super().__init__()
+        # changing the background color to yellow
+        self.setStyleSheet("background-image: url(cards/table.png);")
+
+        # set the title
+        self.setWindowTitle("Texas hold'em")
+        # setting  the geometry of window
+        self.setGeometry(10, 50, 1900, 1200)
+
+
+        #d = StandardDeck()
+
+        pot = QLabel('Pot: ')
+        bet = QLabel('Bet: ')
+        bet2 = QLabel('Bet: ')
+
+        bet.setAlignment(Qt.AlignCenter)
+        bet2.setAlignment(Qt.AlignCenter)
+
+        hbox = QHBoxLayout()
+        #hbox.addStretch()
+        hbox.addWidget(pot)
+        card_view = CardView(hand)
+        hbox.addWidget(card_view)
+
+        hbox.setAlignment(Qt.AlignCenter)
+        #hbox.setSizeConstraint()
+
+        table = HandModel()
+        table.add_card(JackCard(Suit.Hearts))
+
+        #hbox2 = QHBoxLayout()
+        table_cards = CardView(table)
+
+
+        #vbox = QVBoxLayout()
+        vbox = QVBoxLayout()
+        #vbox.addStretch()
+        vbox.addWidget(bet2)
+        vbox.addWidget(table_cards)
+        vbox.addLayout(hbox)
+        vbox.addWidget(bet)
+        vbox.addWidget(CreateButton(['Fold', 'Call', 'Raise/Bet']))
+        #vbox.addStretch()
+        #vbox.setAlignment(Qt.AlignCenter)
+
+        widget = QWidget()
+        widget.setLayout(vbox)
+        self.setCentralWidget(widget)
+
+        # vbox.addWidget(MoreExcitingContent(...))
+
+
+class CreateButton(QWidget):
+    def __init__(self, labels):
+        super().__init__()
+        self.labels = labels
+        hbox = QHBoxLayout()
+        hbox.addStretch()
+        for label in labels:
+            button = QPushButton(label)
+            if label == "Fold":
+                button.clicked.connect(hand.flip)
+            else:
+                button.clicked.connect(lambda checked, label=label: print(label))
+            button.setStyleSheet("background : white")
+            hbox.addWidget(button)
+            #hbox.setContentsMargins(0, 0, 800, 50)
+
+        hbox.addStretch()
+
+        self.setLayout(hbox)
+        #self.resize(100, 100)
 
 
 class TableScene(QGraphicsScene):
@@ -85,6 +112,8 @@ class TableScene(QGraphicsScene):
         super().__init__()
         self.tile = QPixmap('cards/table.png')
         self.setBackgroundBrush(QBrush(self.tile))
+
+
 
 
 class CardItem(QGraphicsSvgItem):
@@ -100,10 +129,13 @@ def read_cards():
     Reads all the 52 cards from files.
     :return: Dictionary of SVG renderers
     """
+    suit_name = ["Hearts", "Spades", "Clubs", "Diamonds"]
     all_cards = dict()  # Dictionaries let us have convenient mappings between cards and their images
-    for suit_file, suit in zip('HDSC', range(4)):  # Check the order of the suits here!!!
+    #for suit_file, suit in zip("HDSC", range(4)):
+    for suit in suit_name:
+    # Check the order of the suits here!!!
         for value_file, value in zip(['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'], range(2, 15)):
-            file = value_file + suit_file
+            file = value_file + suit[0]
             key = (value, suit)  # I'm choosing this tuple to be the key for this dictionary
             all_cards[key] = QSvgRenderer('cards/' + file + '.svg')
     return all_cards
@@ -114,6 +146,9 @@ class CardView(QGraphicsView):
 
     # We read all the card graphics as static class variables
     back_card = QSvgRenderer('cards/Red_Back_2.svg')
+    # size = back_card.defaultSize()
+    # size.scale(1000, 1000, Qt.KeepAspectRatio)
+
     all_cards = read_cards()
 
     def __init__(self, card_model: CardModel, card_spacing: int = 250, padding: int = 10):
@@ -125,6 +160,8 @@ class CardView(QGraphicsView):
         """
         self.scene = TableScene()
         super().__init__(self.scene)
+
+        self.setStyleSheet("border: transparent;")
 
         self.card_spacing = card_spacing
         self.padding = padding
@@ -145,8 +182,15 @@ class CardView(QGraphicsView):
         self.scene.clear()
         for i, card in enumerate(self.model):
             # The ID of the card in the dictionary of images is a tuple with (value, suit), both integers
-            graphics_key = (card.get_value(), card.suit)
-            renderer = self.back_card if self.model.flipped() else self.all_cards[graphics_key]
+            graphics_key = (card.get_value(), card.suit.name)
+
+            #renderer = self.back_card if self.model.flipped() else self.all_cards[graphics_key]
+
+            if self.model.flipped():
+                renderer = self.back_card
+            else:
+                renderer = self.all_cards[graphics_key]
+
             c = CardItem(renderer, i)
 
             # Shadow effects are cool!
@@ -193,36 +237,45 @@ class CardView(QGraphicsView):
     # def mouseDoubleClickEvent(self, event):
     #    self.model.flip() # Another possible event. Lets add it to the flip functionality for fun!
 
+# class Window(QMainWindow):
+#     """ """
+#     def __init__(self):
+#         super().__init__()
+#         # changing the background color to yellow
+#         self.setStyleSheet("background-color: green;")
+#         # set the title
+#         self.setWindowTitle("Texas hold'em")
+#         # setting  the geometry of window
+#         self.setGeometry(10, 50, 1900, 900)
+#         vbox = QVBoxLayout()
+#         vbox.addStretch(1)
+#         vbox.addWidget(CreateButton(['Fold', 'Call', 'Raise/Bet']))
+#         widget = QWidget()
+#         widget.setLayout(vbox)
+#         self.setCentralWidget(widget)
+#
+#         # vbox.addWidget(MoreExcitingContent(...))
 
+#
+# class CreateButton(QWidget):
+#     def __init__(self, labels):
+#         super().__init__()
+#         self.labels = labels
+#         hbox = QHBoxLayout()
+#         hbox.addStretch(1)
+#         for label in labels:
+#             button = QPushButton(label)
+#             button.clicked.connect(lambda checked, label=label: print(label))
+#             button.setStyleSheet("background-color : white")
+#             hbox.addWidget(button)
+#             hbox.setContentsMargins(0, 0, 800, 50)
+#         self.setLayout(hbox)
 ###################
 # Main test program
 ###################
 
 # Lets test it out
 app = QApplication(sys.argv)
-window = QWidget()
-window.setStyleSheet("background-color: green;")
-cButton = QPushButton("Call/Check")
-betBtn = QPushButton("bet")
-foldBtn = QPushButton("fold")
-
-hbox = QHBoxLayout()
-hbox.addStretch(1)
-hbox.addWidget(cButton)
-hbox.addWidget(betBtn)
-hbox.addWidget(foldBtn)
-#hbox.addStretch(1)
-#hbox.setAlignment(Qt.AlignCenter)
-
-# hand = HandModel()
-# table = TableScene()
-# card_view = CardView(hand)
-#
-# # Creating a small demo window to work with, and put the card_view inside:
-# box = QVBoxLayout()
-# box.addWidget(card_view)
-# player_view = QGroupBox("Player 1")
-# player_view.setLayout(box)
-# player_view.show()
-
+window = Window()
+window.show()
 app.exec_()
