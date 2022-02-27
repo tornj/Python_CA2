@@ -503,3 +503,5 @@ class PokerHand(object):
         vals.sort(reverse=True)
         high_card = vals[0]
         return high_card, vals[1:5]
+
+
