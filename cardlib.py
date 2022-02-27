@@ -125,19 +125,6 @@ class Suit(Enum):
 class Hand(object):
     """
     A class used to represent a players hand
-
-    Methods
-    -------
-    add_card(card)
-        Adds a card to the players hand
-    drop_card(discards)
-        Drop the desired cards from the players hand
-    show_hand
-        Prints the hand to the terminal
-    sort
-        Sorts the cards in the players hand by ?value?
-    best_poker_hand
-        Checks what combination of the cards on hand that produces the most value
     """
 
     def __init__(self):
@@ -283,12 +270,12 @@ class PokerHand(object):
     def check_checks(self, cards):
         """Loops through the checks and returns a tuple of the best cards and what hand type they represent
 
-        :param cards: A list of playing cards
-        :type list
+            :param cards: A list of playing cards
+            :type cards: list
+            :return: Tuple of the best cards and their corresponding hand type.
+            :return type: tuple
+                """
 
-        :return Tuple  of the best cards and their corresponding hand type.
-        :return type: tuple
-        """
         functions = [self.check_straight_flush, self.check_four_of_a_kind, self.check_full_house, self.check_flush,
                      self.check_straight, self.check_three_of_a_kind, self.check_two_pair, self.check_pair,
                      self.check_high_card]
@@ -349,12 +336,12 @@ class PokerHand(object):
         """
         Checks for the best straight flush in a list of cards (may be more than just 5)
 
-        :param cards: A list of playing cards.
-        :type: list
+            :param cards: A list of playing cards.
+            :type cards: list
 
-        :return: None if no straight flush is found, else the value of the top card.
-        :return type: Tuple
-        """
+            :return: None if no straight flush is found, else the value of the top card.
+            :return type: Tuple
+                """
         cards.sort(reverse=True)
         vals = [(c.get_value(), c.suit.name) for c in cards] \
                + [(1, c.suit.name) for c in cards if c.get_value() == 14]  # Add the aces!
@@ -372,12 +359,12 @@ class PokerHand(object):
     def check_four_of_a_kind(cards):
         """Check for the best four of a kind and highest single card and returns them
 
-        :param cards: A list of playing cards.
-        :type: list
+            :param cards: A list of playing cards.
+            :type cards: list
 
-        :return: None if no four of a kind is found, else the value of the four of a kind and the highest remaining card
-        :return type: tuple
-            """
+            :return: None if no four of a kind is found, else the value of the four of a kind and the highest remaining card
+            :return type: tuple
+                """
         vals = [c.get_value() for c in cards]
         vals.sort(reverse=True)
         count_vals = Counter(vals)
@@ -398,12 +385,12 @@ class PokerHand(object):
         """
         Checks for the best full house in a list of cards (may be more than just 5)
 
-        :param cards: A list of playing cards
-        :type: list
+            :param cards: A list of playing cards
+            :type cards: list
 
-        :return: None if no full house is found, else a tuple of the values of the triple and pair.
-        :return type: tuple
-        """
+            :return: None if no full house is found, else a tuple of the values of the triple and pair.
+            :return type: tuple
+                """
         value_count = Counter()
         for c in cards:
             value_count[c.get_value()] += 1
@@ -423,12 +410,12 @@ class PokerHand(object):
     def check_flush(cards):
         """Check for the best flush out of the given list
 
-        :param cards: A list of playing cards.
-        :type: list
+            :param cards: A list of playing cards.
+            :type cards: list
 
-        :return: None if no flush is found, else the highest card in the flush
-        :return type: tuple
-        """
+            :return: None if no flush is found, else the highest card in the flush
+            :return type: tuple
+                """
         cards = [(c.get_value(), c.suit.name) for c in cards]
         # suit=[c.suit.name for c in cards]
         # card=[c.get_value() for c in cards]
@@ -450,12 +437,12 @@ class PokerHand(object):
     @staticmethod
     def check_straight(cards):
         """Checks for the best straight flush in a list of cards (may be more than just 5)
-        :param cards: A list of playing cards.
-        :type: list
+            :param cards: A list of playing cards.
+            :type cards: list
 
-        :return: None if no straight is found, else the value of the top card.
-        :return type: tuple
-        """
+            :return: None if no straight is found, else the value of the top card.
+            :return type: tuple
+                """
         cards.sort()
         vals = [c.get_value() for c in cards] \
                + [1 for c in cards if c.get_value() == 14]  # Add the aces!
@@ -474,11 +461,11 @@ class PokerHand(object):
     def check_three_of_a_kind(cards):
         """Check for the best three of a kind of the given list
 
-        :param cards: A list of playing cards.
-        :type: list
-        :return: None if no three of a kind is found, else the highest flush
-        :return type: tuple
-        """
+            :param cards: A list of playing cards.
+            :type cards: list
+            :return: None if no three of a kind is found, else the highest flush
+            :return type: tuple
+                """
         vals = [c.get_value() for c in cards]
         counted_cards = Counter(vals)
         most_common, count = zip(*counted_cards.most_common(1))
@@ -491,11 +478,11 @@ class PokerHand(object):
     def check_two_pair(cards):
         """Check for the best flush out of the given list
 
-        :param cards: A list of playing cards.
-        :type: list
-        :return: None if no two pair is found, else the value of the cards in each pair and the highest remaining card
-        :return type: tuple
-        """
+            :param cards: A list of playing cards.
+            :type cards: list
+            :return: None if no two pair is found, else the value of the cards in each pair and the highest remaining card
+            :return type: tuple
+                """
         vals = [c.get_value() for c in cards]
         vals.sort(reverse=True)
         count_vals = Counter(vals)
@@ -513,13 +500,13 @@ class PokerHand(object):
     def check_pair(cards):
         """Check for the best pair out of the given list
 
-        :param cards: A list of playing cards.
-        :type: list
+            :param cards: A list of playing cards.
+            :type cards: list
 
-        :return: None of no pair is found, else the value of the highest pair and value of the highest three remaining
-        cards.
-        :return type: tuple
-        """
+            :return: None of no pair is found, else the value of the highest pair and value of the highest three remaining
+                cards.
+            :return type: tuple
+                """
         vals = [c.get_value() for c in cards]
         count_vals = Counter(vals)
         potential_pair = count_vals.most_common(1)
@@ -535,18 +522,13 @@ class PokerHand(object):
     def check_high_card(cards):
         """Check for the highest card out of the given list
 
-        :param cards: A list of playing cards.
-        :type: list
+            :param cards: A list of playing cards.
+            :type cards: list
 
-        :return: The 5 best cards out of the list in descending order.
-        :return type: tuple
-        """
+            :return: The 5 best cards out of the list in descending order.
+            :return type: tuple
+                """
         vals = [c.get_value() for c in cards]
         vals.sort(reverse=True)
         high_card = vals[0]
         return high_card, vals[1:5]
-
-
-h1= Hand()
-h2= Hand()
-h1.add_card(NumberedCard(Suits.))
