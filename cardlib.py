@@ -9,12 +9,7 @@ class PlayingCard(abc.ABC):
     """Parent class for all the different playing cards
 
     :param suit: suit of card
-    :type suit: Suit
-
-    methods
-    -------
-    get_value
-        Abstract method that gives the value of playing card"""
+    :type suit: Suit"""
 
     def __init__(self, suit):
         self.suit = suit
@@ -150,22 +145,7 @@ class Suit(Enum):
 
 
 class Hand(object):
-    """
-    A class used to represent a players hand
-
-    Methods
-    -------
-    add_card(card)
-        Adds a card to the players hand
-    drop_card(discards)
-        Drop the desired cards from the players hand
-    show_hand
-        Prints the hand to the terminal
-    sort
-        Sorts the cards in the players hand by value
-    best_poker_hand
-        Checks what combination of the cards on hand that produces the most value
-    """
+    """A class used to represent a players hand"""
 
     def __init__(self):
         self.cards = []
@@ -221,19 +201,7 @@ class Hand(object):
 
 
 class StandardDeck(object):
-    """Initializes and creates a deck of all 52 playing cards.
-
-    methods
-    -------
-    create_deck
-       Creates a deck containing all 52 playing cards
-    show_deck
-      Prints the deck in the command window in the current order
-    shuffle
-        shuffles the deck
-    draw
-        draws the top cards of the deck
-    """
+    """Initializes and creates a deck of all 52 playing cards."""
 
     def __init__(self):
         self.deck = []
@@ -288,32 +256,7 @@ class Pokerhand_types(IntEnum):
 
 
 class PokerHand(object):
-    """ A class used to represent a players hand
-    Methods
-    -------
-    checks_checks(cards)
-        Loops through the checks and returns a list of the 5 best cards and what hand type they represent.
-    show_poker_hand
-        Prints the poker hand in the command window
-    check_straight_flush(cards)
-        Checks for the best straight flush in a list of cards
-    check_four_of_a_kind(cards)
-        Checks for four of a kind in a list of cards
-    check_full_house(cards)
-        Checks for the best full house in a list of cards
-    check_flush(cards)
-        Checks for the best flush in a list of cards
-    check_straight(cards)
-        Checks for the best straight in a list of cards
-    check_three_of_a_kind(cards
-        Checks for the best three of a kind in a list of cards
-    check_two_pair(cards)
-        Checks for the best two pair in a list of playing cards
-    check_pair(cards)
-        Checks for the best pair in a list of playing cards
-    check_high_card(cards)
-        Checks for the highest cards in a list of playing cards
-    """
+    """ A class used to represent a players hand"""
 
     def __init__(self, cards):
         self.cards = cards
