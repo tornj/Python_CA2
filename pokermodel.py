@@ -14,6 +14,7 @@ class Window(QMainWindow):
         super().__init__()
         # changing the background color to yellow
         self.setStyleSheet("background-color: green;")
+
         # set the title
         self.setWindowTitle("Texas hold'em")
         # setting  the geometry of window
@@ -69,6 +70,8 @@ def read_cards():
             key = (value, suit)  # I'm choosing this tuple to be the key for this dictionary
             all_cards[key] = QSvgRenderer('cards/' + file + '.svg')
     return all_cards
+
+
 
 
 window=Window()
