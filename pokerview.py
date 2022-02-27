@@ -2,6 +2,8 @@
 # from PyQt5.QtGui import *
 # from PyQt5.QtSvg import *
 # from PyQt5.QtWidgets import *
+import sys
+
 from PyQt5 import QtWidgets
 # from abc import abstractmethod
 # import sys
@@ -90,6 +92,7 @@ class StartWindow(QMainWindow):
     def OpenGame(self):
         if self.start is None:
             self.start = Window()
+
         self.start.show()
 
 
@@ -305,39 +308,6 @@ class CardView(QGraphicsView):
     # def mouseDoubleClickEvent(self, event):
     #    self.model.flip() # Another possible event. Lets add it to the flip functionality for fun!
 
-# class Window(QMainWindow):
-#     """ """
-#     def __init__(self):
-#         super().__init__()
-#         # changing the background color to yellow
-#         self.setStyleSheet("background-color: green;")
-#         # set the title
-#         self.setWindowTitle("Texas hold'em")
-#         # setting  the geometry of window
-#         self.setGeometry(10, 50, 1900, 900)
-#         vbox = QVBoxLayout()
-#         vbox.addStretch(1)
-#         vbox.addWidget(CreateButton(['Fold', 'Call', 'Raise/Bet']))
-#         widget = QWidget()
-#         widget.setLayout(vbox)
-#         self.setCentralWidget(widget)
-#
-#         # vbox.addWidget(MoreExcitingContent(...))
-
-#
-# class CreateButton(QWidget):
-#     def __init__(self, labels):
-#         super().__init__()
-#         self.labels = labels
-#         hbox = QHBoxLayout()
-#         hbox.addStretch(1)
-#         for label in labels:
-#             button = QPushButton(label)
-#             button.clicked.connect(lambda checked, label=label: print(label))
-#             button.setStyleSheet("background-color : white")
-#             hbox.addWidget(button)
-#             hbox.setContentsMargins(0, 0, 800, 50)
-#         self.setLayout(hbox)
 ###################
 # Main test program
 ###################
