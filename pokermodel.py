@@ -46,3 +46,21 @@ class HandModel(Hand, CardModel):
         super().add_card(card)
         self.new_cards.emit()  # something changed, better emit the signal!
 
+
+class TexasHoldEm(object):
+    pass
+
+    def fold(self):
+        pass
+
+    def call(self):
+        pass
+
+    def bet(self):
+        pass
+
+
+
+
+
+

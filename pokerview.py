@@ -7,6 +7,8 @@ from PyQt5 import QtWidgets
 # import sys
 from cardlib import *
 from pokermodel import *
+from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QLabel, QVBoxLayout, QWidget
+
 
 # NOTE: This is just given as an example of how to use CardView.
 # It is expected that you will need to adjust things to make a game out of it.
@@ -27,6 +29,71 @@ from pokermodel import *
 hand = HandModel()
 hand.add_card(NumberedCard(10, Suit.Spades))
 hand.add_card(NumberedCard(10, Suit.Hearts))
+
+
+class StartWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.start = None  # No extra window yet
+
+        self.setStyleSheet("background-image: url(cards/royal-straight-flush.jpg);")
+        self.setWindowTitle("Texas hold'em")
+        self.setGeometry(10, 50, 640, 475)
+
+
+        LblNameP1 = QLabel("Player 1 Name: ")
+        NameP1 = QLineEdit()
+
+        LblNameP2 = QLabel("Player 2 Name: ")
+        NameP2 = QLineEdit()
+
+        LblStake = QLabel("Stake: ")
+        Stake = QLineEdit()
+
+        hbox1 = QHBoxLayout()
+        hbox1.addStretch()
+        hbox1.addWidget(LblNameP1)
+        hbox1.addWidget(NameP1)
+        hbox1.addStretch()
+
+        hbox2 = QHBoxLayout()
+        hbox2.addStretch()
+        hbox2.addWidget(LblNameP2)
+        hbox2.addWidget(NameP2)
+        hbox2.addStretch()
+
+        hbox3 = QHBoxLayout()
+        hbox3.addStretch()
+        hbox3.addWidget(LblStake)
+        hbox3.addWidget(Stake)
+        hbox3.addStretch()
+
+        hbox = QHBoxLayout()
+        self.button = QPushButton("Start")
+        self.button.setStyleSheet("background : orange")
+        self.button.clicked.connect(self.OpenGame)
+        hbox.addStretch()
+        hbox.addWidget(self.button)
+        hbox.addStretch()
+
+        vbox = QVBoxLayout()
+        vbox.addLayout(hbox1)
+        vbox.addLayout(hbox2)
+        vbox.addLayout(hbox3)
+        vbox.addLayout(hbox)
+        #vbox.addWidget(CreateButton(['Start']))
+
+
+        widget = QWidget()
+        widget.setLayout(vbox)
+        self.setCentralWidget(widget)
+
+    def OpenGame(self):
+        if self.start is None:
+            self.start = Window()
+        self.start.show()
+
+
 
 class Window(QMainWindow):
     """ """
@@ -94,6 +161,8 @@ class CreateButton(QWidget):
             button = QPushButton(label)
             if label == "Fold":
                 button.clicked.connect(hand.flip)
+            # elif label == 'Start':
+            #     button.clicked.connect(StartWindow.OpenGame)
             else:
                 button.clicked.connect(lambda checked, label=label: print(label))
             button.setStyleSheet("background : white")
@@ -276,6 +345,8 @@ class CardView(QGraphicsView):
 
 # Lets test it out
 app = QApplication(sys.argv)
-window = Window()
-window.show()
+w = StartWindow()
+w.show()
+# window = Window()
+# window.show()
 app.exec_()
