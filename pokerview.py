@@ -83,7 +83,6 @@ class StartWindow(QMainWindow):
         vbox.addLayout(hbox)
         #vbox.addWidget(CreateButton(['Start']))
 
-
         widget = QWidget()
         widget.setLayout(vbox)
         self.setCentralWidget(widget)
