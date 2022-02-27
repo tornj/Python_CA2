@@ -2,10 +2,14 @@ from enum import Enum
 import abc
 from random import shuffle
 from collections import Counter
+from enum import IntEnum
 
 
 class PlayingCard(abc.ABC):
     """Parent class for all the different playing cards
+
+    :param suit: suit of card
+    :type suit: Suit
 
     methods
     -------
@@ -17,6 +21,7 @@ class PlayingCard(abc.ABC):
 
     @abc.abstractmethod
     def get_value(self):
+        """ A method returning the value of the card"""
         pass
 
     def __eq__(self, other):
@@ -30,7 +35,13 @@ class PlayingCard(abc.ABC):
 
 
 class NumberedCard(PlayingCard):
-    """ A class that creates Numbered playing cards"""
+    """ A class that creates Numbered playing cards
+
+    :param suit: suit of card
+    :type suit: Suit
+    :param value: value of card
+    :type value: int
+    """
     def __init__(self, value, suit):
         super().__init__(suit)
         self.value = value
@@ -46,7 +57,11 @@ class NumberedCard(PlayingCard):
 
 
 class JackCard(PlayingCard):
-    """ A class that creates Jack playing cards"""
+    """ A class that creates Jack playing cards
+
+    :param suit: suit of card
+    :type suit: Suit
+    """
     def __init__(self, suit):
         super().__init__(suit)
 
@@ -61,7 +76,11 @@ class JackCard(PlayingCard):
 
 
 class QueenCard(PlayingCard):
-    """ A class that creates Queen playing cards"""
+    """ A class that creates Queen playing cards
+
+    :param suit: suit of card
+    :type suit: Suit
+    """
     def __init__(self, suit):
         super().__init__(suit)
 
@@ -76,7 +95,11 @@ class QueenCard(PlayingCard):
 
 
 class KingCard(PlayingCard):
-    """ A class that creates King playing cards"""
+    """ A class that creates King playing cards
+
+    :param suit: suit of card
+    :type suit: Suit
+    """
     def __init__(self, suit):
         super().__init__(suit)
 
@@ -91,7 +114,11 @@ class KingCard(PlayingCard):
 
 
 class AceCard(PlayingCard):
-    """ A class that creates Ace playing cards"""
+    """ A class that creates Ace playing cards
+
+    :param suit: suit of card
+    :type suit: Suit
+    """
     def __init__(self, suit):
         super().__init__(suit)
 
@@ -135,7 +162,7 @@ class Hand(object):
     show_hand
         Prints the hand to the terminal
     sort
-        Sorts the cards in the players hand by ?value?
+        Sorts the cards in the players hand by value
     best_poker_hand
         Checks what combination of the cards on hand that produces the most value
     """
@@ -151,14 +178,18 @@ class Hand(object):
 
     def add_card(self, card):
         """Adds a card to the players hand
+
         :param card: A playing card
+        :type card: PlayingCard
         """
 
         self.cards.append(card)
 
     def drop_cards(self, discards):
         """ Drop the desired cards from the players hand
+
         :param discards: A list of desired discards
+        :type discards: list
         """
         discards.sort(reverse=True)
         for n in discards:
@@ -173,11 +204,15 @@ class Hand(object):
         """Sorts the hand from the lowest to the highest card"""
         self.cards.sort()
 
-    def best_poker_hand(self, table_cards):
+    def best_poker_hand(self, table_cards=[]):
         """A method that creates a poker hand object and returns the combination of the 5 best playing cards
-        :param table_cards: A list of the cards on the table.
 
-        :return: A poker hand of the 5 best cards out of the cards on hand and card on the table."""
+        :param table_cards: A list of the cards on the table.
+        :type table_cards: list
+
+        :return: A poker hand of the 5 best cards out of the cards on hand and card on the table.
+        :return type: PokerHand
+        """
         all_cards = self.cards
         for tc in table_cards:
             all_cards.append(tc)
@@ -187,6 +222,7 @@ class Hand(object):
 
 class StandardDeck(object):
     """Initializes and creates a deck of all 52 playing cards.
+
     methods
     -------
     create_deck
@@ -215,6 +251,7 @@ class StandardDeck(object):
                 self.deck.append(card)
 
     def show_deck(self):
+        """ A method that prints each card in the deck to the command window. """
         for c in self.deck:
             print(c)
 
@@ -225,13 +262,19 @@ class StandardDeck(object):
             return s
 
     def shuffle(self):
+        """ A method that shuffles the deck"""
         shuffle(self.deck)
 
     def draw(self):
+        """ A method that draws a card from the deck
+
+        :return: The card that have been drawn
+        :return type: PlayingCard
+        """
         return self.deck.pop()
 
 
-class Pokerhand_types(Enum):
+class Pokerhand_types(IntEnum):
     """Enum class that represents the different hand types"""
     straight_flush = 9
     four_of_a_kind = 8
@@ -242,9 +285,6 @@ class Pokerhand_types(Enum):
     two_pair = 3
     pair = 2
     high_card = 1
-
-    def __lt__(self, other):
-        return self.value < other.value
 
 
 class PokerHand(object):
@@ -309,6 +349,12 @@ class PokerHand(object):
         else:
             return self.type < other.type
 
+    def __eq__(self, other):
+        if self.type == other.type:
+            return self.cards == other.cards
+        else:
+            return self.type == other.type
+
     def __str__(self):
         if self.type.name == 'straight_flush':
             handtype=''.join(self.type.name.split('_'))
@@ -329,20 +375,19 @@ class PokerHand(object):
             return rep
         elif self.type.name == 'three_of_a_kind':
             handtype = ''.join(self.type.name.split('_'))
-            rep= f'{handtype} of {self.cards[0]}, kickers: {self.cards[1:]}'
+            rep= f'{handtype} of {self.cards[0]}, kickers: {self.cards[1]}'
             return rep
         elif self.type.name == 'two_pair':
             handtype = ''.join(self.type.name.split('_'))
-            rep= f'{handtype} of {self.cards[0]}, kickers: {self.cards[1:]}'
+            rep= f'{handtype} of {self.cards[0]}, kickers: {self.cards[1]}'
             return rep
         elif self.type.name == 'pair':
-            rep= f'{self.type.name} of {self.cards[0]}, kickers: {self.cards[1:]}'
+            rep= f'{self.type.name} of {self.cards[0]}, kickers: {self.cards[1]}'
             return rep
         elif self.type.name == 'high_card':
             handtype = ''.join(self.type.name.split('_'))
-            rep= f'{handtype} of {self.cards[0]}, kickers: {self.cards[1:]}'
+            rep= f'{handtype} of {self.cards[0]}, kickers: {self.cards[1]}'
             return rep
-
 
     @staticmethod
     def check_straight_flush(cards):
@@ -546,7 +591,3 @@ class PokerHand(object):
         high_card = vals[0]
         return high_card, vals[1:5]
 
-
-h1= Hand()
-h2= Hand()
-h1.add_card(NumberedCard(Suits.))

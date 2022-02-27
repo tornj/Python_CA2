@@ -60,6 +60,10 @@ class TexasHoldEm(object):
         pass
 
 
+class Player(object):
+    pass
+
+
 
 
 
