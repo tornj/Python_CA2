@@ -322,8 +322,12 @@ class PokerHand(object):
 
     def check_checks(self, cards):
         """Loops through the checks and returns a tuple of the best cards and what hand type they represent
+
         :param cards: A list of playing cards
-        :return: A tuple of the best cards and their corresponding hand type.
+        :type list
+
+        :return Tuple  of the best cards and their corresponding hand type.
+        :return type: tuple
         """
         functions = [self.check_straight_flush, self.check_four_of_a_kind, self.check_full_house, self.check_flush,
                      self.check_straight, self.check_three_of_a_kind, self.check_two_pair, self.check_pair,
@@ -389,8 +393,12 @@ class PokerHand(object):
     def check_straight_flush(cards):
         """
         Checks for the best straight flush in a list of cards (may be more than just 5)
+
         :param cards: A list of playing cards.
+        :type: list
+
         :return: None if no straight flush is found, else the value of the top card.
+        :return type: Tuple
         """
         cards.sort(reverse=True)
         vals = [(c.get_value(), c.suit.name) for c in cards] \
@@ -408,8 +416,13 @@ class PokerHand(object):
     @staticmethod
     def check_four_of_a_kind(cards):
         """Check for the best four of a kind and highest single card and returns them
+
         :param cards: A list of playing cards.
-        :return: None if no four of a kind is found, else the value of the four of a kind and the highest remaining card"""
+        :type: list
+
+        :return: None if no four of a kind is found, else the value of the four of a kind and the highest remaining card
+        :return type: tuple
+            """
         vals = [c.get_value() for c in cards]
         vals.sort(reverse=True)
         count_vals = Counter(vals)
@@ -429,8 +442,12 @@ class PokerHand(object):
     def check_full_house(cards):
         """
         Checks for the best full house in a list of cards (may be more than just 5)
+
         :param cards: A list of playing cards
+        :type: list
+
         :return: None if no full house is found, else a tuple of the values of the triple and pair.
+        :return type: tuple
         """
         value_count = Counter()
         for c in cards:
@@ -450,8 +467,13 @@ class PokerHand(object):
     @staticmethod
     def check_flush(cards):
         """Check for the best flush out of the given list
+
         :param cards: A list of playing cards.
-        :return: None if no flush is found, else the highest card in the flush"""
+        :type: list
+
+        :return: None if no flush is found, else the highest card in the flush
+        :return type: tuple
+        """
         cards = [(c.get_value(), c.suit.name) for c in cards]
         # suit=[c.suit.name for c in cards]
         # card=[c.get_value() for c in cards]
@@ -474,7 +496,10 @@ class PokerHand(object):
     def check_straight(cards):
         """Checks for the best straight flush in a list of cards (may be more than just 5)
         :param cards: A list of playing cards.
+        :type: list
+
         :return: None if no straight is found, else the value of the top card.
+        :return type: tuple
         """
         cards.sort()
         vals = [c.get_value() for c in cards] \
@@ -493,8 +518,12 @@ class PokerHand(object):
     @staticmethod
     def check_three_of_a_kind(cards):
         """Check for the best three of a kind of the given list
+
         :param cards: A list of playing cards.
-        :return: None if no three of a kind is found, else the highest flush"""
+        :type: list
+        :return: None if no three of a kind is found, else the highest flush
+        :return type: tuple
+        """
         vals = [c.get_value() for c in cards]
         counted_cards = Counter(vals)
         most_common, count = zip(*counted_cards.most_common(1))
@@ -506,8 +535,12 @@ class PokerHand(object):
     @staticmethod
     def check_two_pair(cards):
         """Check for the best flush out of the given list
+
         :param cards: A list of playing cards.
-        :return: None if no two pair is found, else the value of the cards in each pair and the highest remaining card"""
+        :type: list
+        :return: None if no two pair is found, else the value of the cards in each pair and the highest remaining card
+        :return type: tuple
+        """
         vals = [c.get_value() for c in cards]
         vals.sort(reverse=True)
         count_vals = Counter(vals)
@@ -524,9 +557,14 @@ class PokerHand(object):
     @staticmethod
     def check_pair(cards):
         """Check for the best pair out of the given list
+
         :param cards: A list of playing cards.
+        :type: list
+
         :return: None of no pair is found, else the value of the highest pair and value of the highest three remaining
-        cards. """
+        cards.
+        :return type: tuple
+        """
         vals = [c.get_value() for c in cards]
         count_vals = Counter(vals)
         potential_pair = count_vals.most_common(1)
@@ -541,30 +579,15 @@ class PokerHand(object):
     @staticmethod
     def check_high_card(cards):
         """Check for the highest card out of the given list
+
         :param cards: A list of playing cards.
-        :return: The 5 best cards out of the list in descending order. """
+        :type: list
+
+        :return: The 5 best cards out of the list in descending order.
+        :return type: tuple
+        """
         vals = [c.get_value() for c in cards]
         vals.sort(reverse=True)
         high_card = vals[0]
         return high_card, vals[1:5]
 
-
-
-h1 = Hand()
-h1.add_card(QueenCard(Suit.Diamonds))
-h1.add_card(KingCard(Suit.Hearts))
-h2 = Hand()
-h2.add_card(QueenCard(Suit.Hearts))
-h2.add_card(AceCard(Suit.Hearts))
-cl = [QueenCard(Suit.Clubs), QueenCard(Suit.Spades),
-      NumberedCard(6, Suit.Spades)]
-ph1 = h1.best_poker_hand(cl)
-ph2 = h2.best_poker_hand(cl)
-cl2 = [QueenCard(Suit.Clubs), QueenCard(Suit.Spades), QueenCard(Suit.Clubs),
-      NumberedCard(6, Suit.Spades), NumberedCard(6, Suit.Hearts)]
-ph1.check_full_house(cl2)
-
-print(PokerHand.check_full_house(cl2))
-print(ph1, ph2)
-
-assert ph1 < ph2
