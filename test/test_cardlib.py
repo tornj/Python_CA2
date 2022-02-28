@@ -153,5 +153,5 @@ def test_pokerhands():
     print("\n", ph7)   # HUR?!?!?! DENNA ÄR JU INTE ENS KÅK
     print(ph8)  # VARFÖR BLIR DESSA INTE FOUR OF A KIND??
     print(PokerHand.check_four_of_a_kind(cl2))
-    #assert ph7.check_four_of_a_kind([])
+    assert ph7.check_four_of_a_kind([])
 
