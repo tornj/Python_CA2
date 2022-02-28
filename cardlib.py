@@ -261,9 +261,9 @@ class PokerHand(object):
     def __init__(self, cards):
         self.cards = cards
         self.type = 0
-        self.check_checks(self.cards)
+        self.check_checks()
 
-    def check_checks(self, cards):
+    def check_checks(self):
         """Loops through the checks and returns a tuple of the best cards and what hand type they represent
 
         :param cards: A list of playing cards
@@ -276,9 +276,10 @@ class PokerHand(object):
                      self.check_straight, self.check_three_of_a_kind, self.check_two_pair, self.check_pair,
                      self.check_high_card]
         for func, t in zip(functions, Pokerhand_types):
-            self.cards = func(cards)
+            test_cards = func(self.cards)
             self.type = t
-            if self.cards is not None:
+            if test_cards is not None:
+                self.cards = test_cards
                 break
         return self.type, self.cards
 
@@ -301,35 +302,35 @@ class PokerHand(object):
     def __str__(self):
         if self.type.name == 'straight_flush':
             handtype=''.join(self.type.name.split('_'))
-            rep= f'({handtype} high {self.cards})'
+            rep = f'({handtype} high {self.cards})'
             return rep
         elif self.type.name == 'four_of_a_kind':
             handtype=' '.join(self.type.name.split('_'))
-            rep= f'{handtype} of {self.cards[0]}, kicker: {self.cards[1]}'
+            rep = f'{handtype} of {self.cards[0]}, kicker: {self.cards[1]}'
             return rep
         elif self.type.name == 'full_house':
-            rep= f"full house {self.cards[0]}'s over {self.cards[1]}'s"
+            rep = f"full house {self.cards[0]}'s over {self.cards[1]}'s"
             return rep
         elif self.type.name == 'flush':
-            rep= f'{self.type.name} with {self.cards}'
+            rep = f'{self.type.name} with {self.cards}'
             return rep
         elif self.type.name == 'straight':
-            rep= f'{self.cards} high {self.type.name}'
+            rep = f'{self.cards} high {self.type.name}'
             return rep
         elif self.type.name == 'three_of_a_kind':
             handtype = ''.join(self.type.name.split('_'))
-            rep= f'{handtype} of {self.cards[0]}, kickers: {self.cards[1]}'
+            rep = f'{handtype} of {self.cards[0]}, kickers: {self.cards[1]}'
             return rep
         elif self.type.name == 'two_pair':
             handtype = ''.join(self.type.name.split('_'))
-            rep= f'{handtype} of {self.cards[0]}, kickers: {self.cards[1]}'
+            rep = f'{handtype} of {self.cards[0]}, kickers: {self.cards[1]}'
             return rep
         elif self.type.name == 'pair':
-            rep= f'{self.type.name} of {self.cards[0]}, kickers: {self.cards[1]}'
+            rep = f'{self.type.name} of {self.cards[0]}, kickers: {self.cards[1]}'
             return rep
         elif self.type.name == 'high_card':
             handtype = ''.join(self.type.name.split('_'))
-            rep= f'{handtype} of {self.cards[0]}, kickers: {self.cards[1]}'
+            rep = f'{handtype} of {self.cards[0]}, kickers: {self.cards[1]}'
             return rep
 
     @staticmethod
@@ -374,11 +375,11 @@ class PokerHand(object):
         if potential_four[0][1] == 4:
             four = potential_four[0][0]
             # plockar fram det sista kortet som är högst
-            if vals[0] != potential_four[0][0]:
-                one = vals[0]
+            if vals[0] == four:
+                one = vals[4]
                 return four, one
             else:
-                one = vals[1]
+                one = vals[0]
                 return four, one
 
     @staticmethod
@@ -533,4 +534,23 @@ class PokerHand(object):
         vals.sort(reverse=True)
         high_card = vals[0]
         return high_card, vals[1:5]
+
+# cl = [NumberedCard(6, Suit.Hearts), NumberedCard(6, Suit.Hearts), NumberedCard(6, Suit.Hearts),
+#       NumberedCard(6, Suit.Hearts), KingCard(Suit.Spades), KingCard(Suit.Clubs)]
+# ph = PokerHand(cl)
+# print(ph)
+
+# H = Hand()
+# print(H.best_poker_hand(cl))
+
+# cl2 = [NumberedCard(3, Suit.Spades), NumberedCard(3, Suit.Spades), NumberedCard(3, Suit.Spades),
+#        NumberedCard(3, Suit.Spades), QueenCard(Suit.Spades), AceCard(Suit.Hearts), KingCard(Suit.Clubs),
+#        KingCard(Suit.Hearts)]
+#
+# Hand = Hand()
+# Hand.add_card(AceCard(Suit.Spades))
+#
+# print(Hand.best_poker_hand(cl2))
+# print(Hand)
+
 
