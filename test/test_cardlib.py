@@ -135,7 +135,7 @@ def test_pokerhands():
     assert ph1 < ph2
 
     #Check two hand with same type:
-    cl = [JackCard(Suit.Clubs), AceCard(Suit.Spades), KingCard(Suit.Clubs), NumberedCard(3,Suit.Spades)]
+    cl = [JackCard(Suit.Clubs), AceCard(Suit.Spades), KingCard(Suit.Clubs), NumberedCard(3, Suit.Spades)]
     ph5 = h1.best_poker_hand(cl)
     assert isinstance(ph5, PokerHand)
     h3 = Hand()
@@ -145,13 +145,15 @@ def test_pokerhands():
     assert isinstance(ph6, PokerHand)
     assert ph5 > ph6
 
-
+    h4 = Hand()
+    h5 = Hand()
     cl2 = [NumberedCard(3, Suit.Spades), NumberedCard(3, Suit.Spades), NumberedCard(3, Suit.Spades),
-           NumberedCard(3, Suit.Spades), QueenCard(Suit.Spades)]
-    ph7 = h3.best_poker_hand(cl2)
-    ph8 = h1.best_poker_hand(cl2)
+           NumberedCard(3, Suit.Spades), QueenCard(Suit.Spades), AceCard(Suit.Spades), AceCard(Suit.Clubs)]
+    ph7 = h4.best_poker_hand(cl2)
+    ph8 = h5.best_poker_hand(cl2)
     print("\n", ph7)   # HUR?!?!?! DENNA ÄR JU INTE ENS KÅK
     print(ph8)  # VARFÖR BLIR DESSA INTE FOUR OF A KIND??
     print(PokerHand.check_four_of_a_kind(cl2))
     #assert ph7.check_four_of_a_kind([])
+
 
