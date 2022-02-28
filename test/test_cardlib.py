@@ -50,7 +50,6 @@ def test_deck():
     assert isinstance(d2.draw(), PlayingCard)
 
 
-
 # This test builds on the assumptions above and assumes you store the cards in the hand in the list "cards",
 # and that your sorting method is called "sort" and sorts in increasing order
 def test_hand():

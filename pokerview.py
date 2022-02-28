@@ -36,7 +36,8 @@ hand.add_card(NumberedCard(10, Suit.Hearts))
 class StartWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.start = None  # No extra window yet
+        #self.start = None  # No extra window yet
+        self.Window = Window()
 
         self.setStyleSheet("background-image: url(cards/royal-straight-flush.jpg);")
         self.setWindowTitle("Texas hold'em")
@@ -44,7 +45,7 @@ class StartWindow(QMainWindow):
 
 
         LblNameP1 = QLabel("Player 1 Name: ")
-        NameP1 = QLineEdit()
+        self.NameP1 = QLineEdit()
 
         LblNameP2 = QLabel("Player 2 Name: ")
         NameP2 = QLineEdit()
@@ -55,7 +56,7 @@ class StartWindow(QMainWindow):
         hbox1 = QHBoxLayout()
         hbox1.addStretch()
         hbox1.addWidget(LblNameP1)
-        hbox1.addWidget(NameP1)
+        hbox1.addWidget(self.NameP1)
         hbox1.addStretch()
 
         hbox2 = QHBoxLayout()
@@ -73,7 +74,8 @@ class StartWindow(QMainWindow):
         hbox = QHBoxLayout()
         self.button = QPushButton("Start")
         self.button.setStyleSheet("background : orange")
-        self.button.clicked.connect(self.OpenGame)
+        self.button.clicked.connect(self.PassingInformation)
+        self.button.clicked.connect(self.close)
         hbox.addStretch()
         hbox.addWidget(self.button)
         hbox.addStretch()
@@ -89,11 +91,13 @@ class StartWindow(QMainWindow):
         widget.setLayout(vbox)
         self.setCentralWidget(widget)
 
+    # Onödig då vi nu har PassingInformation
     def OpenGame(self):
-        if self.start is None:
-            self.start = Window()
+        self.Window.show()
 
-        self.start.show()
+    def PassingInformation(self):
+        self.Window.PlayerName.setText(self.NameP1.text())
+        self.Window.DisplayInfo()
 
 
 
@@ -119,6 +123,9 @@ class Window(QMainWindow):
         bet.setAlignment(Qt.AlignCenter)
         bet2.setAlignment(Qt.AlignCenter)
 
+        self.PlayerName = QLabel('PlayerName')
+
+
         hbox = QHBoxLayout()
         #hbox.addStretch()
         hbox.addWidget(pot)
@@ -126,29 +133,37 @@ class Window(QMainWindow):
         hbox.addWidget(card_view)
 
         hbox.setAlignment(Qt.AlignCenter)
-        #hbox.setSizeConstraint()
 
         table = HandModel()
         table.add_card(JackCard(Suit.Hearts))
 
-        #hbox2 = QHBoxLayout()
+
         table_cards = CardView(table)
 
+        hbox2 = QHBoxLayout()
+        hbox2.addStretch()
+        hbox2.addWidget(self.PlayerName)
+        hbox2.addWidget(CreateButton(['Fold', 'Call', 'Raise/Bet']))
+        hbox2.addStretch()
 
-        #vbox = QVBoxLayout()
+
+
         vbox = QVBoxLayout()
         #vbox.addStretch()
         vbox.addWidget(bet2)
         vbox.addWidget(table_cards)
         vbox.addLayout(hbox)
         vbox.addWidget(bet)
-        vbox.addWidget(CreateButton(['Fold', 'Call', 'Raise/Bet']))
+        vbox.addLayout(hbox2)
         #vbox.addStretch()
         #vbox.setAlignment(Qt.AlignCenter)
 
         widget = QWidget()
         widget.setLayout(vbox)
         self.setCentralWidget(widget)
+
+    def DisplayInfo(self):
+        self.show()
 
         # vbox.addWidget(MoreExcitingContent(...))
 
