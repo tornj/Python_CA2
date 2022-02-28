@@ -141,9 +141,9 @@ def test_pokerhands():
     h3 = Hand()
     h3.add_card(KingCard(Suit.Spades))
     h3.add_card(NumberedCard(9, Suit.Clubs))
-    # ph6 = h3.best_poker_hand(cl)
-    # assert isinstance(ph6, PokerHand)
-    # assert ph5 > ph6
+    ph6 = h3.best_poker_hand(cl)
+    assert isinstance(ph6, PokerHand)
+    assert ph5 > ph6
 
 
     cl2 = [NumberedCard(3, Suit.Spades), NumberedCard(3, Suit.Spades), NumberedCard(3, Suit.Spades),
@@ -153,5 +153,5 @@ def test_pokerhands():
     print(ph7)   # HUR?!?!?! DENNA ÄR JU INTE ENS KÅK
     print(ph8)  # VARFÖR BLIR DESSA INTE FOUR OF A KIND??
     print(PokerHand.check_four_of_a_kind(cl2))
-    #assert ph7.check_four_of_a_kind([])
+    assert ph7.check_four_of_a_kind([])
 

@@ -6,6 +6,7 @@
 Welcome to CA2's documentation!
 ===============================
 Contents:
+
 .. toctree::
    :maxdepth: 2
    :caption:
