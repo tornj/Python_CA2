@@ -92,8 +92,8 @@ def test_hand():
     # Check four of a kind, full house, three of a kind, two pair, pair, high card
     cl3 = [JackCard(Suit.Hearts), JackCard(Suit.Clubs), JackCard(Suit.Spades), JackCard(Suit.Diamonds),
            NumberedCard(5, Suit.Hearts), NumberedCard(5, Suit.Diamonds), NumberedCard(3, Suit.Diamonds)]
-    # assert PokerHand.check_four_of_a_kind(cl3) is not None
-    # assert PokerHand.check_full_house(cl3) is not None
+    assert PokerHand.check_four_of_a_kind(cl3) is not None
+    assert PokerHand.check_full_house(cl3) is not None
     cl3.pop(0)
     assert PokerHand.check_three_of_a_kind(cl3) is not None
     cl3.pop(0)
@@ -119,38 +119,38 @@ def test_pokerhands():
     h2.add_card(AceCard(Suit.Hearts))
     cl = [NumberedCard(10, Suit.Diamonds), NumberedCard(9, Suit.Diamonds),
           NumberedCard(8, Suit.Clubs), NumberedCard(6, Suit.Spades)]
-    # ph1 = h1.best_poker_hand(cl)
-    # assert isinstance(ph1, PokerHand)
-    # ph2 = h2.best_poker_hand(cl)
-    # assert isinstance(ph2, PokerHand)
-    # assert ph1 < ph2
+    ph1 = h1.best_poker_hand(cl)
+    assert isinstance(ph1, PokerHand)
+    ph2 = h2.best_poker_hand(cl)
+    assert isinstance(ph2, PokerHand)
+    assert ph1 < ph2
 
     cl.pop(0)
     cl.append(QueenCard(Suit.Spades))
-    # ph3 = h1.best_poker_hand(cl)
-    # ph4 = h2.best_poker_hand(cl)
-    # assert isinstance(ph3, PokerHand)
-    # assert isinstance(ph4, PokerHand)
-    # assert ph3 < ph4
-    # assert ph1 < ph2
+    ph3 = h1.best_poker_hand(cl)
+    ph4 = h2.best_poker_hand(cl)
+    assert isinstance(ph3, PokerHand)
+    assert isinstance(ph4, PokerHand)
+    assert ph3 < ph4
+    assert ph1 < ph2
 
     #Check two hand with same type:
-    # cl = [JackCard(Suit.Clubs), AceCard(Suit.Spades), KingCard(Suit.Clubs), NumberedCard(3,Suit.Spades)]
-    # ph5 = h1.best_poker_hand(cl)
-    # assert isinstance(ph5, PokerHand)
+    cl = [JackCard(Suit.Clubs), AceCard(Suit.Spades), KingCard(Suit.Clubs), NumberedCard(3,Suit.Spades)]
+    ph5 = h1.best_poker_hand(cl)
+    assert isinstance(ph5, PokerHand)
     h3 = Hand()
     h3.add_card(KingCard(Suit.Spades))
     h3.add_card(NumberedCard(9, Suit.Clubs))
-    # ph6 = h3.best_poker_hand(cl)
-    # assert isinstance(ph6, PokerHand)
-    # assert ph5 > ph6
+    ph6 = h3.best_poker_hand(cl)
+    assert isinstance(ph6, PokerHand)
+    assert ph5 > ph6
 
 
     cl2 = [NumberedCard(3, Suit.Spades), NumberedCard(3, Suit.Spades), NumberedCard(3, Suit.Spades),
            NumberedCard(3, Suit.Spades), QueenCard(Suit.Spades)]
     ph7 = h3.best_poker_hand(cl2)
     ph8 = h1.best_poker_hand(cl2)
-    print(ph7)   # HUR?!?!?! DENNA ÄR JU INTE ENS KÅK
+    print("\n", ph7)   # HUR?!?!?! DENNA ÄR JU INTE ENS KÅK
     print(ph8)  # VARFÖR BLIR DESSA INTE FOUR OF A KIND??
     print(PokerHand.check_four_of_a_kind(cl2))
     #assert ph7.check_four_of_a_kind([])
