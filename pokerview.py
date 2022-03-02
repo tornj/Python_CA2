@@ -36,7 +36,12 @@ hand.add_card(NumberedCard(10, Suit.Hearts))
 class StartWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        #self.start = None  # No extra window yet
+
+
+        # self.point_model = MoneyModel
+        # self.point_model.new_value.connect(self.update_label)
+        # self.update_label()  # Initial refresh of textfield
+
         self.Window = Window()
 
         self.setStyleSheet("background-image: url(cards/royal-straight-flush.jpg);")
@@ -48,7 +53,7 @@ class StartWindow(QMainWindow):
         self.NameP1 = QLineEdit()
 
         LblNameP2 = QLabel("Player 2 Name: ")
-        NameP2 = QLineEdit()
+        self.NameP2 = QLineEdit()
 
         LblStake = QLabel("Stake: ")
         Stake = QLineEdit()
@@ -62,7 +67,7 @@ class StartWindow(QMainWindow):
         hbox2 = QHBoxLayout()
         hbox2.addStretch()
         hbox2.addWidget(LblNameP2)
-        hbox2.addWidget(NameP2)
+        hbox2.addWidget(self.NameP2)
         hbox2.addStretch()
 
         hbox3 = QHBoxLayout()
@@ -76,6 +81,7 @@ class StartWindow(QMainWindow):
         self.button.setStyleSheet("background : orange")
         self.button.clicked.connect(self.PassingInformation)
         self.button.clicked.connect(self.close)
+
         hbox.addStretch()
         hbox.addWidget(self.button)
         hbox.addStretch()
@@ -96,10 +102,20 @@ class StartWindow(QMainWindow):
         self.Window.show()
 
     def PassingInformation(self):
-        self.Window.PlayerName.setText(self.NameP1.text())
+        self.Window.PlayerName1.setText("Player " + self.NameP1.text())
+        self.Window.PlayerName2.setText("Player " + self.NameP2.text())
         self.Window.DisplayInfo()
 
 
+class PlayerView(QWidget):
+    def __init__(self):
+        super().__init__()
+        hbox = QHBoxLayout()
+        hbox.addStretch()
+        self.card_view = CardView(hand)
+        hbox.addWidget(self.card_view)
+        hbox.addStretch()
+        self.setLayout(hbox)
 
 class Window(QMainWindow):
     """ """
@@ -111,7 +127,7 @@ class Window(QMainWindow):
         # set the title
         self.setWindowTitle("Texas hold'em")
         # setting  the geometry of window
-        self.setGeometry(10, 50, 1900, 1200)
+        self.setGeometry(10, 50, 1900, 1000)
 
 
         #d = StandardDeck()
@@ -123,36 +139,39 @@ class Window(QMainWindow):
         bet.setAlignment(Qt.AlignCenter)
         bet2.setAlignment(Qt.AlignCenter)
 
-        self.PlayerName = QLabel('PlayerName')
+        self.PlayerName1 = QLabel('Player ')
+        self.PlayerName2 = QLabel('Player ')
 
 
         hbox = QHBoxLayout()
-        #hbox.addStretch()
+        hbox.addStretch()
         hbox.addWidget(pot)
-        card_view = CardView(hand)
-        hbox.addWidget(card_view)
-
-        hbox.setAlignment(Qt.AlignCenter)
 
         table = HandModel()
         table.add_card(JackCard(Suit.Hearts))
-
-
         table_cards = CardView(table)
+        hbox.addWidget(table_cards)
+        hbox.addStretch()
 
         hbox2 = QHBoxLayout()
         hbox2.addStretch()
-        hbox2.addWidget(self.PlayerName)
-        hbox2.addWidget(CreateButton(['Fold', 'Call', 'Raise/Bet']))
+        hbox2.addWidget(self.PlayerName1)
+        hbox2.addWidget(CreateButton(['Fold', 'Call/Check', 'Bet/Raise']))
         hbox2.addStretch()
+
+        hbox3 = QHBoxLayout()
+        hbox3.addStretch()
+        hbox3.addWidget(self.PlayerName2)
+        hbox3.addWidget(bet2)
+        hbox3.addStretch()
 
 
 
         vbox = QVBoxLayout()
         #vbox.addStretch()
-        vbox.addWidget(bet2)
-        vbox.addWidget(table_cards)
+        vbox.addLayout(hbox3)
         vbox.addLayout(hbox)
+        vbox.addWidget(PlayerView())
         vbox.addWidget(bet)
         vbox.addLayout(hbox2)
         #vbox.addStretch()
@@ -164,6 +183,9 @@ class Window(QMainWindow):
 
     def DisplayInfo(self):
         self.show()
+
+    def switch_player(self):
+        pass
 
         # vbox.addWidget(MoreExcitingContent(...))
 
@@ -184,12 +206,12 @@ class CreateButton(QWidget):
                 button.clicked.connect(lambda checked, label=label: print(label))
             button.setStyleSheet("background : white")
             hbox.addWidget(button)
-            #hbox.setContentsMargins(0, 0, 800, 50)
+
 
         hbox.addStretch()
 
         self.setLayout(hbox)
-        #self.resize(100, 100)
+
 
 
 class TableScene(QGraphicsScene):
@@ -240,7 +262,7 @@ class CardView(QGraphicsView):
     def __init__(self, card_model: CardModel, card_spacing: int = 250, padding: int = 10):
         """
         Initializes the view to display the content of the given model
-        :param cards_model: A model that represents a set of cards. Needs to support the CardModel interface.
+        :param card_model: A model that represents a set of cards. Needs to support the CardModel interface.
         :param card_spacing: Spacing between the visualized cards.
         :param padding: Padding of table area around the visualized cards.
         """

@@ -47,25 +47,137 @@ class HandModel(Hand, CardModel):
         self.new_cards.emit()  # something changed, better emit the signal!
 
 
-class TexasHoldEm(object):
-    pass
 
-    def fold(self):
+
+
+#
+#
+# class MoneyModel(QObject):
+#     new_signal = pyqtSignal()
+#
+#     def __init__(self):
+#         super().__init__()
+
+
+
+class PlayerModel(QObject):
+    new_signal = pyqtSignal()
+
+    def __init__(self):
+        super().__init__()
+        self.name = name
+        self.balance = 0
+        self.bet = 0
+        self.bet_gap = 0
+        self.cards = []
+
+        self.hand = Hand()
+
+
+
+
+class GameModel(object):
+    def __init__(self):
+        self.winner = None
+        self.end_round = False
+        self.deck = StandardDeck()
+        self.table_cards = []
+        self.pot = 0
+        self.acting_player = PlayerModel()
+        self.player_turn = -1
+
+        self.list_of_players = []
+        self.list_of_players_left = []
+
+        self.player_bet_gap = 0
+        self.highest_bet = 0
+
+    def answer(self, player):
+        player.bet_gap = self.highest_bet - player.bet
+
+        while True:
+            if player.response == "Fold":
+                self.list_of_players_left.pop(player)
+                self.end_round = True
+
+            if player.response == "Call/Check":
+                return True  # Starta nästa runda
+
+            if player.response == "Bet/Raise":
+                pass
+
+    def Game_round(self):
+        # Ge båda spelarna två kort
+        self.deck.shuffle()
+        self.deal_to_players()
+        self.asking_round()
+
+        if not self.end_round:
+            self.deal_flop()
+            self.asking_round()
+
+        if not self.end_round:
+            self.deal_turn()
+            self.asking_round()
+
+        if not self.end_round:
+            self.deal_river()
+            self.asking_round()
+
+        self.find_winner()  # Ska implementera
+        self.end_round()  # Ska implementera
+
+
+
+    def asking_round(self):
+        i = 0
+        while True:
+            self.acting_player = self.list_of_players[i]
+            player_answer = self.answer(self.acting_player)
+
+            if player_answer:  # Starta nästa runda
+                break
+
+            if player_answer == "Fold":  #Annonsera vinnare
+                pass
+
+    def deal_to_players(self):
+        for player in self.list_of_players:
+            player.hand.add_card(self.deck.draw())
+            player.hand.add_card(self.deck.draw())
+
+    def deal_flop(self):  # 3 första
+        self.table_cards.append(self.deck.draw())
+        self.table_cards.append(self.deck.draw())
+        self.table_cards.append(self.deck.draw())
+
+    def deal_turn(self):
+        self.table_cards.append(self.deck.draw())
+
+    def deal_river(self):
+        self.table_cards.append(self.deck.draw())
+
+    def clear_for_new_round(self):
+        self.table_cards.clear()
+        self.winner = None
+        self.deck = StandardDeck()
+        self.pot = 0
+
+    def end_round(self):  # cl
+        for player in self.list_of_players:
+            if player.balance == 0:
+                pass # Quit game, announce winner
+
+        self.pot = 0
+        self.table_cards.clear()
+        for player in self.list_of_players:
+            player.hand.drop_cards([0, 1])
+
+        # Måste lägga till mer saker som skall rensas innan nästa omgång
+
+
+
+    def find_winner(self):
         pass
-
-    def call(self):
-        pass
-
-    def bet(self):
-        pass
-
-
-class Player(object):
-    pass
-
-
-
-
-
 
 
