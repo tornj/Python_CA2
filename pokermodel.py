@@ -8,13 +8,17 @@ import sys
 from cardlib import *
 
 
+
 class CardModel(QObject):
     """ Base class that described what is expected from the CardView widget """
 
     new_cards = pyqtSignal()  #: Signal should be emited when cards change.
+    # def __init__(self):
+    #     self.deck = StandardDeck()
 
     @abc.abstractmethod
     def __iter__(self):
+
         """Returns an iterator of card objects"""
 
     @abc.abstractmethod
@@ -48,20 +52,15 @@ class HandModel(Hand, CardModel):
 
 
 # class MoneyModel(object)
-#     def __init__(self):
-#         pass
+#      pass
+#      def __init__(self):
+#          pass
 
-class TexasHoldEm(object):
-    pass
+class GameModel(QObject):
+    def __init__(self):
+        super(GameModel, self).__init__()
 
-    def fold(self):
-        pass
 
-    def call(self):
-        pass
-
-    def bet(self):
-        pass
 
 
 class PlayerModel(object):

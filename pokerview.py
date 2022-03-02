@@ -51,7 +51,7 @@ class StartWindow(QMainWindow):
         NameP2 = QLineEdit()
 
         LblStake = QLabel("Stake: ")
-        Stake = QLineEdit()
+        self.Stake = QLineEdit()
 
         hbox1 = QHBoxLayout()
         hbox1.addStretch()
@@ -68,7 +68,7 @@ class StartWindow(QMainWindow):
         hbox3 = QHBoxLayout()
         hbox3.addStretch()
         hbox3.addWidget(LblStake)
-        hbox3.addWidget(Stake)
+        hbox3.addWidget(self.Stake)
         hbox3.addStretch()
 
         hbox = QHBoxLayout()
@@ -97,6 +97,7 @@ class StartWindow(QMainWindow):
 
     def PassingInformation(self):
         self.Window.PlayerName.setText(self.NameP1.text())
+        self.Window.bet.setText(self.Stake.text())
         self.Window.DisplayInfo()
 
 
@@ -117,10 +118,10 @@ class Window(QMainWindow):
         #d = StandardDeck()
 
         pot = QLabel('Pot: ')
-        bet = QLabel('Bet: ')
+        self.bet = QLabel(self)
         bet2 = QLabel('Bet: ')
 
-        bet.setAlignment(Qt.AlignCenter)
+        self.bet.setAlignment(Qt.AlignCenter)
         bet2.setAlignment(Qt.AlignCenter)
 
         self.PlayerName = QLabel('PlayerName')
@@ -133,8 +134,7 @@ class Window(QMainWindow):
         hbox.addWidget(card_view)
 
         hbox.setAlignment(Qt.AlignCenter)
-
-        table = HandModel()
+        table=HandModel()
         table.add_card(JackCard(Suit.Hearts))
 
 
@@ -153,7 +153,7 @@ class Window(QMainWindow):
         vbox.addWidget(bet2)
         vbox.addWidget(table_cards)
         vbox.addLayout(hbox)
-        vbox.addWidget(bet)
+        vbox.addWidget(self.bet)
         vbox.addLayout(hbox2)
         #vbox.addStretch()
         #vbox.setAlignment(Qt.AlignCenter)
