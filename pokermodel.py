@@ -47,6 +47,10 @@ class HandModel(Hand, CardModel):
         self.new_cards.emit()  # something changed, better emit the signal!
 
 
+# class MoneyModel(object)
+#     def __init__(self):
+#         pass
+
 class TexasHoldEm(object):
     pass
 
@@ -60,7 +64,7 @@ class TexasHoldEm(object):
         pass
 
 
-class Player(object):
+class PlayerModel(object):
     pass
 
 
