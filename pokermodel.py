@@ -77,6 +77,9 @@ class PlayerModel(QObject):
 
 
 class GameModel(object):
+
+    new_signal = pyqtSignal()
+
     def __init__(self):
         self.winner = None
         self.end_round = False
@@ -128,6 +131,11 @@ class GameModel(object):
         self.end_round()  # Ska implementera
 
 
+    def CALL(self):  #När man klickar på call så ska ja byta fönster (och flippa korten)
+        self.list_of_players[self.player_turn].set_active(False)
+        self.player_turn = (self.player_turn + 1) % len(self.list_of_players)
+        self.list_of_players[self.player_turn].set_active(True)
+        self.new_signal.emit()
 
     def asking_round(self):
         i = 0

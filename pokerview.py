@@ -117,6 +117,7 @@ class PlayerView(QWidget):
         hbox.addStretch()
         self.setLayout(hbox)
 
+
 class Window(QMainWindow):
     """ """
     def __init__(self):
@@ -128,9 +129,6 @@ class Window(QMainWindow):
         self.setWindowTitle("Texas hold'em")
         # setting  the geometry of window
         self.setGeometry(10, 50, 1900, 1000)
-
-
-        #d = StandardDeck()
 
         pot = QLabel('Pot: ')
         bet = QLabel('Bet: ')
@@ -165,17 +163,12 @@ class Window(QMainWindow):
         hbox3.addWidget(bet2)
         hbox3.addStretch()
 
-
-
         vbox = QVBoxLayout()
-        #vbox.addStretch()
         vbox.addLayout(hbox3)
         vbox.addLayout(hbox)
         vbox.addWidget(PlayerView())
         vbox.addWidget(bet)
         vbox.addLayout(hbox2)
-        #vbox.addStretch()
-        #vbox.setAlignment(Qt.AlignCenter)
 
         widget = QWidget()
         widget.setLayout(vbox)
@@ -207,11 +200,8 @@ class CreateButton(QWidget):
             button.setStyleSheet("background : white")
             hbox.addWidget(button)
 
-
         hbox.addStretch()
-
         self.setLayout(hbox)
-
 
 
 class TableScene(QGraphicsScene):
