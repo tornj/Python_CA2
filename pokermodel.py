@@ -48,8 +48,9 @@ class HandModel(Hand, CardModel):
         self.new_cards.emit()  # something changed, better emit the signal!
 
 
+
 class PlayerModel(QObject):
-    new_signal = pyqtSignal()
+    data_changed = pyqtSignal()
 
     def __init__(self, name):
         super().__init__()
@@ -58,15 +59,25 @@ class PlayerModel(QObject):
         self.bet = 0
         self.bet_gap = 0
         self.cards = []
-        self.hand = HandModel()
+
+        self.active = False
+
+        self.hand = Hand()
+
+    def set_active(self,active):
+        self.active = active
+        self.data_changed.emit()
+
+
 
 
 class GameModel(object):
     new_signal = pyqtSignal()
 
-    def __init__(self):
+    def __init__(self, players):
         self.winner = None
         self.end_round = False
+        self.players = players
         self.deck = StandardDeck()
         self.table_cards = []
         self.pot = 0
@@ -79,6 +90,7 @@ class GameModel(object):
 
         self.player_bet_gap = 0
         self.highest_bet = 0
+        
 
     def Game_round(self):
         # Ge båda spelarna två kort
@@ -169,6 +181,7 @@ class GameModel(object):
 
     def find_winner(self):
         pass
+
 
     def CALL(self):  # När man klickar på call så ska ja byta fönster (och flippa korten)
         self.list_of_players[self.player_turn].set_active(False)
