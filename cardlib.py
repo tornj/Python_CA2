@@ -534,23 +534,3 @@ class PokerHand(object):
         vals.sort(reverse=True)
         high_card = vals[0]
         return high_card, vals[1:5]
-
-# cl = [NumberedCard(6, Suit.Hearts), NumberedCard(6, Suit.Hearts), NumberedCard(6, Suit.Hearts),
-#       NumberedCard(6, Suit.Hearts), KingCard(Suit.Spades), KingCard(Suit.Clubs)]
-# ph = PokerHand(cl)
-# print(ph)
-
-# H = Hand()
-# print(H.best_poker_hand(cl))
-
-# cl2 = [NumberedCard(3, Suit.Spades), NumberedCard(3, Suit.Spades), NumberedCard(3, Suit.Spades),
-#        NumberedCard(3, Suit.Spades), QueenCard(Suit.Spades), AceCard(Suit.Hearts), KingCard(Suit.Clubs),
-#        KingCard(Suit.Hearts)]
-#
-# Hand = Hand()
-# Hand.add_card(AceCard(Suit.Spades))
-#
-# print(Hand.best_poker_hand(cl2))
-# print(Hand)
-
-
