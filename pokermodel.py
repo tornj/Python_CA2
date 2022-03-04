@@ -136,6 +136,7 @@ class GameModel(QObject):
             self.highest_bet = player.bet
             return True
 
+
     def asking_round(self):
         i = 0
         self.turn = 0
