@@ -96,6 +96,12 @@ class StartWindow(QMainWindow):
         widget.setLayout(vbox)
         self.setCentralWidget(widget)
 
+        self.list_of_players = [self.NameP1, self.NameP2]
+
+        for player in self.list_of_players:
+            hej = PlayerModel(player)
+
+
     # Onödig då vi nu har PassingInformation
     def OpenGame(self):
         self.Window.show()
@@ -169,6 +175,7 @@ class Window(QMainWindow):
         self.setGeometry(10, 50, 1900, 1000)
 
         pot = QLabel('Pot: ')
+
         hbox2 = QHBoxLayout()
         #self.setLayout(hbox2)
         hbox2.addStretch()
