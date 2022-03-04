@@ -33,9 +33,9 @@ class HandModel(Hand, CardModel):
     def __iter__(self):
         return iter(self.cards)
 
-    def flip(self):
+    def flip(self, state):
         # Flips over the cards (to hide them)
-        self.flipped_cards = not self.flipped_cards
+        self.flipped_cards = state
         self.new_cards.emit()  # something changed, better emit the signal!
 
     def flipped(self):
@@ -48,15 +48,39 @@ class HandModel(Hand, CardModel):
         self.new_cards.emit()  # something changed, better emit the signal!
 
 
+class MoneyModel(QObject):
+    new_value = pyqtSignal()
+
+    def __init__(self, value=0):
+        super().__init__()
+        self.value = value
+
+    def __iadd__(self, other):
+        self.value += other
+        self.new_value.emit()
+        return self
+
+    def __isub__(self, other):
+        self.value -= other
+        self.new_value.emit()
+        return self
+
+    def __eq__(self, other: int):
+        return self.value == other
+
+    def clear(self):
+        self.value = 0
+
+
 class PlayerModel(QObject):
-    data_changed = pyqtSignal()
+    active_changed = pyqtSignal()
 
     def __init__(self, name):
         super().__init__()
         self.name = name
-        self.balance = 0
-        self.bet = 0
-        self.bet_gap = 0
+        self.balance = MoneyModel(100)
+        self.bet = MoneyModel()
+        self.bet_gap = MoneyModel()
         self.cards = []
 
         self.active = False
@@ -65,8 +89,8 @@ class PlayerModel(QObject):
 
     def set_active(self, active):
         self.active = active
-        self.hand.flip()
-        self.data_changed.emit()
+        self.hand.flip(not active)
+        self.active_changed.emit()
 
 
 class GameModel(QObject):
@@ -181,7 +205,7 @@ class GameModel(QObject):
             if player.balance == 0:
                 pass  # Quit game, announce winner
 
-        self.pot = 0
+        self.pot.clear()
         self.table_cards.clear()
         for player in self.players:
             player.hand.drop_cards([0, 1])
@@ -193,6 +217,12 @@ class GameModel(QObject):
     def find_winner(self):
         pass
 
+    def new_turn(self):
+        self.players[self.player_turn].set_active(False)
+        self.player_turn = (self.player_turn + 1) % len(self.players)
+        self.players[self.player_turn].set_active(True)
+        self.new_signal.emit()
+
     def fold(self):
         self.player_response = 'Fold'
         self.players[self.player_turn].set_active(False)
@@ -202,12 +232,12 @@ class GameModel(QObject):
 
     def call(self):  # När man klickar på call så ska ja byta fönster (och flippa korten)
         self.player_response = 'Call/Check'
-        self.players[self.player_turn].set_active(False)
-        self.player_turn = (self.player_turn + 1) % len(self.players)
-        self.players[self.player_turn].set_active(True)
-        self.new_signal.emit()
+        self.new_turn()
+        self.pot = 10
+        self.new_pot.emit()
 
-    def bet(self):
+
+    def bet(self, amount: int):
         self.player_response = 'Bet/Raise'
         self.players[self.player_turn].set_active(False)
         self.player_turn = (self.player_turn + 1) % len(self.players)

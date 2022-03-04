@@ -141,15 +141,19 @@ class PlayerView(QGroupBox):
         self.show()
         #self.setStyleSheet("border: transparent;")
 
-        #def fold(): GameModel.fold()
+        def fold(): game.fold()
         def call_check(): game.call()
-        #def bet_raise(): GameModel.raise()
+        def bet_raise():
+            bet_min, bet_max = game.bet_limits()
+            # 1. inputdialog
+            amount = 123
+            game.bet(amount)
 
-        self.player_buttons[0].clicked.connect(player.hand.flip)
+        self.player_buttons[0].clicked.connect(fold)
         self.player_buttons[1].clicked.connect(call_check)
-        #self.player_buttons[1].clicked.connect(player.hand.flip)
+        self.player_buttons[2].clicked.connect(bet_raise)
 
-        player.data_changed.connect(self.update)
+        player.active_changed.connect(self.update)
         self.update()
 
     def update(self):
