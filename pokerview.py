@@ -43,6 +43,7 @@ class StartWindow(QMainWindow):
         # self.update_label()  # Initial refresh of textfield
 
         self.Window = Window()
+
         self.setStyleSheet("background-image: url(cards/royal-straight-flush.jpg);")
         self.setWindowTitle("Texas hold'em")
         self.setGeometry(10, 50, 640, 475)
@@ -96,6 +97,12 @@ class StartWindow(QMainWindow):
         widget.setLayout(vbox)
         self.setCentralWidget(widget)
 
+        self.list_of_players = [self.NameP1, self.NameP2]
+
+        for player in self.list_of_players:
+            hej = PlayerModel(player)
+
+
     # Onödig då vi nu har PassingInformation
     def OpenGame(self):
         self.Window.show()
@@ -106,55 +113,16 @@ class StartWindow(QMainWindow):
         self.Window.DisplayInfo()
 
 
-class PlayerView(QGroupBox):
-    def __init__(self, player):
-        super().__init__(player)
-        self.player= player
-        vbox = QVBoxLayout()
-        vbox.addStretch()
-        #self.setLayout(vbox)
-        hbox=QHBoxLayout()
+class PlayerView(QWidget):
+    def __init__(self):
+        super().__init__()
+        hbox = QHBoxLayout()
         hbox.addStretch()
-        #self.setLayout(hbox)
-        bal=QLabel('Balance:') #ändra här för att koden ska funka
-        bet=QLabel('Bet:')
-        betline=QLineEdit()
-        hbox.addWidget(bal)
-        hbox.addWidget(bet)
-        hbox.addWidget(betline)
+        self.card_view = CardView(hand)
+        hbox.addWidget(self.card_view)
         hbox.addStretch()
-        vbox.addLayout(hbox)
-        card_view = CardView(hand, 150,30)
-        vbox.addWidget(card_view)
-        #self.setLayout(hbox)
-        self.player_buttons=[]
-        hbox3=QHBoxLayout()
-        for item in ['Fold', 'Call/Check', 'Bet/Raise']:
-            button= QPushButton(item)
-            button.setStyleSheet("background : white")
-            self.player_buttons.append(button)
-            hbox3.addWidget(button)
-        vbox.addLayout(hbox3)
-        vbox.addStretch()
-        self.setLayout(vbox)
-        self.show()
-        #self.setStyleSheet("border: transparent;")
+        self.setLayout(hbox)
 
-        #def fold(): GameModel.fold()
-        #def call_check(): GameModel.CALL()
-        #def bet_raise(): GameModel.raise()
-
-        self.player_buttons[0].clicked.connect(hand.flip)
-
-    #     player.data_changed.connect(self.update)
-    #     self.update()
-    # def update(self):
-    #     for b in self.player_buttons:
-    #         b.setEnabled(self.player.active)
-
-
-        #self.player_buttons[1].clicked.connect(call_check())
-        #self.player_buttons[2].clicked.connect(raise())
 
 class Window(QMainWindow):
     """ """
@@ -162,42 +130,50 @@ class Window(QMainWindow):
         super().__init__()
         # changing the background color to yellow
         self.setStyleSheet("background-image: url(cards/table.png);")
-        #self.game= game
+
         # set the title
         self.setWindowTitle("Texas hold'em")
         # setting  the geometry of window
         self.setGeometry(10, 50, 1900, 1000)
 
         pot = QLabel('Pot: ')
-        hbox2 = QHBoxLayout()
-        #self.setLayout(hbox2)
-        hbox2.addStretch()
+        bet = QLabel('Bet: ')
+        bet2 = QLabel('Bet: ')
+
+        bet.setAlignment(Qt.AlignCenter)
+        bet2.setAlignment(Qt.AlignCenter)
+
+        self.PlayerName1 = QLabel('Player ')
+        self.PlayerName2 = QLabel('Player ')
+
+        hbox = QHBoxLayout()
+        hbox.addStretch()
+        hbox.addWidget(pot)
+
         table = HandModel()
         table.add_card(JackCard(Suit.Hearts))
-        table.add_card(AceCard(Suit.Spades))
-        table.add_card(QueenCard(Suit.Clubs))
-        table.add_card(NumberedCard(6,Suit.Diamonds))
-        table_cards = CardView(table,150,100)
-        hbox2.addWidget(table_cards)
+        table_cards = CardView(table)
+        hbox.addWidget(table_cards)
+        hbox.addStretch()
+
+        hbox2 = QHBoxLayout()
+        hbox2.addStretch()
+        hbox2.addWidget(self.PlayerName1)
+        hbox2.addWidget(CreateButton(['Fold', 'Call/Check', 'Bet/Raise']))
         hbox2.addStretch()
 
-        #self.start = StartWindow()
-        hbox3=QHBoxLayout()
-        players = ['johannes', 'jonatan']
-
-        self.player_views = []
-        for p in players:
-        #for p in game.players:
-            player_view = PlayerView(p)
-            self.player_views.append(player_view)
-            hbox3.addWidget(player_view)
+        hbox3 = QHBoxLayout()
+        hbox3.addStretch()
+        hbox3.addWidget(self.PlayerName2)
+        hbox3.addWidget(bet2)
+        hbox3.addStretch()
 
         vbox = QVBoxLayout()
-        vbox.addStretch()
-        vbox.addWidget(pot)
-        vbox.addLayout(hbox2)
         vbox.addLayout(hbox3)
-        vbox.addStretch()
+        vbox.addLayout(hbox)
+        vbox.addWidget(PlayerView())
+        vbox.addWidget(bet)
+        vbox.addLayout(hbox2)
 
         widget = QWidget()
         widget.setLayout(vbox)
@@ -209,6 +185,31 @@ class Window(QMainWindow):
     def switch_player(self):
         pass
 
+        # vbox.addWidget(MoreExcitingContent(...))
+
+
+class CreateButton(QWidget):
+    def __init__(self, labels):
+        super().__init__()
+        self.labels = labels
+        hbox = QHBoxLayout()
+        hbox.addStretch()
+        for label in labels:
+            button = QPushButton(label)
+            if label == "Fold":
+                button.clicked.connect(hand.flip)
+            if label == "Call/Check":
+                pass
+                #button.clicked.connect()
+
+            else:
+                button.clicked.connect(lambda checked, label=label: print(label))
+            button.setStyleSheet("background : white")
+            hbox.addWidget(button)
+
+        hbox.addStretch()
+        self.setLayout(hbox)
+
 
 class TableScene(QGraphicsScene):
     """ A scene with a table cloth background """
@@ -216,6 +217,8 @@ class TableScene(QGraphicsScene):
         super().__init__()
         self.tile = QPixmap('cards/table.png')
         self.setBackgroundBrush(QBrush(self.tile))
+
+
 
 
 class CardItem(QGraphicsSvgItem):
@@ -345,10 +348,7 @@ class CardView(QGraphicsView):
 
 # Lets test it out
 app = QApplication(sys.argv)
-#playermodel= PlayerModel('johannes')
-#model=GameModel(playermodel)
-#w = Window(model)
-w = Window()
+w = StartWindow()
 w.show()
 # window = Window()
 # window.show()
