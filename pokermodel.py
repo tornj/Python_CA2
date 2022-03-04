@@ -8,6 +8,7 @@ import sys
 from cardlib import *
 
 
+
 class CardModel(QObject):
     """ Base class that described what is expected from the CardView widget """
 
@@ -47,37 +48,20 @@ class HandModel(Hand, CardModel):
         self.new_cards.emit()  # something changed, better emit the signal!
 
 
-
-
-
-#
-#
-# class MoneyModel(QObject):
-#     new_signal = pyqtSignal()
-#
-#     def __init__(self):
-#         super().__init__()
-
-
-
 class PlayerModel(QObject):
     new_signal = pyqtSignal()
 
-    def __init__(self):
+    def __init__(self, name):
         super().__init__()
         self.name = name
         self.balance = 0
         self.bet = 0
         self.bet_gap = 0
         self.cards = []
-
-        self.hand = Hand()
-
-
+        self.hand = HandModel()
 
 
 class GameModel(object):
-
     new_signal = pyqtSignal()
 
     def __init__(self):
@@ -86,28 +70,15 @@ class GameModel(object):
         self.deck = StandardDeck()
         self.table_cards = []
         self.pot = 0
-        self.acting_player = PlayerModel()
+        #self.acting_player = PlayerModel()
         self.player_turn = -1
+        self.turn = 0
 
         self.list_of_players = []
         self.list_of_players_left = []
 
         self.player_bet_gap = 0
         self.highest_bet = 0
-
-    def answer(self, player):
-        player.bet_gap = self.highest_bet - player.bet
-
-        while True:
-            if player.response == "Fold":
-                self.list_of_players_left.pop(player)
-                self.end_round = True
-
-            if player.response == "Call/Check":
-                return True  # Starta nästa runda
-
-            if player.response == "Bet/Raise":
-                pass
 
     def Game_round(self):
         # Ge båda spelarna två kort
@@ -130,24 +101,35 @@ class GameModel(object):
         self.find_winner()  # Ska implementera
         self.end_round()  # Ska implementera
 
+    def answer(self, player):  #Måste skicka in player model object
+        player.bet_gap = self.highest_bet - player.bet
 
-    def CALL(self):  #När man klickar på call så ska ja byta fönster (och flippa korten)
-        self.list_of_players[self.player_turn].set_active(False)
-        self.player_turn = (self.player_turn + 1) % len(self.list_of_players)
-        self.list_of_players[self.player_turn].set_active(True)
-        self.new_signal.emit()
+        if player.response == "Fold":
+            self.list_of_players_left.pop(player)
+            self.end_round = True
+
+        if player.response == "Call/Check":
+            return True  # Starta nästa runda
+
+        if player.response == "Bet/Raise":
+            pass
 
     def asking_round(self):
         i = 0
+        self.turn = 0
         while True:
-            self.acting_player = self.list_of_players[i]
-            player_answer = self.answer(self.acting_player)
+            self.player_turn = self.list_of_players[i]  # Player turn ska vara ett PlayerModel objekt
+            player_answer = self.answer(self.player_turn)
+            i += 1
+            i %= 2
 
-            if player_answer:  # Starta nästa runda
+            if player_answer and self.turn > 1:  # Starta nästa runda
                 break
 
             if player_answer == "Fold":  #Annonsera vinnare
                 pass
+
+            self.turn += 1
 
     def deal_to_players(self):
         for player in self.list_of_players:
@@ -171,10 +153,10 @@ class GameModel(object):
         self.deck = StandardDeck()
         self.pot = 0
 
-    def end_round(self):  # cl
+    def end_round(self):
         for player in self.list_of_players:
             if player.balance == 0:
-                pass # Quit game, announce winner
+                pass  # Quit game, announce winner
 
         self.pot = 0
         self.table_cards.clear()
@@ -188,4 +170,8 @@ class GameModel(object):
     def find_winner(self):
         pass
 
-
+    def CALL(self):  # När man klickar på call så ska ja byta fönster (och flippa korten)
+        self.list_of_players[self.player_turn].set_active(False)
+        self.player_turn = (self.player_turn + 1) % len(self.list_of_players)
+        self.list_of_players[self.player_turn].set_active(True)
+        self.new_signal.emit()

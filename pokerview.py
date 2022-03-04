@@ -97,6 +97,12 @@ class StartWindow(QMainWindow):
         widget.setLayout(vbox)
         self.setCentralWidget(widget)
 
+        self.list_of_players = [self.NameP1, self.NameP2]
+
+        for player in self.list_of_players:
+            hej = PlayerModel(player)
+
+
     # Onödig då vi nu har PassingInformation
     def OpenGame(self):
         self.Window.show()
@@ -139,7 +145,6 @@ class Window(QMainWindow):
 
         self.PlayerName1 = QLabel('Player ')
         self.PlayerName2 = QLabel('Player ')
-
 
         hbox = QHBoxLayout()
         hbox.addStretch()
@@ -193,8 +198,10 @@ class CreateButton(QWidget):
             button = QPushButton(label)
             if label == "Fold":
                 button.clicked.connect(hand.flip)
-            # elif label == 'Start':
-            #     button.clicked.connect(StartWindow.OpenGame)
+            if label == "Call/Check":
+                pass
+                #button.clicked.connect()
+
             else:
                 button.clicked.connect(lambda checked, label=label: print(label))
             button.setStyleSheet("background : white")
