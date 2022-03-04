@@ -143,7 +143,8 @@ class PlayerView(QGroupBox):
 
         def fold(): game.fold()
         def call_check(): game.call()
-        def bet_raise():
+
+        def bet():
             bet_min, bet_max = game.bet_limits()
             # 1. inputdialog
             amount = 123
@@ -151,7 +152,7 @@ class PlayerView(QGroupBox):
 
         self.player_buttons[0].clicked.connect(fold)
         self.player_buttons[1].clicked.connect(call_check)
-        self.player_buttons[2].clicked.connect(bet_raise)
+        self.player_buttons[2].clicked.connect(bet)
 
         player.active_changed.connect(self.update)
         self.update()

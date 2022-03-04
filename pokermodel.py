@@ -28,7 +28,7 @@ class HandModel(Hand, CardModel):
         Hand.__init__(self)
         CardModel.__init__(self)
         # Additional state needed by the UI
-        self.flipped_cards = False
+        self.flipped_cards = True
 
     def __iter__(self):
         return iter(self.cards)
@@ -82,9 +82,7 @@ class PlayerModel(QObject):
         self.bet = MoneyModel()
         self.bet_gap = MoneyModel()
         self.cards = []
-
         self.active = False
-
         self.hand = HandModel()
 
     def set_active(self, active):
@@ -103,14 +101,14 @@ class GameModel(QObject):
         self.players = players
         self.deck = StandardDeck()
         self.table_cards = []
-        self.pot = 0
+        self.pot = MoneyModel()
         #self.acting_player = PlayerModel()
-        self.player_turn = -1
+        self.player_turn = 0
         self.turn = 0
         self.player_response = 'Ja vet inte'
+        self.active_player = players[self.player_turn]
 
-        self.list_of_players_left = []
-
+        self.list_of_players_left = players
         self.player_bet_gap = 0
         self.highest_bet = 0
         
@@ -155,11 +153,9 @@ class GameModel(QObject):
             return True  # Starta nästa runda
 
         if self.player_response == "Bet/Raise":
-            #player.bet = INPUT??
             self.pot += player.bet
             self.highest_bet = player.bet
             return True
-
 
     def asking_round(self):
         i = 0
@@ -173,8 +169,6 @@ class GameModel(QObject):
             if player_answer and self.turn > 1:  # Starta nästa runda
                 break
 
-            if player_answer == "Fold":  #Annonsera vinnare
-                pass
 
             self.turn += 1
 
@@ -198,7 +192,7 @@ class GameModel(QObject):
         self.table_cards.clear()
         self.winner = None
         self.deck = StandardDeck()
-        self.pot = 0
+        self.pot.clear()
 
     def end_round(self):
         for player in self.players:
@@ -212,34 +206,41 @@ class GameModel(QObject):
 
         # Måste lägga till mer saker som skall rensas innan nästa omgång
 
-
-
     def find_winner(self):
-        pass
+        Players_PH = []
+        for player in self.players:
+            Players_PH.append(PokerHand(player))
+
+        if Players_PH[0] < Players_PH[1]:
+            pass  # player 2 wins
+        elif Players_PH[0] > Players_PH[1]:
+            pass  # Player 1 wins
+        else:
+            pass  # lika betala tillbaks pengarna
 
     def new_turn(self):
         self.players[self.player_turn].set_active(False)
         self.player_turn = (self.player_turn + 1) % len(self.players)
         self.players[self.player_turn].set_active(True)
+        self.active_player = self.players[self.player_turn]
         self.new_signal.emit()
 
     def fold(self):
-        self.player_response = 'Fold'
-        self.players[self.player_turn].set_active(False)
-        self.player_turn = (self.player_turn + 1) % len(self.players)
-        self.players[self.player_turn].set_active(True)
-        self.new_signal.emit()
+        self.list_of_players_left.pop(self.active_player)
+        self.End_Round = True
+        self.new_turn()
 
     def call(self):  # När man klickar på call så ska ja byta fönster (och flippa korten)
-        self.player_response = 'Call/Check'
-        self.new_turn()
-        self.pot = 10
-        self.new_pot.emit()
+        self.active_player.bet_gap = self.highest_bet - self.active_player.bet
+        self.active_player.bet = self.active_player.bet_gap
+        self.active_player.bet_gap = 0
+        self.active_player.balance -= self.active_player.bet
+        self.pot += self.active_player.bet
 
+        self.new_turn()
+
+        #self.new_pot.emit()
 
     def bet(self, amount: int):
-        self.player_response = 'Bet/Raise'
-        self.players[self.player_turn].set_active(False)
-        self.player_turn = (self.player_turn + 1) % len(self.players)
-        self.players[self.player_turn].set_active(True)
-        self.new_signal.emit()
+        self.active_player.bet = amount
+        self.new_turn()
