@@ -28,19 +28,14 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QLabel, QVBo
 # Card widget code:
 ###################
 
-hand = HandModel()
-hand.add_card(NumberedCard(10, Suit.Spades))
-hand.add_card(NumberedCard(10, Suit.Hearts))
+# hand = HandModel()
+# hand.add_card(NumberedCard(10, Suit.Spades))
+# hand.add_card(NumberedCard(10, Suit.Hearts))
 
 
 class StartWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-
-
-        # self.point_model = MoneyModel
-        # self.point_model.new_value.connect(self.update_label)
-        # self.update_label()  # Initial refresh of textfield
 
         self.Window = Window()
         self.setStyleSheet("background-image: url(cards/royal-straight-flush.jpg);")
@@ -133,7 +128,7 @@ class PlayerView(QGroupBox):
         card_view = CardView(player.hand, 150, 30)
         vbox.addWidget(card_view)
         #self.setLayout(hbox)
-        self.player_buttons=[]
+        self.player_buttons = []
         hbox3 = QHBoxLayout()
         for item in ['Fold', 'Call/Check', 'Bet/Raise']:
             button = QPushButton(item)
@@ -147,12 +142,12 @@ class PlayerView(QGroupBox):
         #self.setStyleSheet("border: transparent;")
 
         #def fold(): GameModel.fold()
-        def call_check(): game.CALL()
+        def call_check(): game.call()
         #def bet_raise(): GameModel.raise()
 
-        self.player_buttons[0].clicked.connect(hand.flip)
+        self.player_buttons[0].clicked.connect(player.hand.flip)
         self.player_buttons[1].clicked.connect(call_check)
-        self.player_buttons[1].clicked.connect(hand.flip)
+        #self.player_buttons[1].clicked.connect(player.hand.flip)
 
         player.data_changed.connect(self.update)
         self.update()

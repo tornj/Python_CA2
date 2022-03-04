@@ -75,7 +75,7 @@ class GameModel(QObject):
     def __init__(self, players):
         super().__init__()
         self.winner = None
-        self.end_round = False
+        self.End_Round = False
         self.players = players
         self.deck = StandardDeck()
         self.table_cards = []
@@ -83,8 +83,8 @@ class GameModel(QObject):
         #self.acting_player = PlayerModel()
         self.player_turn = -1
         self.turn = 0
+        self.player_response = 'Ja vet inte'
 
-        #self.list_of_players = []
         self.list_of_players_left = []
 
         self.player_bet_gap = 0
@@ -92,6 +92,7 @@ class GameModel(QObject):
         
     def Start(self):
         self.players[self.player_turn].set_active(True)
+        self.deal_to_players()
         self.new_signal.emit()
 
     def Game_round(self):
@@ -100,15 +101,15 @@ class GameModel(QObject):
         self.deal_to_players()
         self.asking_round()
 
-        if not self.end_round:
+        if not self.End_Round:
             self.deal_flop()
             self.asking_round()
 
-        if not self.end_round:
+        if not self.End_Round:
             self.deal_turn()
             self.asking_round()
 
-        if not self.end_round:
+        if not self.End_Round:
             self.deal_river()
             self.asking_round()
 
@@ -118,15 +119,22 @@ class GameModel(QObject):
     def answer(self, player):  #Måste skicka in player model object
         player.bet_gap = self.highest_bet - player.bet
 
-        if player.response == "Fold":
+        if self.player_response == "Fold":
             self.list_of_players_left.pop(player)
-            self.end_round = True
+            self.End_Round = True
 
-        if player.response == "Call/Check":
+        if self.player_response == "Call/Check":
+            player.bet = player.bet_gap
+            player.bet_gap = 0
+            player.balance -= player.bet
+            self.pot += player.bet
             return True  # Starta nästa runda
 
-        if player.response == "Bet/Raise":
-            pass
+        if self.player_response == "Bet/Raise":
+            #player.bet = INPUT??
+            self.pot += player.bet
+            self.highest_bet = player.bet
+            return True
 
     def asking_round(self):
         i = 0
@@ -146,7 +154,7 @@ class GameModel(QObject):
             self.turn += 1
 
     def deal_to_players(self):
-        for player in self.list_of_players:
+        for player in self.players:
             player.hand.add_card(self.deck.draw())
             player.hand.add_card(self.deck.draw())
 
@@ -184,8 +192,22 @@ class GameModel(QObject):
     def find_winner(self):
         pass
 
+    def fold(self):
+        self.player_response = 'Fold'
+        self.players[self.player_turn].set_active(False)
+        self.player_turn = (self.player_turn + 1) % len(self.players)
+        self.players[self.player_turn].set_active(True)
+        self.new_signal.emit()
 
-    def CALL(self):  # När man klickar på call så ska ja byta fönster (och flippa korten)
+    def call(self):  # När man klickar på call så ska ja byta fönster (och flippa korten)
+        self.player_response = 'Call/Check'
+        self.players[self.player_turn].set_active(False)
+        self.player_turn = (self.player_turn + 1) % len(self.players)
+        self.players[self.player_turn].set_active(True)
+        self.new_signal.emit()
+
+    def bet(self):
+        self.player_response = 'Bet/Raise'
         self.players[self.player_turn].set_active(False)
         self.player_turn = (self.player_turn + 1) % len(self.players)
         self.players[self.player_turn].set_active(True)
