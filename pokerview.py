@@ -101,7 +101,6 @@ class StartWindow(QMainWindow):
         for player in self.list_of_players:
             hej = PlayerModel(player)
 
-
     # Onödig då vi nu har PassingInformation
     def OpenGame(self):
         self.Window.show()
