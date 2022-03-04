@@ -48,7 +48,6 @@ class HandModel(Hand, CardModel):
         self.new_cards.emit()  # something changed, better emit the signal!
 
 
-
 class PlayerModel(QObject):
     data_changed = pyqtSignal()
 
@@ -62,19 +61,19 @@ class PlayerModel(QObject):
 
         self.active = False
 
-        self.hand = Hand()
+        self.hand = HandModel()
 
-    def set_active(self,active):
+    def set_active(self, active):
         self.active = active
+        self.hand.flip()
         self.data_changed.emit()
 
 
-
-
-class GameModel(object):
+class GameModel(QObject):
     new_signal = pyqtSignal()
 
     def __init__(self, players):
+        super().__init__()
         self.winner = None
         self.end_round = False
         self.players = players
@@ -85,12 +84,15 @@ class GameModel(object):
         self.player_turn = -1
         self.turn = 0
 
-        self.list_of_players = []
+        #self.list_of_players = []
         self.list_of_players_left = []
 
         self.player_bet_gap = 0
         self.highest_bet = 0
         
+    def Start(self):
+        self.players[self.player_turn].set_active(True)
+        self.new_signal.emit()
 
     def Game_round(self):
         # Ge båda spelarna två kort
@@ -130,7 +132,7 @@ class GameModel(object):
         i = 0
         self.turn = 0
         while True:
-            self.player_turn = self.list_of_players[i]  # Player turn ska vara ett PlayerModel objekt
+            self.player_turn = self.players[i]  # Player turn ska vara ett PlayerModel objekt
             player_answer = self.answer(self.player_turn)
             i += 1
             i %= 2
@@ -166,13 +168,13 @@ class GameModel(object):
         self.pot = 0
 
     def end_round(self):
-        for player in self.list_of_players:
+        for player in self.players:
             if player.balance == 0:
                 pass  # Quit game, announce winner
 
         self.pot = 0
         self.table_cards.clear()
-        for player in self.list_of_players:
+        for player in self.players:
             player.hand.drop_cards([0, 1])
 
         # Måste lägga till mer saker som skall rensas innan nästa omgång
@@ -184,7 +186,7 @@ class GameModel(object):
 
 
     def CALL(self):  # När man klickar på call så ska ja byta fönster (och flippa korten)
-        self.list_of_players[self.player_turn].set_active(False)
-        self.player_turn = (self.player_turn + 1) % len(self.list_of_players)
-        self.list_of_players[self.player_turn].set_active(True)
+        self.players[self.player_turn].set_active(False)
+        self.player_turn = (self.player_turn + 1) % len(self.players)
+        self.players[self.player_turn].set_active(True)
         self.new_signal.emit()
