@@ -116,11 +116,11 @@ class PlayerView(QGroupBox):
         #self.setLayout(vbox)
         hbox=QHBoxLayout()
         #self.setLayout(hbox)
-        bal=QLabel('Balance:') #ändra här för att koden ska funka
-        bet=QLabel('Bet:' + str(player.bet))
-        hbox.addWidget(bal)
+        self.bal=QLabel('Balance:' + str(self.player.balance)) #ändra här för att koden ska funka
+        self.bet=QLabel('Bet:' + str(self.player.bet))
+        hbox.addWidget(self.bal)
         hbox.addStretch()
-        hbox.addWidget(bet)
+        hbox.addWidget(self.bet)
         hbox.addStretch()
         vbox.addLayout(hbox)
         card_view = CardView(player.hand, 150, 30)
@@ -144,26 +144,28 @@ class PlayerView(QGroupBox):
 
         def bet_raise():
             bet_min, bet_max = game.bet_limits()
-            val, ok = QInputDialog.getInt(self, 'Bet','Place bet:', bet_min, bet_max)
+            val, ok = QInputDialog.getInt(self, 'Bet', 'Place bet:', 0, bet_min, bet_max)
+            #val, ok = QInputDialog.getInt(self, 'Bet', 'Place bet:', 0, 5, 1000)
             if ok:
                 game.bet(val)
-
-
 
         self.player_buttons[0].clicked.connect(fold)
         self.player_buttons[1].clicked.connect(call_check)
         self.player_buttons[2].clicked.connect(bet_raise)
 
-        player.active_changed.connect(self.update)
-        self.update()
+        player.active_changed.connect(self.next_player)
+        game.data_changed.connect(self.money_changed)
+        self.money_changed()
+        self.next_player()
 
-    def update(self):
+    def next_player(self):
         for b in self.player_buttons:
             b.setEnabled(self.player.active)
 
+    def money_changed(self):
+        self.bet.setText("Bet: " + str(self.player.bet))
+        self.bal.setText("Balance: " + str(self.player.balance))
 
-        #self.player_buttons[1].clicked.connect(call_check())
-        #self.player_buttons[2].clicked.connect(raise())
 
 class Window(QMainWindow):
     """ """
@@ -177,17 +179,17 @@ class Window(QMainWindow):
         # setting  the geometry of window
         self.setGeometry(10, 50, 1900, 1000)
 
-        pot = QLabel('Pot: ')
+        self.pot = QLabel('Pot: ')
 
         hbox2 = QHBoxLayout()
         #self.setLayout(hbox2)
         hbox2.addStretch()
-        table = HandModel()
-        table.add_card(JackCard(Suit.Hearts))
-        table.add_card(AceCard(Suit.Spades))
-        table.add_card(QueenCard(Suit.Clubs))
-        table.add_card(NumberedCard(6, Suit.Diamonds))
-        table_cards = CardView(table, 150, 100)
+        # table = HandModel()
+        # table.add_card(JackCard(Suit.Hearts))
+        # table.add_card(AceCard(Suit.Spades))
+        # table.add_card(QueenCard(Suit.Clubs))
+        # table.add_card(NumberedCard(6, Suit.Diamonds))
+        table_cards = CardView(game.table_cards, 150, 100)
         #table_cards = CardView(game.table_cards, 150, 100)
         hbox2.addWidget(table_cards)
         hbox2.addStretch()
@@ -205,7 +207,7 @@ class Window(QMainWindow):
 
         vbox = QVBoxLayout()
         vbox.addStretch()
-        vbox.addWidget(pot)
+        vbox.addWidget(self.pot)
         vbox.addLayout(hbox2)
         vbox.addLayout(hbox3)
         vbox.addStretch()
@@ -214,14 +216,17 @@ class Window(QMainWindow):
         widget.setLayout(vbox)
         self.setCentralWidget(widget)
 
-        game.game_signal.connect(self.update)
+        #game.game_signal.connect(self.update)
         #game.new_turn_signal.connect(self.update)
         #game.money_signal.connect(self.update)
         game.Start()
-        self.update()
+        #self.update()
 
     def DisplayInfo(self):
         self.show()
+
+    def pot_changed(self):
+        self.pot.setText("Pot: " + self.game.pot)
 
 
 class TableScene(QGraphicsScene):
