@@ -115,14 +115,12 @@ class PlayerView(QGroupBox):
         vbox.addStretch()
         #self.setLayout(vbox)
         hbox=QHBoxLayout()
-        hbox.addStretch()
         #self.setLayout(hbox)
         bal=QLabel('Balance:') #ändra här för att koden ska funka
-        bet=QLabel('Bet:')
-        betline=QLineEdit()
+        bet=QLabel('Bet:' + str(player.bet))
         hbox.addWidget(bal)
+        hbox.addStretch()
         hbox.addWidget(bet)
-        hbox.addWidget(betline)
         hbox.addStretch()
         vbox.addLayout(hbox)
         card_view = CardView(player.hand, 150, 30)
@@ -144,15 +142,17 @@ class PlayerView(QGroupBox):
         def fold(): game.fold()
         def call_check(): game.call()
 
-        def bet():
+        def bet_raise():
             bet_min, bet_max = game.bet_limits()
-            # 1. inputdialog
-            amount = 123
-            game.bet(amount)
+            val, ok = QInputDialog.getInt(self, 'Bet','Place bet:', bet_min, bet_max)
+            if ok:
+                game.bet(val)
+
+
 
         self.player_buttons[0].clicked.connect(fold)
         self.player_buttons[1].clicked.connect(call_check)
-        self.player_buttons[2].clicked.connect(bet)
+        self.player_buttons[2].clicked.connect(bet_raise)
 
         player.active_changed.connect(self.update)
         self.update()

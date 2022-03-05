@@ -8,7 +8,6 @@ import sys
 from cardlib import *
 
 
-
 class CardModel(QObject):
     """ Base class that described what is expected from the CardView widget """
 
@@ -68,9 +67,15 @@ class MoneyModel(QObject):
     def __eq__(self, other: int):
         return self.value == other
 
+
+    def __str__(self):
+        return f'{self.value}'
+
+
     def clear(self):
         self.value = 0
         self.new_value.emit()
+
 
 
 class PlayerModel(QObject):
@@ -85,6 +90,7 @@ class PlayerModel(QObject):
         self.cards = []
         self.active = False
         self.hand = HandModel()
+
 
     def set_active(self, active):
         self.active = active
@@ -111,11 +117,15 @@ class GameModel(QObject):
         self.player_ready = False
         self.list_of_players_left = players
         self.highest_bet = 0
+        self.min_bet=5
         
     def Start(self):
         self.players[self.player_turn].set_active(True)
         self.deal_to_players()
         self.game_signal.emit()
+  
+    def bet_limits(self):
+        return self.active_player.balance, self.min_bet
 
     def Game_round(self):
         # Ge båda spelarna två kort
@@ -144,7 +154,6 @@ class GameModel(QObject):
         while True:
             if self.player_ready and self.turn > 1:  # Starta nästa runda
                 break
-
             self.turn += 1
 
     def deal_to_players(self):
@@ -189,6 +198,7 @@ class GameModel(QObject):
         self.players[self.player_turn].set_active(False)
         self.player_turn = (self.player_turn + 1) % len(self.players)
         self.players[self.player_turn].set_active(True)
+
         self.active_player = self.players[self.player_turn]
         self.new_turn_signal.emit()
 
