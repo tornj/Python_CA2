@@ -186,8 +186,9 @@ class Window(QMainWindow):
         table.add_card(JackCard(Suit.Hearts))
         table.add_card(AceCard(Suit.Spades))
         table.add_card(QueenCard(Suit.Clubs))
-        table.add_card(NumberedCard(6,Suit.Diamonds))
-        table_cards = CardView(table,150,100)
+        table.add_card(NumberedCard(6, Suit.Diamonds))
+        table_cards = CardView(table, 150, 100)
+        #table_cards = CardView(game.table_cards, 150, 100)
         hbox2.addWidget(table_cards)
         hbox2.addStretch()
 
@@ -213,15 +214,14 @@ class Window(QMainWindow):
         widget.setLayout(vbox)
         self.setCentralWidget(widget)
 
-        game.new_signal.connect(self.update)
+        game.game_signal.connect(self.update)
+        #game.new_turn_signal.connect(self.update)
+        #game.money_signal.connect(self.update)
         game.Start()
         self.update()
 
     def DisplayInfo(self):
         self.show()
-
-    def switch_player(self):
-        pass
 
 
 class TableScene(QGraphicsScene):
@@ -288,7 +288,7 @@ class CardView(QGraphicsView):
         # The view can listen to changes:
         card_model.new_cards.connect(self.change_cards)
         # It is completely optional if you want to do it this way, or have some overreaching Player/GameState
-        # call the "change_cards" method instead. z
+        # call the "change_cards" method instead.
 
         # Add the cards the first time around to represent the initial state.
         self.change_cards()
