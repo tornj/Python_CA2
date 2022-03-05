@@ -5,14 +5,23 @@ from PyQt5.QtSvg import *
 from PyQt5.QtWidgets import *
 from abc import abstractmethod
 from pokermodel import GameModel
+from pokerview import *
+import sys
 
 
+def Main():
+    app = QApplication(sys.argv)
+    playermodel = [PlayerModel('johannes'), PlayerModel('Jonatan')]
+    model = GameModel(playermodel)
+    w = Window(model)
+    w.show()
+    # window = Window()
+    # window.show()
+    app.exec_()
 
 
-
-
-
-
+if __name__ == '__main__':
+    Main()
 
 
 

@@ -27,7 +27,7 @@ class HandModel(Hand, CardModel):
         Hand.__init__(self)
         CardModel.__init__(self)
         # Additional state needed by the UI
-        self.flipped_cards = False
+        self.flipped_cards = True
 
     def __iter__(self):
         return iter(self.cards)
@@ -67,11 +67,15 @@ class MoneyModel(QObject):
     def __eq__(self, other: int):
         return self.value == other
 
+
     def __str__(self):
         return f'{self.value}'
 
+
     def clear(self):
         self.value = 0
+        self.new_value.emit()
+
 
 
 class PlayerModel(QObject):
@@ -84,10 +88,9 @@ class PlayerModel(QObject):
         self.bet = MoneyModel()
         self.bet_gap = MoneyModel()
         self.cards = []
-
         self.active = False
-
         self.hand = HandModel()
+
 
     def set_active(self, active):
         self.active = active
@@ -96,7 +99,9 @@ class PlayerModel(QObject):
 
 
 class GameModel(QObject):
-    new_signal = pyqtSignal()
+    new_turn_signal = pyqtSignal()
+    money_signal = pyqtSignal()
+    game_signal = pyqtSignal()
 
     def __init__(self, players):
         super().__init__()
@@ -105,26 +110,26 @@ class GameModel(QObject):
         self.players = players
         self.deck = StandardDeck()
         self.table_cards = []
-        self.pot = 0
-        # self.acting_player = PlayerModel()
-        self.player_turn = -1
+        self.pot = MoneyModel()
+        self.player_turn = 0
         self.turn = 0
-        self.player_response = 'Ja vet inte'
-        self.list_of_players_left = []
-
-        self.player_bet_gap = 0
+        self.active_player = players[self.player_turn]
+        self.player_ready = False
+        self.list_of_players_left = players
         self.highest_bet = 0
-
+        self.min_bet=5
+        
     def Start(self):
         self.players[self.player_turn].set_active(True)
         self.deal_to_players()
-        self.new_signal.emit()
-
+        self.game_signal.emit()
+  
     def bet_limits(self):
-        return , 5
+        return self.active_player.balance, self.min_bet
 
     def Game_round(self):
         # Ge båda spelarna två kort
+        self.deck = StandardDeck()
         self.deck.shuffle()
         self.deal_to_players()
         self.asking_round()
@@ -144,41 +149,11 @@ class GameModel(QObject):
         self.find_winner()  # Ska implementera
         self.end_round()  # Ska implementera
 
-    def answer(self, player):  # Måste skicka in player model object
-        player.bet_gap = self.highest_bet - player.bet
-
-        if self.player_response == "Fold":
-            self.list_of_players_left.pop(player)
-            self.End_Round = True
-
-        if self.player_response == "Call/Check":
-            player.bet = player.bet_gap
-            player.bet_gap = 0
-            player.balance -= player.bet
-            self.pot += player.bet
-            return True  # Starta nästa runda
-
-        if self.player_response == "Bet/Raise":
-            # player.bet = INPUT??
-            self.pot += player.bet
-            self.highest_bet = player.bet
-            return True
-
     def asking_round(self):
-        i = 0
         self.turn = 0
         while True:
-            self.player_turn = self.players[i]  # Player turn ska vara ett PlayerModel objekt
-            player_answer = self.answer(self.player_turn)
-            i += 1
-            i %= 2
-
-            if player_answer and self.turn > 1:  # Starta nästa runda
+            if self.player_ready and self.turn > 1:  # Starta nästa runda
                 break
-
-            if player_answer == "Fold":  # Annonsera vinnare
-                pass
-
             self.turn += 1
 
     def deal_to_players(self):
@@ -187,21 +162,15 @@ class GameModel(QObject):
             player.hand.add_card(self.deck.draw())
 
     def deal_flop(self):  # 3 första
-        self.table_cards.append(self.deck.draw())
-        self.table_cards.append(self.deck.draw())
-        self.table_cards.append(self.deck.draw())
+        self.table_cards.append(self.deck.draw())  # table cards måste vara en lista för att jag ska kunna använda
+        self.table_cards.append(self.deck.draw())  # pokerhand, men måste samtidigt vara ett Handmodel objekt för
+        self.table_cards.append(self.deck.draw())  # att ja ska kunna visa dem med CardView...
 
     def deal_turn(self):
         self.table_cards.append(self.deck.draw())
 
     def deal_river(self):
         self.table_cards.append(self.deck.draw())
-
-    def clear_for_new_round(self):
-        self.table_cards.clear()
-        self.winner = None
-        self.deck = StandardDeck()
-        self.pot = 0
 
     def end_round(self):
         for player in self.players:
@@ -211,35 +180,48 @@ class GameModel(QObject):
         self.pot.clear()
         self.table_cards.clear()
         for player in self.players:
-            player.hand.drop_cards([0, 1])
-
-        # Måste lägga till mer saker som skall rensas innan nästa omgång
+            player.hand.drop_cards([0, 1])  # Måste lägga till mer saker som skall rensas innan nästa omgång
 
     def find_winner(self):
-        pass
+        Players_PH = []
+        for player in self.players:
+            Players_PH.append(PokerHand(player))
+
+        if Players_PH[0] < Players_PH[1]:
+            pass  # player 2 wins
+        elif Players_PH[0] > Players_PH[1]:
+            pass  # Player 1 wins
+        else:
+            pass  # lika betala tillbaks pengarna
 
     def new_turn(self):
         self.players[self.player_turn].set_active(False)
         self.player_turn = (self.player_turn + 1) % len(self.players)
         self.players[self.player_turn].set_active(True)
-        self.new_signal.emit()
+
+        self.active_player = self.players[self.player_turn]
+        self.new_turn_signal.emit()
 
     def fold(self):
-        self.player_response = 'Fold'
-        self.players[self.player_turn].set_active(False)
-        self.player_turn = (self.player_turn + 1) % len(self.players)
-        self.players[self.player_turn].set_active(True)
-        self.new_signal.emit()
-
-    def call(self):  # När man klickar på call så ska ja byta fönster (och flippa korten)
-        self.player_response = 'Call/Check'
+        self.list_of_players_left.pop(self.active_player)
+        self.End_Round = True
         self.new_turn()
-        self.pot = 10
-        self.new_pot.emit()
+
+    def call(self):
+        # self.active_player.bet_gap = self.highest_bet - self.active_player.bet
+        # self.active_player.bet = self.active_player.bet_gap
+        # self.active_player.bet_gap = 0
+        # self.active_player.balance -= self.active_player.bet
+        # self.pot += self.active_player.bet
+        # self.player_ready = True
+        # self.money_signal.emit()
+
+        self.new_turn()
+
+        #self.new_pot.emit()
 
     def bet(self, amount: int):
-        self.player_response = 'Bet/Raise'
-        self.players[self.player_turn].set_active(False)
-        self.player_turn = (self.player_turn + 1) % len(self.players)
-        self.players[self.player_turn].set_active(True)
-        self.new_signal.emit()
+        self.active_player.bet = amount
+        self.player_ready = False
+        self.new_turn()
+
