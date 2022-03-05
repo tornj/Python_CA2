@@ -28,19 +28,14 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QLabel, QVBo
 # Card widget code:
 ###################
 
-hand = HandModel()
-hand.add_card(NumberedCard(10, Suit.Spades))
-hand.add_card(NumberedCard(10, Suit.Hearts))
+# hand = HandModel()
+# hand.add_card(NumberedCard(10, Suit.Spades))
+# hand.add_card(NumberedCard(10, Suit.Hearts))
 
 
 class StartWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-
-
-        # self.point_model = MoneyModel
-        # self.point_model.new_value.connect(self.update_label)
-        # self.update_label()  # Initial refresh of textfield
 
         self.Window = Window()
         self.setStyleSheet("background-image: url(cards/royal-straight-flush.jpg);")
@@ -101,7 +96,6 @@ class StartWindow(QMainWindow):
         for player in self.list_of_players:
             hej = PlayerModel(player)
 
-
     # Onödig då vi nu har PassingInformation
     def OpenGame(self):
         self.Window.show()
@@ -113,30 +107,29 @@ class StartWindow(QMainWindow):
 
 
 class PlayerView(QGroupBox):
-    def __init__(self, player):
-        super().__init__(player)
-        self.player= player
+    def __init__(self, player, game):
+        super().__init__(player.name)
+
+        self.player = player
         vbox = QVBoxLayout()
         vbox.addStretch()
         #self.setLayout(vbox)
         hbox=QHBoxLayout()
-        hbox.addStretch()
         #self.setLayout(hbox)
         bal=QLabel('Balance:') #ändra här för att koden ska funka
-        bet=QLabel('Bet:')
-        betline=QLineEdit()
+        bet=QLabel('Bet:' + str(player.bet))
         hbox.addWidget(bal)
+        hbox.addStretch()
         hbox.addWidget(bet)
-        hbox.addWidget(betline)
         hbox.addStretch()
         vbox.addLayout(hbox)
-        card_view = CardView(hand, 150,30)
+        card_view = CardView(player.hand, 150, 30)
         vbox.addWidget(card_view)
         #self.setLayout(hbox)
-        self.player_buttons=[]
-        hbox3=QHBoxLayout()
+        self.player_buttons = []
+        hbox3 = QHBoxLayout()
         for item in ['Fold', 'Call/Check', 'Bet/Raise']:
-            button= QPushButton(item)
+            button = QPushButton(item)
             button.setStyleSheet("background : white")
             self.player_buttons.append(button)
             hbox3.addWidget(button)
@@ -146,17 +139,26 @@ class PlayerView(QGroupBox):
         self.show()
         #self.setStyleSheet("border: transparent;")
 
-        #def fold(): GameModel.fold()
-        #def call_check(): GameModel.CALL()
-        #def bet_raise(): GameModel.raise()
+        def fold(): game.fold()
+        def call_check(): game.call()
+        def bet_raise():
+            bet_min, bet_max = game.bet_limits()
+            val, ok = QInputDialog.getInt(self, 'Bet','Place bet:', bet_min, bet_max)
+            if ok:
+                game.bet(val)
 
-        self.player_buttons[0].clicked.connect(hand.flip)
 
-    #     player.data_changed.connect(self.update)
-    #     self.update()
-    # def update(self):
-    #     for b in self.player_buttons:
-    #         b.setEnabled(self.player.active)
+
+        self.player_buttons[0].clicked.connect(fold)
+        self.player_buttons[1].clicked.connect(call_check)
+        self.player_buttons[2].clicked.connect(bet_raise)
+
+        player.active_changed.connect(self.update)
+        self.update()
+
+    def update(self):
+        for b in self.player_buttons:
+            b.setEnabled(self.player.active)
 
 
         #self.player_buttons[1].clicked.connect(call_check())
@@ -164,11 +166,11 @@ class PlayerView(QGroupBox):
 
 class Window(QMainWindow):
     """ """
-    def __init__(self):
+    def __init__(self, game):
         super().__init__()
         # changing the background color to yellow
         self.setStyleSheet("background-image: url(cards/table.png);")
-        #self.game= game
+        self.game = game
         # set the title
         self.setWindowTitle("Texas hold'em")
         # setting  the geometry of window
@@ -190,12 +192,12 @@ class Window(QMainWindow):
 
         #self.start = StartWindow()
         hbox3=QHBoxLayout()
-        players = ['johannes', 'jonatan']
+        #players = ['johannes', 'jonatan']
 
         self.player_views = []
-        for p in players:
-        #for p in game.players:
-            player_view = PlayerView(p)
+
+        for p in game.players:
+            player_view = PlayerView(p, game)
             self.player_views.append(player_view)
             hbox3.addWidget(player_view)
 
@@ -209,6 +211,10 @@ class Window(QMainWindow):
         widget = QWidget()
         widget.setLayout(vbox)
         self.setCentralWidget(widget)
+
+        game.new_signal.connect(self.update)
+        game.Start()
+        self.update()
 
     def DisplayInfo(self):
         self.show()
@@ -352,10 +358,9 @@ class CardView(QGraphicsView):
 
 # Lets test it out
 app = QApplication(sys.argv)
-#playermodel= PlayerModel('johannes')
-#model=GameModel(playermodel)
-#w = Window(model)
-w = Window()
+playermodel= [PlayerModel('johannes'), PlayerModel('Jonatan')]
+model = GameModel(playermodel)
+w = Window(model)
 w.show()
 # window = Window()
 # window.show()
