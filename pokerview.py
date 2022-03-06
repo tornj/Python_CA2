@@ -109,6 +109,8 @@ class PlayerView(QGroupBox):
     def __init__(self, player, game):
         super().__init__(player.name)
 
+        self.setFont(QFont('BankGothic MD BT', 15))
+        self.setStyleSheet('text: red')
         self.player = player
         vbox = QVBoxLayout()
         vbox.addStretch()
@@ -185,7 +187,6 @@ class Window(QMainWindow):
         self.setWindowTitle("Texas hold'em")
         # setting  the geometry of window
         self.setGeometry(10, 50, 1900, 1000)
-
         self.pot = QLabel('Pot: ')
         self.pot.setStyleSheet('border: 1px inset grey ')
         self.pot.setAlignment(Qt.AlignCenter)
@@ -194,15 +195,11 @@ class Window(QMainWindow):
         hbox4.addStretch()
         hbox4.addWidget(self.pot)
         hbox4.addStretch()
-
         hbox2 = QHBoxLayout()
-        #self.setLayout(hbox2)
         hbox2.addStretch()
         self.table_cards = CardView(game.table_cards, 150, 110)
         hbox2.addWidget(self.table_cards)
         hbox2.addStretch()
-
-        #self.start = StartWindow()
         hbox3 = QHBoxLayout()
 
         self.player_views = []
@@ -217,13 +214,9 @@ class Window(QMainWindow):
         vbox.addLayout(hbox2)
         vbox.addLayout(hbox3)
         vbox.addStretch()
-
         widget = QWidget()
         widget.setLayout(vbox)
         self.setCentralWidget(widget)
-
-        #game.game_signal.connect(self.update)
-        #game.new_turn_signal.connect(self.update)
         game.game_message.connect(self.alert_user)
         game.data_changed.connect(self.pot_changed)
         game.update_table_cards.connect(self.change_table_cards)
@@ -244,10 +237,6 @@ class Window(QMainWindow):
         box.setText(text)
         box.exec_()
 
-    # def change_table_cards(self):
-    #     self.table_cards = CardView(self.game.table_cards, 150, 110)
-
-
 class TableScene(QGraphicsScene):
     """ A scene with a table cloth background """
     def __init__(self):
@@ -255,14 +244,12 @@ class TableScene(QGraphicsScene):
         self.tile = QPixmap('cards/table.png')
         self.setBackgroundBrush(QBrush(self.tile))
 
-
 class CardItem(QGraphicsSvgItem):
     """ A simple overloaded QGraphicsSvgItem that also stores the card position """
     def __init__(self, renderer, position):
         super().__init__()
         self.setSharedRenderer(renderer)
         self.position = position
-
 
 def read_cards():
     """
@@ -302,19 +289,10 @@ class CardView(QGraphicsView):
         super().__init__(self.scene)
 
         self.setStyleSheet("border: transparent;")
-
         self.card_spacing = card_spacing
         self.padding = padding
-
         self.model = card_model
-        # Whenever the this window should update, it should call the "change_cards" method.
-        # This can, for example, be done by connecting it to a signal.
-        # The view can listen to changes:
         card_model.new_cards.connect(self.change_cards)
-        # It is completely optional if you want to do it this way, or have some overreaching Player/GameState
-        # call the "change_cards" method instead.
-
-        # Add the cards the first time around to represent the initial state.
         self.change_cards()
 
     def change_cards(self):
@@ -343,7 +321,7 @@ class CardView(QGraphicsView):
             # Place the cards on the default positions
             c.setPos(c.position * self.card_spacing, 0)
             # We could also do cool things like marking card by making them transparent if we wanted to!
-            # c.setOpacity(0.5 if self.model.marked(i) else 1.0)
+            #c.setOpacity(0.5 if self.model.marked(i) else 1.0)
             self.scene.addItem(c)
 
         self.update_view()
@@ -363,26 +341,3 @@ class CardView(QGraphicsView):
         self.update_view()
         super().resizeEvent(painter)
 
-    # This is the Controller part of the GUI, handling input events that modify the Model
-    # def mousePressEvent(self, event):
-    #    # We can check which item, if any, that we clicked on by fetching the scene items (neat!)
-    #    pos = self.mapToScene(event.pos())
-    #    item = self.scene.itemAt(pos, self.transform())
-    #    if item is not None:
-    #        # Report back that the user clicked on the card at given position:
-    #        # The model can choose to do whatever it wants with this information.
-    #        self.model.clicked_position(item.position)
-
-    # You can remove these events if you don't need them.
-    # def mouseDoubleClickEvent(self, event):
-    #    self.model.flip() # Another possible event. Lets add it to the flip functionality for fun!
-
-###################
-# Main test program
-###################
-
-# Lets test it out
-app = QApplication(sys.argv)
-w = StartWindow()
-w.show()
-app.exec_()

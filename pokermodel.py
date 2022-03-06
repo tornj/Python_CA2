@@ -130,7 +130,7 @@ class GameModel(QObject):
 
     def __init__(self, players):
         super().__init__()
-        self.winner = None
+        self.loser = None
         self.End_Round = False
         self.players = players
         self.deck = StandardDeck()
@@ -204,6 +204,7 @@ class GameModel(QObject):
     def end_round(self):
         for player in self.players:
             if player.balance == 0:
+                self.game_message.emit("Game Over! " + self.loser + ' has no money left')
                 quit()  # Quit game, announce winner
 
         # self.pot.clear()
@@ -218,24 +219,29 @@ class GameModel(QObject):
         for player in self.players:
             player.hand.cards.clear()
             player.bet= 0
-
         self.Start()
 
     def find_winner(self):
         players_ph = []
+        self.players[(self.player_turn + 1) % len(self.players)].set_active(True)
         for player in self.players:
             players_ph.append(player.hand.best_poker_hand(self.table_cards))
 
         if players_ph[0] < players_ph[1]:
             self.players[1].balance += self.pot
+            self.loser = self.players[0].name
             self.game_message.emit(self.players[1].name + ' won ' + str(self.pot) + '$')
             # self.game_message.emit(self.players[1].name + ' won ' + str(self.pot) + '$, with: ' + self.players[1].hand
             #  + ' against: ' + self.players[0].hand)
         elif players_ph[0] > players_ph[1]:
             self.players[0].balance += self.pot
+            self.loser = self.players[1].name
             self.game_message.emit(self.players[0].name + ' won ' + str(self.pot) + '$')
+
         else:
-            pass
+            self.players[0].balance = self.pot/2
+            self.players[1].balance = self.pot/2
+            self.game_message.emit('Equal, split pot!')
 
     def new_turn(self):
         self.players[self.player_turn].set_active(False)
