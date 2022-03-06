@@ -121,6 +121,7 @@ class PlayerView(QGroupBox):
         self.bal.setFont(QFont('BankGothic MD BT', 15))
         self.bet=QLabel('Bet:' + str(self.player.bet))
         self.bet.setFont(QFont('BankGothic MD BT', 15))
+
         hbox.addWidget(self.bal)
         hbox.addStretch()
         hbox.addWidget(self.bet)
@@ -195,11 +196,13 @@ class Window(QMainWindow):
         hbox4.addStretch()
         hbox4.addWidget(self.pot)
         hbox4.addStretch()
+
         hbox2 = QHBoxLayout()
         hbox2.addStretch()
         self.table_cards = CardView(game.table_cards, 150, 110)
         hbox2.addWidget(self.table_cards)
         hbox2.addStretch()
+
         hbox3 = QHBoxLayout()
 
         self.player_views = []
@@ -211,12 +214,14 @@ class Window(QMainWindow):
         vbox = QVBoxLayout()
         vbox.addStretch()
         vbox.addLayout(hbox4)
+
         vbox.addLayout(hbox2)
         vbox.addLayout(hbox3)
         vbox.addStretch()
         widget = QWidget()
         widget.setLayout(vbox)
         self.setCentralWidget(widget)
+        
         game.game_message.connect(self.alert_user)
         game.data_changed.connect(self.pot_changed)
         game.update_table_cards.connect(self.change_table_cards)
@@ -236,6 +241,7 @@ class Window(QMainWindow):
         box = QMessageBox()
         box.setText(text)
         box.exec_()
+        
 
 class TableScene(QGraphicsScene):
     """ A scene with a table cloth background """
