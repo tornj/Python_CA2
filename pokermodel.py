@@ -101,10 +101,12 @@ class MoneyModel(QObject):
 class PlayerModel(QObject):
     active_changed = pyqtSignal()
 
-    def __init__(self, name):
+    def __init__(self, name, stake):
         super().__init__()
         self.name = name
-        self.balance = 1000
+
+        self.balance = int(stake)
+
         self.bet = 0
         self.bet_gap = 0
         self.cards = []
@@ -125,11 +127,11 @@ class GameModel(QObject):
     game_signal = pyqtSignal()
     update_table_cards = pyqtSignal()
     disable_bet_button = pyqtSignal()
-    #update_bet = pyqtSignal()
+
 
     def __init__(self, players):
         super().__init__()
-        self.winner = None
+        self.loser = None
         self.End_Round = False
         self.players = players
         self.deck = StandardDeck()
@@ -147,13 +149,12 @@ class GameModel(QObject):
         self.dealt_flop = False
         self.dealt_turn = False
         self.dealt_river = False
-        
+
     def Start(self):
         self.players[self.player_turn].set_active(True)
         self.deck = StandardDeck()
         self.deck.shuffle()
         self.deal_to_players()
-        #self.game_signal.emit()
 
     def bet_limits(self):
         self.min_bet = self.highest_bet + 1
@@ -163,10 +164,6 @@ class GameModel(QObject):
         # self.active_player.max_bet = self.players[(self.player_turn + 1) % 2].bet
 
         return self.min_bet, self.active_player.max_bet
-
-    # def check_all_in(self):
-    #     if self.active_player.max_bet == 0:
-    #         self.deal()
 
     def deal_to_players(self):
         for player in self.players:
@@ -203,7 +200,8 @@ class GameModel(QObject):
     def end_round(self):
         for player in self.players:
             if player.balance == 0:
-                quit()  # Quit game, announce winner
+                self.game_message.emit("Game Over! " + self.loser + ' has no money left')
+                quit()
 
         # self.pot.clear()
         self.dealt_flop = False
@@ -211,34 +209,44 @@ class GameModel(QObject):
         self.dealt_river = False
         self.turn = 0
         self.pot = 0
+        self.highest_bet = 0
+
         self.table_cards.cards.clear()
         self.update_table_cards.emit()
         for player in self.players:
             player.hand.cards.clear()
+            player.bet= 0
+
         self.Start()
 
     def find_winner(self):
         players_ph = []
+        self.players[(self.player_turn + 1) % len(self.players)].set_active(True)
+
         for player in self.players:
             players_ph.append(player.hand.best_poker_hand(self.table_cards))
 
         if players_ph[0] < players_ph[1]:
             self.players[1].balance += self.pot
+            self.loser = self.players[0].name
             self.game_message.emit(self.players[1].name + ' won ' + str(self.pot) + '$')
-            #self.game_message.emit(self.players[1].name + ' won ' + str(self.pot) + '$, with: ' + self.players[1].hand
-                                 #  + ' against: ' + self.players[0].hand)
+            # self.game_message.emit(self.players[1].name + ' won ' + str(self.pot) + '$, with: ' + self.players[1].hand
+            #  + ' against: ' + self.players[0].hand)
         elif players_ph[0] > players_ph[1]:
             self.players[0].balance += self.pot
+            self.loser = self.players[1].name
             self.game_message.emit(self.players[0].name + ' won ' + str(self.pot) + '$')
+
         else:
-            pass
+            self.players[0].balance = self.pot/2
+            self.players[1].balance = self.pot/2
+            self.game_message.emit('Equal, split pot!')
 
     def new_turn(self):
         self.players[self.player_turn].set_active(False)
         self.player_turn = (self.player_turn + 1) % len(self.players)
         self.players[self.player_turn].set_active(True)
         self.active_player = self.players[self.player_turn]
-        #self.new_turn_signal.emit()
 
     def deal(self):
         self.turn += 1
@@ -254,10 +262,9 @@ class GameModel(QObject):
                 self.end_round()
 
     def fold(self):
-        self.game_message.emit(self.players[(self.player_turn + 1) % 2].name + ' won ' + str(self.pot) + '$')
+        #self.game_message.emit(self.players[(self.player_turn + 1) % 2].name + ' won ' + str(self.pot) + '$')
+        self.players[(self.player_turn+1) % len(self.players)].balance += self.pot
         self.end_round()
-        self.list_of_players_left.pop(self.active_player)
-        self.End_Round = True
         self.new_turn()
 
     def call(self):
@@ -276,7 +283,6 @@ class GameModel(QObject):
             self.turn = 1
             self.deal()
 
-
         self.data_changed.emit()
         self.new_turn()
 
@@ -291,7 +297,4 @@ class GameModel(QObject):
         self.new_turn()
         if self.players[(self.player_turn + 1) % 2].balance == 0:
             self.disable_bet_button.emit()
-
-
-
 

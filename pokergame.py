@@ -11,14 +11,9 @@ import sys
 
 def Main():
     app = QApplication(sys.argv)
-    playermodel = [PlayerModel('johannes'), PlayerModel('Jonatan')]
-    model = GameModel(playermodel)
-    w = Window(model)
+    w = StartWindow()
     w.show()
-    # window = Window()
-    # window.show()
     app.exec_()
-
 
 if __name__ == '__main__':
     Main()
