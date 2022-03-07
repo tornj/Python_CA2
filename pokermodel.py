@@ -26,7 +26,6 @@ class HandModel(Hand, CardModel):
     def __init__(self):
         Hand.__init__(self)
         CardModel.__init__(self)
-        # Additional state needed by the UI
         self.flipped_cards = True
 
     def __iter__(self):
@@ -35,16 +34,15 @@ class HandModel(Hand, CardModel):
     def flip(self, state):
         # Flips over the cards (to hide them)
         self.flipped_cards = state
-        self.new_cards.emit()  # something changed, better emit the signal!
+        self.new_cards.emit()
 
     def flipped(self):
         # This model only flips all or no cards, so we don't care about the index.
-        # Might be different for other games though!
         return self.flipped_cards
 
     def add_card(self, card):
         super().add_card(card)
-        self.new_cards.emit()  # something changed, better emit the signal!
+        self.new_cards.emit()
 
 
 class TableCardsModel(HandModel):
@@ -58,6 +56,8 @@ class TableCardsModel(HandModel):
 
 
 class MoneyModel(QObject):
+    ''' We tried to implement a Moneymodel class for every variable handling money. But we end up having some problems
+    with the dunder methods. Instead we used raw integers.'''
     player_money = pyqtSignal()
 
     def __init__(self, value=0):
@@ -104,9 +104,7 @@ class PlayerModel(QObject):
     def __init__(self, name, stake):
         super().__init__()
         self.name = name
-
-        self.balance = int(stake)
-
+        self.balance = stake
         self.bet = 0
         self.bet_gap = 0
         self.cards = []
@@ -121,18 +119,14 @@ class PlayerModel(QObject):
 
 
 class GameModel(QObject):
-    new_turn_signal = pyqtSignal()
     data_changed = pyqtSignal()
     game_message = pyqtSignal((str,))
-    game_signal = pyqtSignal()
     update_table_cards = pyqtSignal()
     disable_bet_button = pyqtSignal()
-
 
     def __init__(self, players):
         super().__init__()
         self.loser = None
-        self.End_Round = False
         self.players = players
         self.deck = StandardDeck()
         self.table_cards = TableCardsModel()
@@ -140,7 +134,6 @@ class GameModel(QObject):
         self.player_turn = 0
         self.turn = 0
         self.active_player = players[self.player_turn]
-        self.player_ready = False
         self.list_of_players_left = players
         self.highest_bet = 0
         self.min_bet = self.highest_bet
@@ -159,10 +152,6 @@ class GameModel(QObject):
     def bet_limits(self):
         self.min_bet = self.highest_bet + 1
         self.active_player.max_bet = min([self.players[0].balance, self.players[1].balance])
-        #
-        # self.min_bet = self.players[(self.player_turn + 1) % 2].bet
-        # self.active_player.max_bet = self.players[(self.player_turn + 1) % 2].bet
-
         return self.min_bet, self.active_player.max_bet
 
     def deal_to_players(self):
@@ -172,9 +161,9 @@ class GameModel(QObject):
         self.data_changed.emit()
 
     def deal_flop(self):  # 3 första
-        self.table_cards.add_card(self.deck.draw())  # table cards måste vara en lista för att jag ska kunna använda
-        self.table_cards.add_card(self.deck.draw())  # pokerhand, men måste samtidigt vara ett Handmodel objekt för
-        self.table_cards.add_card(self.deck.draw())  # att ja ska kunna visa dem med CardView...
+        self.table_cards.add_card(self.deck.draw())
+        self.table_cards.add_card(self.deck.draw())
+        self.table_cards.add_card(self.deck.draw())
         self.dealt_flop = True
         self.new_round()
         self.data_changed.emit()
@@ -203,26 +192,22 @@ class GameModel(QObject):
                 self.game_message.emit("Game Over! " + self.loser + ' has no money left')
                 quit()
 
-        # self.pot.clear()
         self.dealt_flop = False
         self.dealt_turn = False
         self.dealt_river = False
         self.turn = 0
         self.pot = 0
         self.highest_bet = 0
-
         self.table_cards.cards.clear()
         self.update_table_cards.emit()
         for player in self.players:
             player.hand.cards.clear()
-            player.bet= 0
-
+            player.bet = 0
         self.Start()
 
     def find_winner(self):
         players_ph = []
         self.players[(self.player_turn + 1) % len(self.players)].set_active(True)
-
         for player in self.players:
             players_ph.append(player.hand.best_poker_hand(self.table_cards))
 
@@ -230,8 +215,7 @@ class GameModel(QObject):
             self.players[1].balance += self.pot
             self.loser = self.players[0].name
             self.game_message.emit(self.players[1].name + ' won ' + str(self.pot) + '$')
-            # self.game_message.emit(self.players[1].name + ' won ' + str(self.pot) + '$, with: ' + self.players[1].hand
-            #  + ' against: ' + self.players[0].hand)
+
         elif players_ph[0] > players_ph[1]:
             self.players[0].balance += self.pot
             self.loser = self.players[1].name
@@ -250,7 +234,7 @@ class GameModel(QObject):
 
     def deal(self):
         self.turn += 1
-        if self.turn > 1:  # Starta nästa runda
+        if self.turn > 1:
             if not self.dealt_flop:
                 self.deal_flop()
             elif not self.dealt_turn:
@@ -262,7 +246,6 @@ class GameModel(QObject):
                 self.end_round()
 
     def fold(self):
-        #self.game_message.emit(self.players[(self.player_turn + 1) % 2].name + ' won ' + str(self.pot) + '$')
         self.players[(self.player_turn+1) % len(self.players)].balance += self.pot
         self.end_round()
         self.new_turn()
@@ -271,7 +254,6 @@ class GameModel(QObject):
         self.active_player.bet_gap = self.highest_bet - self.active_player.bet
         self.active_player.bet = self.active_player.bet_gap
         self.active_player.bet_gap = 0
-        # self.active_player.bet = self.highest_bet - self.active_player.bet
         self.active_player.balance -= self.active_player.bet
         self.pot += self.active_player.bet
         self.deal()
@@ -292,10 +274,8 @@ class GameModel(QObject):
         self.active_player.balance -= amount
         self.pot += amount
         self.highest_bet += amount
-        self.player_ready = False
         self.turn += 1
         self.data_changed.emit()
         self.new_turn()
         if self.players[(self.player_turn + 1) % 2].balance == 0:
             self.disable_bet_button.emit()
-

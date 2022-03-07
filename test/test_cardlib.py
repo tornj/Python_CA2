@@ -6,29 +6,58 @@ from cardlib import *
 def test_cards():
     h5 = NumberedCard(4, Suit.Hearts)
     assert isinstance(h5.suit, Enum)
+    assert isinstance(h5, PlayingCard)
+    assert issubclass(NumberedCard, PlayingCard)
     sk = KingCard(Suit.Spades)
-    assert sk.get_value() == 13  # checks value of card
+
+    assert issubclass(KingCard, PlayingCard)
+    assert isinstance(sk.suit, Enum)
+    assert isinstance(sk, PlayingCard)
+    assert sk.get_value() == 13 #checks value of card
+
     assert h5 == h5
     assert h5 < sk
     with pytest.raises(TypeError):
         pc = PlayingCard(Suit.Clubs)
+    with pytest.raises(TypeError):
+        nc= NumberedCard(Suit.Hearts)
+    with pytest.raises(TypeError):
+        qc= QueenCard(10,Suit.Hearts)
+
     cj = JackCard(Suit.Clubs)
+    assert isinstance(cj.suit, Enum)
+    assert isinstance(cj, PlayingCard)
+    assert issubclass(JackCard, PlayingCard)
+    assert cj.get_value() == 11
+    hq = QueenCard(Suit.Hearts)
+    assert isinstance(hq.suit, Enum)
+    assert isinstance(hq, PlayingCard)
+    assert issubclass(QueenCard, PlayingCard)
+    assert hq.get_value() == 12
     da = AceCard(Suit.Diamonds)
-    hq = QueenCard(Suit.Hearts)  # checks operators between different cards
+    assert isinstance(da.suit, Enum)
+    assert isinstance(da, PlayingCard)
+    assert issubclass(AceCard, PlayingCard)
+    #checks operators between different cards
+
     assert da > hq
     assert hq > cj
-    assert hq.get_value() == 12
-
+    assert hq < sk
+    assert not cj == hq
     assert da.get_value() != 13
+
+    assert str(h5) == "4 of Hearts"    #check if it prints a card in a nice way,
+    assert str(cj) == "Jack of Clubs"
+    assert issubclass(PlayingCard, abc.ABC)
+
     assert isinstance(h5, PlayingCard)
     assert isinstance(h5, NumberedCard)
-    assert str(h5) == "4 of Hearts"    # check if it prints a card in a nice way,
-    assert str(cj) == "Jack of Clubs"
 
     Club5 = NumberedCard(4, Suit.Clubs)
     assert Club5.get_value() == 4
     assert h5 < Club5
     assert isinstance(Club5.suit, Enum)
+
 
 
 # This test assumes you call your shuffle method "shuffle" and the method to draw a card "draw"
@@ -41,6 +70,8 @@ def test_deck():
     d2.shuffle()         # checks the shuffle method
     c3 = d2.draw()
     c4 = d2.draw()
+    assert d.deck is not d2.deck # the probability that the decks are sorted in the exact same manner are almost unlikely
+    assert len(d.deck) == len(d2.deck)
     assert not ((c3, c4) == (c1, c2))
     d3 = StandardDeck()
     cards = []
@@ -49,6 +80,7 @@ def test_deck():
         assert new_card not in cards
         cards.append(new_card)
 
+    assert not d3.deck  #check that the deck is empty
     assert isinstance(d, StandardDeck)
     assert isinstance(d2.draw(), PlayingCard)
 
@@ -57,7 +89,6 @@ def test_deck():
     d2 = StandardDeck()
     d.shuffle()
     assert d2.deck != d.deck
-
 
 # This test builds on the assumptions above and assumes you store the cards in the hand in the list "cards",
 # and that your sorting method is called "sort" and sorts in increasing order
