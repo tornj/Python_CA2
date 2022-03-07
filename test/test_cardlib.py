@@ -9,22 +9,6 @@ def test_cards():
     assert isinstance(h5.suit, Enum)
     assert isinstance(h5, PlayingCard)
     assert issubclass(NumberedCard, PlayingCard)
-    sk = KingCard(Suit.Spades)
-
-    assert issubclass(KingCard, PlayingCard)
-    assert isinstance(sk.suit, Enum)
-    assert isinstance(sk, PlayingCard)
-    assert sk.get_value() == 13 #checks value of card
-
-    assert h5 == h5
-    assert h5 < sk
-    with pytest.raises(TypeError):
-        pc = PlayingCard(Suit.Clubs)
-    with pytest.raises(TypeError):
-        nc= NumberedCard(Suit.Hearts)
-    with pytest.raises(TypeError):
-        qc= QueenCard(10, Suit.Hearts)
-
     cj = JackCard(Suit.Clubs)
     assert isinstance(cj.suit, Enum)
     assert isinstance(cj, PlayingCard)
@@ -35,29 +19,44 @@ def test_cards():
     assert isinstance(hq, PlayingCard)
     assert issubclass(QueenCard, PlayingCard)
     assert hq.get_value() == 12
+    sk = KingCard(Suit.Spades)
+    assert issubclass(KingCard, PlayingCard)
+    assert isinstance(sk.suit, Enum)
+    assert isinstance(sk, PlayingCard)
+    assert sk.get_value() == 13  # checks value of card
     da = AceCard(Suit.Diamonds)
     assert isinstance(da.suit, Enum)
     assert isinstance(da, PlayingCard)
     assert issubclass(AceCard, PlayingCard)
-    #checks operators between different cards
+    assert da.get_value() == 14
 
+    #checks operators between different cards
+    assert h5 == h5
+    assert h5 < sk
     assert da > hq
     assert hq > cj
     assert hq < sk
     assert not cj == hq
     assert da.get_value() != 13
 
+    with pytest.raises(TypeError):
+        pc = PlayingCard(Suit.Clubs)
+    with pytest.raises(TypeError):
+        nc= NumberedCard(Suit.Hearts)
+    with pytest.raises(TypeError):
+        qc= QueenCard(10, Suit.Hearts)
+
     assert str(h5) == "4 of Hearts"    #check if it prints a card in a nice way,
     assert str(cj) == "Jack of Clubs"
     assert issubclass(PlayingCard, abc.ABC)
 
+    # Checks if Clubs is > Hearts
     assert isinstance(h5, PlayingCard)
     assert isinstance(h5, NumberedCard)
-
-    Club5 = NumberedCard(4, Suit.Clubs)
-    assert Club5.get_value() == 4
-    assert h5 < Club5
-    assert isinstance(Club5.suit, Enum)
+    c5 = NumberedCard(4, Suit.Clubs)
+    assert c5.get_value() == 4
+    assert h5 < c5
+    assert isinstance(c5.suit, Enum)
 
 
 
@@ -231,7 +230,6 @@ def test_pokerhands():
     sf2 = Pokerhand_types.straight_flush
     assert sf == sf2
 
-    with pytest.raises():
 
 
 
