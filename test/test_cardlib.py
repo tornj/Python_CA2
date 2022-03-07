@@ -3,6 +3,7 @@ import pytest
 from cardlib import *
 # This test assumes you call your suit class "Suit" and the suits "Hearts and  "Spades"
 
+
 def test_cards():
     h5 = NumberedCard(4, Suit.Hearts)
     assert isinstance(h5.suit, Enum)
@@ -22,7 +23,7 @@ def test_cards():
     with pytest.raises(TypeError):
         nc= NumberedCard(Suit.Hearts)
     with pytest.raises(TypeError):
-        qc= QueenCard(10,Suit.Hearts)
+        qc= QueenCard(10, Suit.Hearts)
 
     cj = JackCard(Suit.Clubs)
     assert isinstance(cj.suit, Enum)
@@ -149,6 +150,7 @@ def test_hand():
     assert isinstance(haj, PokerHand)
     assert isinstance(h6, Hand)
 
+    # Checks sort and if drop_cards drops the expected cards
     h5.add_card(KingCard(Suit.Spades))
     h5.sort()
     h5.drop_cards([0, 2])
@@ -210,9 +212,27 @@ def test_pokerhands():
     assert ph6.cards == ph9.cards
     assert ph6.type == ph9.type
 
-    pt = Pokerhand_types(3)
-    assert pt.name == 'two_pair'
-    assert isinstance(pt, Pokerhand_types)
-    assert isinstance(pt, IntEnum)
+    tp = Pokerhand_types(3)
+    fl = Pokerhand_types(6)
+    assert tp == Pokerhand_types.two_pair
+    assert isinstance(tp, Pokerhand_types)
+    assert isinstance(tp, IntEnum)
+    assert fl > tp
+
+    tk = Pokerhand_types.three_of_a_kind.value
+    fk = Pokerhand_types.four_of_a_kind.value
+    assert tk < fk
+    assert issubclass(Pokerhand_types, IntEnum)
+
+    sf = Pokerhand_types.straight_flush
+    s = Pokerhand_types.straight
+    assert sf > s
+
+    sf2 = Pokerhand_types.straight_flush
+    assert sf == sf2
+
+    with pytest.raises():
+
+
 
 

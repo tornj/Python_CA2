@@ -9,7 +9,7 @@ Contents:
 
 .. toctree::
    :maxdepth: 2
-   :caption:
+   :caption: Poker library
 
 .. automodule:: cardlib
    :members:
