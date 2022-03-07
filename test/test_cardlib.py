@@ -7,35 +7,38 @@ def test_cards():
     h5 = NumberedCard(4, Suit.Hearts)
     assert isinstance(h5.suit, Enum)
     sk = KingCard(Suit.Spades)
-    assert sk.get_value() == 13 #checks value of card
+    assert sk.get_value() == 13  # checks value of card
     assert h5 == h5
     assert h5 < sk
     with pytest.raises(TypeError):
         pc = PlayingCard(Suit.Clubs)
     cj = JackCard(Suit.Clubs)
     da = AceCard(Suit.Diamonds)
-    hq = QueenCard(Suit.Hearts)  #checks operators between different cards
+    hq = QueenCard(Suit.Hearts)  # checks operators between different cards
     assert da > hq
     assert hq > cj
     assert hq.get_value() == 12
 
     assert da.get_value() != 13
-    print(h5)
     assert isinstance(h5, PlayingCard)
     assert isinstance(h5, NumberedCard)
-    assert str(h5) == "4 of Hearts"    #check if it prints a card in a nice way,
+    assert str(h5) == "4 of Hearts"    # check if it prints a card in a nice way,
     assert str(cj) == "Jack of Clubs"
 
+    Club5 = NumberedCard(4, Suit.Clubs)
+    assert Club5.get_value() == 4
+    assert h5 < Club5
+    assert isinstance(Club5.suit, Enum)
 
 
 # This test assumes you call your shuffle method "shuffle" and the method to draw a card "draw"
 def test_deck():
     d = StandardDeck()
-    c1 = d.draw()        #test to draw card
+    c1 = d.draw()        # test to draw card
     c2 = d.draw()
-    assert not c1 == c2  #checks if the cards are unique
+    assert not c1 == c2  # checks if the cards are unique
     d2 = StandardDeck()
-    d2.shuffle()         #checks the shuffle method
+    d2.shuffle()         # checks the shuffle method
     c3 = d2.draw()
     c4 = d2.draw()
     assert not ((c3, c4) == (c1, c2))
@@ -45,12 +48,15 @@ def test_deck():
         new_card = d3.draw()
         assert new_card not in cards
         cards.append(new_card)
-    d3= StandardDeck()
-    while 
 
     assert isinstance(d, StandardDeck)
-
     assert isinstance(d2.draw(), PlayingCard)
+
+    # Check shuffle
+    d = StandardDeck()
+    d2 = StandardDeck()
+    d.shuffle()
+    assert d2.deck != d.deck
 
 
 # This test builds on the assumptions above and assumes you store the cards in the hand in the list "cards",
@@ -60,7 +66,7 @@ def test_hand():
     assert len(h.cards) == 0
     d = StandardDeck()
     d.shuffle()
-    h.add_card(d.draw())  #checks if we can add card to the deck
+    h.add_card(d.draw())  # checks if we can add card to the deck
     h.add_card(d.draw())
     h.add_card(d.draw())
     h.add_card(d.draw())
@@ -106,8 +112,18 @@ def test_hand():
     h5 = Hand()
     h5.add_card(AceCard(Suit.Hearts))
     h5.add_card(JackCard(Suit.Clubs))
+    # Check if you can send in an empty list
+    h6 = h5
+    haj = h6.best_poker_hand()
+    assert isinstance(haj, PokerHand)
+    assert isinstance(h6, Hand)
 
-    assert str(h5) == "Ace of Hearts\nJack of Clubs\n" #test the string representation
+    h5.add_card(KingCard(Suit.Spades))
+    h5.sort()
+    h5.drop_cards([0, 2])
+    assert len(h5.cards) == 1
+    assert isinstance(h5.cards[0], KingCard)
+    assert not isinstance(h5.cards[0], AceCard)
 
 
 # This test builds on the assumptions above. Add your type and data for the commented out tests
@@ -122,10 +138,10 @@ def test_pokerhands():
     cl = [NumberedCard(10, Suit.Diamonds), NumberedCard(9, Suit.Diamonds),
           NumberedCard(8, Suit.Clubs), NumberedCard(6, Suit.Spades)]
     ph1 = h1.best_poker_hand(cl)
-    assert isinstance(ph1, PokerHand)   #test if a given pokerhand is an instance of the PokerHand class
+    assert isinstance(ph1, PokerHand)   # test if a given pokerhand is an instance of the PokerHand class
     ph2 = h2.best_poker_hand(cl)
     assert isinstance(ph2, PokerHand)
-    assert ph1 < ph2                    #test if the operators works between different hands
+    assert ph1 < ph2                    # test if the operators works between different hands
     cl.pop(0)
     cl.append(QueenCard(Suit.Spades))
     ph3 = h1.best_poker_hand(cl)
@@ -142,13 +158,13 @@ def test_pokerhands():
     h3.add_card(KingCard(Suit.Spades))
     h3.add_card(NumberedCard(9, Suit.Clubs))
     ph6 = h3.best_poker_hand(cl)
-    h4= Hand()
+    h4 = Hand()
     h4.add_card(NumberedCard(3, Suit.Clubs))
     h4.add_card(NumberedCard(3, Suit.Diamonds))
-    ph7=h4.best_poker_hand(cl)
+    ph7 = h4.best_poker_hand(cl)
     assert isinstance(ph6, PokerHand)
     assert ph5 > ph6
-    assert ph5.type is Pokerhand_types.flush    #test if a random hand is a specific hand
+    assert ph5.type is Pokerhand_types.flush    # test if a random hand is a specific hand
     assert ph6.type is Pokerhand_types.pair
     assert ph7.type is Pokerhand_types.three_of_a_kind
     h5 = Hand()
@@ -156,9 +172,16 @@ def test_pokerhands():
            NumberedCard(3, Suit.Spades), QueenCard(Suit.Spades), AceCard(Suit.Spades), AceCard(Suit.Clubs)]
     ph8 = h5.best_poker_hand(cl2)
     assert ph8.type is Pokerhand_types.four_of_a_kind
-    h6= Hand()
+    h6 = Hand()
     h6.add_card(KingCard(Suit.Diamonds))
     h6.add_card(NumberedCard(9, Suit.Spades))
-    ph9=h6.best_poker_hand(cl)
+    ph9 = h6.best_poker_hand(cl)
     assert ph6.cards == ph9.cards
+    assert ph6.type == ph9.type
+
+    pt = Pokerhand_types(3)
+    assert pt.name == 'two_pair'
+    assert isinstance(pt, Pokerhand_types)
+    assert isinstance(pt, IntEnum)
+
 

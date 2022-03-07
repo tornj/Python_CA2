@@ -149,7 +149,7 @@ class GameModel(QObject):
         self.dealt_flop = False
         self.dealt_turn = False
         self.dealt_river = False
-
+        
     def Start(self):
         self.players[self.player_turn].set_active(True)
         self.deck = StandardDeck()
@@ -282,6 +282,7 @@ class GameModel(QObject):
             self.deal()
             self.turn = 1
             self.deal()
+
 
         self.data_changed.emit()
         self.new_turn()
