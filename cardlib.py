@@ -529,10 +529,3 @@ class PokerHand(object):
         high_card = vals[0]
         return high_card, vals[1:5]
 
-
-cl = [KingCard(Suit.Clubs), NumberedCard(10, Suit.Hearts), JackCard(Suit.Hearts)]
-h = Hand()
-h.add_card(KingCard(Suit.Clubs))
-h.add_card(KingCard(Suit.Clubs))
-ph3 = h.best_poker_hand(cl)
-print(ph3)
