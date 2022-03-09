@@ -35,31 +35,44 @@ def test_cards():
     assert isinstance(hq, PlayingCard)
     assert issubclass(QueenCard, PlayingCard)
     assert hq.get_value() == 12
+    sk = KingCard(Suit.Spades)
+    assert issubclass(KingCard, PlayingCard)
+    assert isinstance(sk.suit, Enum)
+    assert isinstance(sk, PlayingCard)
+    assert sk.get_value() == 13  # checks value of card
     da = AceCard(Suit.Diamonds)
     assert isinstance(da.suit, Enum)
     assert isinstance(da, PlayingCard)
     assert issubclass(AceCard, PlayingCard)
-    #checks operators between different cards
+    assert da.get_value() == 14
 
+    #checks operators between different cards
+    assert h5 == h5
+    assert h5 < sk
     assert da > hq
     assert hq > cj
     assert hq < sk
     assert not cj == hq
     assert da.get_value() != 13
 
+    with pytest.raises(TypeError):
+        pc = PlayingCard(Suit.Clubs)
+    with pytest.raises(TypeError):
+        nc= NumberedCard(Suit.Hearts)
+    with pytest.raises(TypeError):
+        qc= QueenCard(10, Suit.Hearts)
+
     assert str(h5) == "4 of Hearts"    #check if it prints a card in a nice way,
     assert str(cj) == "Jack of Clubs"
     assert issubclass(PlayingCard, abc.ABC)
 
+    # Checks Enum, if Clubs is > Hearts
     assert isinstance(h5, PlayingCard)
     assert isinstance(h5, NumberedCard)
-
-    Club5 = NumberedCard(4, Suit.Clubs)
-    assert Club5.get_value() == 4
-    assert h5 < Club5
-    assert isinstance(Club5.suit, Enum)
-
-
+    c5 = NumberedCard(4, Suit.Clubs)
+    assert c5.get_value() == 4
+    assert h5 < c5
+    assert isinstance(c5.suit, Enum)
 
 # This test assumes you call your shuffle method "shuffle" and the method to draw a card "draw"
 def test_deck():
@@ -281,9 +294,33 @@ def test_pokerhands():
     s = Pokerhand_types.straight
     assert sf > s
 
+    tp = Pokerhand_types(3)
+    fl = Pokerhand_types(6)
+    assert tp == Pokerhand_types.two_pair
+    assert isinstance(tp, Pokerhand_types)
+    assert isinstance(tp, IntEnum)
+    assert fl > tp
+
+    tk = Pokerhand_types.three_of_a_kind.value
+    fk = Pokerhand_types.four_of_a_kind.value
+    assert tk < fk
+    assert issubclass(Pokerhand_types, IntEnum)
+
+    sf = Pokerhand_types.straight_flush
+
+    s = Pokerhand_types.straight
+    assert sf > s
+
     sf2 = Pokerhand_types.straight_flush
     assert sf == sf2
 
+
+    bp = h1.best_poker_hand(cl)
+    o = 0
+    for i in range(10):
+        o += i
+
+    print(o)
 
 
 

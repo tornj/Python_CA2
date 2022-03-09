@@ -265,7 +265,6 @@ class GameModel(QObject):
             self.turn = 1
             self.deal()
 
-
         self.data_changed.emit()
         self.new_turn()
 

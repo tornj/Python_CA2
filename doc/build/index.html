@@ -152,6 +152,8 @@
   <section id="welcome-to-ca2-s-documentation">
 <h1>Welcome to CA2’s documentation!<a class="headerlink" href="#welcome-to-ca2-s-documentation" title="Permalink to this headline">¶</a></h1>
 <p>Contents:</p>
+<div class="toctree-wrapper compound">
+</div>
 <span class="target" id="module-cardlib"></span><dl class="py class">
 <dt class="sig sig-object py" id="cardlib.AceCard">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">cardlib.</span></span><span class="sig-name descname"><span class="pre">AceCard</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">suit</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.AceCard" title="Permalink to this definition">¶</a></dt>
@@ -312,12 +314,6 @@
 <dt class="sig sig-object py" id="cardlib.PokerHand.check_checks">
 <span class="sig-name descname"><span class="pre">check_checks</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.PokerHand.check_checks" title="Permalink to this definition">¶</a></dt>
 <dd><p>Loops through the checks and returns a tuple of the best cards and what hand type they represent</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>cards</strong> – A list of playing cards</p>
-</dd>
-</dl>
-<p>:type list</p>
 <p>:return Tuple  of the best cards and their corresponding hand type.
 :return type: tuple</p>
 </dd></dl>
@@ -405,19 +401,11 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="cardlib.PokerHand.check_pair">
 <em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">check_pair</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cards</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cardlib.PokerHand.check_pair" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check for the best pair out of the given list</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>cards</strong> – A list of playing cards.</p>
-</dd>
-<dt class="field-even">Type</dt>
-<dd class="field-even"><p>list</p>
-</dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>None of no pair is found, else the value of the highest pair and value of the highest three remaining</p>
-</dd>
-</dl>
-<p>cards.
+<dd><p>Check for the best pair out of the given list
+:param cards: A list of playing cards
+:type: list
+:return: None of no pair is found, else the value of the highest pair and value of the highest three remaining
+cards
 :return type: tuple</p>
 </dd></dl>
 
