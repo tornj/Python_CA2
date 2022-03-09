@@ -3,6 +3,7 @@ import pytest
 from cardlib import *
 # This test assumes you call your suit class "Suit" and the suits "Hearts and  "Spades"
 
+
 def test_cards():
     h5 = NumberedCard(4, Suit.Hearts)
     assert isinstance(h5.suit, Enum)
@@ -22,7 +23,7 @@ def test_cards():
     with pytest.raises(TypeError):
         nc= NumberedCard(Suit.Hearts)
     with pytest.raises(TypeError):
-        qc= QueenCard(10,Suit.Hearts)
+        qc= QueenCard(10, Suit.Hearts)
 
     cj = JackCard(Suit.Clubs)
     assert isinstance(cj.suit, Enum)
@@ -149,6 +150,7 @@ def test_hand():
     assert isinstance(haj, PokerHand)
     assert isinstance(h6, Hand)
 
+    # Checks sort and if drop_cards drops the expected cards
     h5.add_card(KingCard(Suit.Spades))
     h5.sort()
     h5.drop_cards([0, 2])
@@ -169,22 +171,32 @@ def test_pokerhands():
     cl = [NumberedCard(10, Suit.Diamonds), NumberedCard(9, Suit.Diamonds),
           NumberedCard(8, Suit.Clubs), NumberedCard(6, Suit.Spades)]
     ph1 = h1.best_poker_hand(cl)
-    assert isinstance(ph1, PokerHand)   # test if a given pokerhand is an instance of the PokerHand class
+    assert isinstance(ph1, PokerHand)
+    assert ph1.type == Pokerhand_types.high_card
+    assert ph1.cards
     ph2 = h2.best_poker_hand(cl)
     assert isinstance(ph2, PokerHand)
+    assert ph2.type == Pokerhand_types.high_card
+    assert ph2.cards
     assert ph1 < ph2                    # test if the operators works between different hands
     cl.pop(0)
     cl.append(QueenCard(Suit.Spades))
     ph3 = h1.best_poker_hand(cl)
     ph4 = h2.best_poker_hand(cl)
     assert isinstance(ph3, PokerHand)
+    assert ph3.type == Pokerhand_types.two_pair
+    assert ph3.cards
     assert isinstance(ph4, PokerHand)
+    assert ph4.type == Pokerhand_types.two_pair
+    assert ph4.cards
     assert ph3 < ph4
     assert ph1 < ph2
 
     cl = [JackCard(Suit.Clubs), AceCard(Suit.Spades), KingCard(Suit.Clubs), NumberedCard(3, Suit.Spades), NumberedCard(7, Suit.Diamonds)]
     ph5 = h1.best_poker_hand(cl)
     assert isinstance(ph5, PokerHand)
+    assert ph5.type is Pokerhand_types.flush
+    assert ph5.cards
     h3 = Hand()
     h3.add_card(KingCard(Suit.Spades))
     h3.add_card(NumberedCard(9, Suit.Clubs))
@@ -194,25 +206,84 @@ def test_pokerhands():
     h4.add_card(NumberedCard(3, Suit.Diamonds))
     ph7 = h4.best_poker_hand(cl)
     assert isinstance(ph6, PokerHand)
-    assert ph5 > ph6
-    assert ph5.type is Pokerhand_types.flush    # test if a random hand is a specific hand
     assert ph6.type is Pokerhand_types.pair
+    assert ph6.cards
+    assert ph5 > ph6
+        # test if a random hand is a specific hand
+    assert isinstance(ph7, PokerHand)
     assert ph7.type is Pokerhand_types.three_of_a_kind
+    assert ph7.cards
     h5 = Hand()
     cl2 = [NumberedCard(3, Suit.Spades), NumberedCard(3, Suit.Spades), NumberedCard(3, Suit.Spades),
            NumberedCard(3, Suit.Spades), QueenCard(Suit.Spades), AceCard(Suit.Spades), AceCard(Suit.Clubs)]
     ph8 = h5.best_poker_hand(cl2)
+    assert isinstance(ph8, PokerHand)
     assert ph8.type is Pokerhand_types.four_of_a_kind
+    assert ph8.cards
     h6 = Hand()
     h6.add_card(KingCard(Suit.Diamonds))
     h6.add_card(NumberedCard(9, Suit.Spades))
     ph9 = h6.best_poker_hand(cl)
+    assert isinstance(ph9, PokerHand)
+    assert ph9.cards
+    assert ph9.type is Pokerhand_types.pair
     assert ph6.cards == ph9.cards
     assert ph6.type == ph9.type
+    cl2.pop(0)
+    cl2.pop(-1)
+    h7= Hand()
+    h7.add_card(QueenCard(Suit.Diamonds))
+    h7.add_card(NumberedCard(5,Suit.Clubs))
+    ph10=h7.best_poker_hand(cl2)
+    assert isinstance(ph10, PokerHand)
+    assert ph10.cards
+    assert ph10.type is Pokerhand_types.full_house
+    cl3 = [NumberedCard(3, Suit.Spades), NumberedCard(4, Suit.Spades), NumberedCard(5, Suit.Spades),
+           NumberedCard(8, Suit.Diamonds), QueenCard(Suit.Hearts), JackCard(Suit.Clubs)]
+    h8=Hand()
+    h8.add_card(NumberedCard(6, Suit.Spades))
+    h8.add_card(NumberedCard(7, Suit.Spades))
+    ph11= h8.best_poker_hand(cl3)
+    assert isinstance(ph11, PokerHand)
+    assert ph11.cards
+    assert ph11.type is Pokerhand_types.straight_flush
+    h9=Hand()
+    h9.add_card(NumberedCard(9, Suit.Spades))
+    h9.add_card(NumberedCard(10, Suit.Hearts))
+    ph12= h9.best_poker_hand(cl3)
+    assert isinstance(ph12, PokerHand)
+    assert ph12.cards
+    assert ph12.type is Pokerhand_types.straight
 
-    pt = Pokerhand_types(3)
-    assert pt.name == 'two_pair'
-    assert isinstance(pt, Pokerhand_types)
-    assert isinstance(pt, IntEnum)
+    #all types of existing pokerhands
+    assert ph11 > ph8 and ph8 < ph11   #straight flush vs four of a kind
+    assert ph8 > ph10 and ph10 < ph8   #four of a kind vs full house
+    assert ph10 > ph5 and ph5 < ph10   #full house vs flush
+    assert ph5 > ph12 and ph12 < ph5   #flush vs straight
+    assert ph12 > ph7 and ph7 < ph12   #straight vs three of a kind
+    assert ph7 > ph4 and ph4 < ph7     # three of a kind vs two pair
+    assert ph4 > ph6 and ph6 < ph4     #two pair vs pair
+    assert ph6 > ph1 and ph1 < ph6     # pair vs high card
+
+    tp = Pokerhand_types(3)
+    fl = Pokerhand_types(6)
+    assert tp == Pokerhand_types.two_pair
+    assert isinstance(tp, Pokerhand_types)
+    assert isinstance(tp, IntEnum)
+    assert fl > tp
+
+    tk = Pokerhand_types.three_of_a_kind.value
+    fk = Pokerhand_types.four_of_a_kind.value
+    assert tk < fk
+    assert issubclass(Pokerhand_types, IntEnum)
+
+    sf = Pokerhand_types.straight_flush
+    s = Pokerhand_types.straight
+    assert sf > s
+
+    sf2 = Pokerhand_types.straight_flush
+    assert sf == sf2
+
+
 
 
