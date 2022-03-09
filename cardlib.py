@@ -193,9 +193,10 @@ class Hand(object):
         :return: A poker hand of the 5 best cards out of the cards on hand and card on the table.
         :return type: PokerHand
         """
-        all_cards = self.cards
-        for tc in table_cards:
-            all_cards.append(tc)
+        all_cards = self.cards + table_cards
+
+        #for tc in table_cards:
+            #all_cards.append(tc)
         ph = PokerHand(all_cards)
         return ph
 
