@@ -193,9 +193,7 @@ class Hand(object):
         :return: A poker hand of the 5 best cards out of the cards on hand and card on the table.
         :return type: PokerHand
         """
-        all_cards = self.cards #+ table_cards
-        # for tc in table_cards:
-        #     all_cards.append(tc)
+        all_cards = self.cards + table_cards
         ph = PokerHand(all_cards)
         return ph
 
@@ -530,3 +528,10 @@ class PokerHand(object):
         high_card = vals[0]
         return high_card, vals[1:5]
 
+
+cl = [KingCard(Suit.Clubs), KingCard(Suit.Clubs), KingCard(Suit.Spades)]
+h = Hand()
+h.add_card(NumberedCard(10, Suit.Hearts))
+h.add_card(NumberedCard(3, Suit.Spades))
+ph3 = h.best_poker_hand(cl)
+print(ph3)
