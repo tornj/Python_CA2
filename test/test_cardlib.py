@@ -50,15 +50,13 @@ def test_cards():
     assert str(cj) == "Jack of Clubs"
     assert issubclass(PlayingCard, abc.ABC)
 
-    # Checks if Clubs is > Hearts
+    # Checks Enum, if Clubs is > Hearts
     assert isinstance(h5, PlayingCard)
     assert isinstance(h5, NumberedCard)
     c5 = NumberedCard(4, Suit.Clubs)
     assert c5.get_value() == 4
     assert h5 < c5
     assert isinstance(c5.suit, Enum)
-
-
 
 # This test assumes you call your shuffle method "shuffle" and the method to draw a card "draw"
 def test_deck():
@@ -224,6 +222,7 @@ def test_pokerhands():
     assert issubclass(Pokerhand_types, IntEnum)
 
     sf = Pokerhand_types.straight_flush
+
     s = Pokerhand_types.straight
     assert sf > s
 
@@ -231,6 +230,12 @@ def test_pokerhands():
     assert sf == sf2
 
 
+    bp = h1.best_poker_hand(cl)
+    o = 0
+    for i in range(10):
+        o += i
+
+    print(o)
 
 
 
