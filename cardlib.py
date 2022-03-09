@@ -194,9 +194,6 @@ class Hand(object):
         :return type: PokerHand
         """
         all_cards = self.cards + table_cards
-
-        #for tc in table_cards:
-            #all_cards.append(tc)
         ph = PokerHand(all_cards)
         return ph
 
@@ -474,8 +471,9 @@ class PokerHand(object):
         most_common, count = zip(*counted_cards.most_common(1))
         if count[0] == 3:
             three = most_common[0]
-            cards = sorted(counted_cards.keys())
-            return three, cards[1:3]
+            del counted_cards[three]
+            cards = sorted(counted_cards.keys(), reverse=True)
+            return three, cards[0:2]
 
     @staticmethod
     def check_two_pair(cards):
