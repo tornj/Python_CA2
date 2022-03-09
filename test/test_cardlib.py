@@ -316,13 +316,3 @@ def test_pokerhands():
     sf2 = Pokerhand_types.straight_flush
     assert sf == sf2
 
-
-    bp = h1.best_poker_hand(cl)
-    o = 0
-    for i in range(10):
-        o += i
-
-    print(o)
-
-
-
