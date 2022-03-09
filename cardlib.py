@@ -468,8 +468,9 @@ class PokerHand(object):
         most_common, count = zip(*counted_cards.most_common(1))
         if count[0] == 3:
             three = most_common[0]
-            cards = sorted(counted_cards.keys())
-            return three, cards[1:3]
+            del counted_cards[three]
+            cards = sorted(counted_cards.keys(), reverse=True)
+            return three, cards[0:2]
 
     @staticmethod
     def check_two_pair(cards):
@@ -529,9 +530,9 @@ class PokerHand(object):
         return high_card, vals[1:5]
 
 
-cl = [KingCard(Suit.Clubs), KingCard(Suit.Clubs), KingCard(Suit.Spades)]
+cl = [KingCard(Suit.Clubs), NumberedCard(10, Suit.Hearts), JackCard(Suit.Hearts)]
 h = Hand()
-h.add_card(NumberedCard(10, Suit.Hearts))
-h.add_card(NumberedCard(3, Suit.Spades))
+h.add_card(KingCard(Suit.Clubs))
+h.add_card(KingCard(Suit.Clubs))
 ph3 = h.best_poker_hand(cl)
 print(ph3)
