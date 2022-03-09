@@ -264,6 +264,9 @@ class PokerHand(object):
     def check_checks(self):
         """Loops through the checks and returns a tuple of the best cards and what hand type they represent
 
+        :param cards: A list of playing cards
+        :type list
+
         :return Tuple  of the best cards and their corresponding hand type.
         :return type: tuple
         """
@@ -497,10 +500,12 @@ class PokerHand(object):
     @staticmethod
     def check_pair(cards):
         """Check for the best pair out of the given list
-        :param cards: A list of playing cards
+
+        :param cards: A list of playing cards.
         :type: list
+
         :return: None of no pair is found, else the value of the highest pair and value of the highest three remaining
-        cards
+        cards.
         :return type: tuple
         """
         vals = [c.get_value() for c in cards]

@@ -194,6 +194,8 @@ def test_pokerhands():
     assert ph1 < ph2                    # test if the operators works between different hands
     cl.pop(0)
     cl.append(QueenCard(Suit.Spades))
+    cl.append(KingCard(Suit.Clubs))
+    cl.append(AceCard(Suit.Diamonds))
     ph3 = h1.best_poker_hand(cl)
     ph4 = h2.best_poker_hand(cl)
     assert isinstance(ph3, PokerHand)
@@ -205,7 +207,7 @@ def test_pokerhands():
     assert ph3 < ph4
     assert ph1 < ph2
 
-    cl = [JackCard(Suit.Clubs), AceCard(Suit.Spades), KingCard(Suit.Clubs), NumberedCard(3, Suit.Spades), NumberedCard(7, Suit.Diamonds)]
+    cl = [JackCard(Suit.Diamonds), AceCard(Suit.Diamonds), KingCard(Suit.Diamonds), NumberedCard(3, Suit.Spades), NumberedCard(7, Suit.Diamonds)]
     ph5 = h1.best_poker_hand(cl)
     assert isinstance(ph5, PokerHand)
     assert ph5.type is Pokerhand_types.flush
@@ -216,7 +218,7 @@ def test_pokerhands():
     ph6 = h3.best_poker_hand(cl)
     h4 = Hand()
     h4.add_card(NumberedCard(3, Suit.Clubs))
-    h4.add_card(NumberedCard(3, Suit.Diamonds))
+    h4.add_card(NumberedCard(3, Suit.Hearts))
     ph7 = h4.best_poker_hand(cl)
     assert isinstance(ph6, PokerHand)
     assert ph6.type is Pokerhand_types.pair
@@ -234,7 +236,7 @@ def test_pokerhands():
     assert ph8.type is Pokerhand_types.four_of_a_kind
     assert ph8.cards
     h6 = Hand()
-    h6.add_card(KingCard(Suit.Diamonds))
+    h6.add_card(KingCard(Suit.Spades))
     h6.add_card(NumberedCard(9, Suit.Spades))
     ph9 = h6.best_poker_hand(cl)
     assert isinstance(ph9, PokerHand)
@@ -313,7 +315,4 @@ def test_pokerhands():
 
     sf2 = Pokerhand_types.straight_flush
     assert sf == sf2
-
-
-
 
